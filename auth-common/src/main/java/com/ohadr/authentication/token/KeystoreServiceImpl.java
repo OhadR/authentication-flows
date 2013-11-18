@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ohadr.authentication.config.SecurityProperties;
+import com.ohadr.authentication.token.interfaces.KeystoreService;
 
 
 @Service("keystoreService")

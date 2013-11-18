@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import com.ohadr.authentication.config.AuthProperties;
+import com.ohadr.authentication.token.interfaces.UsernameTranslationService;
 
 
 @Component("watchdoxAuthorizationServerTokenServices")

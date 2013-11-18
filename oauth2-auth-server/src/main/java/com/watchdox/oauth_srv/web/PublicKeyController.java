@@ -9,7 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.watchdox.butke.token.interfaces.KeystoreService;
+import com.ohadr.authentication.token.interfaces.KeystoreService;
+
 
 @Controller
 public class PublicKeyController
