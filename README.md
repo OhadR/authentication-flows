@@ -28,6 +28,7 @@ Then the client should access the resource server using the access-token, and pr
 
 
 KeyStore things to know:
+========================
 1. a keystore shall be created, both for SSL and for signing the tokens.
 2. its alias and password should be updated in the prop file as well as in the tomcat's server.xml
 3. algorithm should be DSA (because in the access-token signature my code expects it to be "SHA1withDSA"
