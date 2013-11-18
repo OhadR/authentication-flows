@@ -1,4 +1,4 @@
-package com.ohadr.butke.oauth2;
+package com.ohadr.authentication.oauth2;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;

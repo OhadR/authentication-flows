@@ -1,4 +1,4 @@
-package com.ohadr.butke.token.interfaces;
+package com.ohadr.authentication.token;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

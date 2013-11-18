@@ -1,4 +1,4 @@
-package com.ohadr.butke.token;
+package com.ohadr.authentication.token;
 
 import java.util.Date;
 import java.util.Set;
@@ -21,8 +21,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import com.ohadr.butke.config.AuthProperties;
-import com.ohadr.butke.token.interfaces.UsernameTranslationService;
+import com.ohadr.authentication.config.AuthProperties;
+
 
 @Component("watchdoxAuthorizationServerTokenServices")
 public class OAuth2TokenServices implements AuthorizationServerTokenServices, InitializingBean

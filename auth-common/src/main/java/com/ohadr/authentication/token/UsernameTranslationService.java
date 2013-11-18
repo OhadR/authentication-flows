@@ -1,4 +1,4 @@
-package com.ohadr.butke.token.interfaces;
+package com.ohadr.authentication.token;
 
 import org.springframework.security.core.Authentication;
 
