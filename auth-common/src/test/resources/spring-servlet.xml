@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/context
+							http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/security
+							http://www.springframework.org/schema/security/spring-security-3.1.xsd
+						http://www.springframework.org/schema/security/oauth2
+							http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
+						http://www.springframework.org/schema/mvc
+							http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+						">
+
+    <!-- this line makes the autowire work: -->
+    <context:component-scan base-package="com.watchdox.*" />
+
+	<context:annotation-config />
+
+
+	<context:property-placeholder 
+		ignore-resource-not-found="true" 
+		system-properties-mode="OVERRIDE"
+		location="classpath*:com.watchdox.butke.test.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
+	<context:component-scan base-package="com.watchdox" />
+
+
+
+</beans>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:oauth="http://www.springframework.org/schema/security/oauth2" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+
+    <context:property-placeholder location="classpath:/butkec.properties" />
+
+    <context:component-scan base-package="com.watchdox.security.oauth.examples" />
+
+    <context:annotation-config />
+
+    <mvc:default-servlet-handler />
+
+    <mvc:annotation-driven/>
+
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/pages/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+
+
+
+	<sec:http authentication-manager-ref="authenticationManager">
+		<sec:intercept-url pattern="/secure/**" access="ROLE_USER" />
+		<!-- sec:anonymous/-->
+        <sec:form-login/>
+		<sec:custom-filter ref="oauth2ClientFilter" after="EXCEPTION_TRANSLATION_FILTER" />
+	</sec:http>
+
+
+
+
+
+    <bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAuthenticationEntryPoint">
+        <property name="realmName" value="butkec" />
+    </bean>
+
+    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler" />
+
+
+
+    <sec:authentication-manager alias="authenticationManager">
+        <sec:authentication-provider user-service-ref="userDetailsService"/>
+	</sec:authentication-manager>
+
+    <sec:user-service id="userDetailsService">
+        <sec:user name="shalom" password="shalom" authorities="ROLE_USER" />
+        <sec:user name="admin"  password="admin"  authorities="ROLE_USER,ROLE_ADMIN" />
+    </sec:user-service>
+
+
+
+    <!--apply the oauth client context -->
+	<oauth:client id="oauth2ClientFilter" 
+				resource-details-service-ref="resourceDetailsService"/>
+
+    <bean id="resourceDetailsService" class="org.springframework.security.oauth2.client.resource.InMemoryOAuth2ProtectedResourceDetailsService">
+        <property name="resourceDetailsStore">
+            <map>
+                <entry key="butkec" value-ref="butkecResource"/>
+            </map>
+        </property>
+    </bean>
+
+	<!--define an oauth 2 resource for sparklr -->
+	<oauth:resource id="butkecResource"
+                    type="authorization_code"
+                    client-id="${oauth2.client.id}"
+                    client-secret="${oauth2.client.secret}"
+		            access-token-uri="${accessTokenUri}"
+                    user-authorization-uri="${userAuthorizationUri}"
+                    scope="read"/>
+                    
+	<!--define an oauth2 resource for facebook. according to the facebook docs, the 'client-id' is the App ID, and the 'client-secret' 
+		is the App Secret -->
+	<oauth:resource id="facebook" 
+		type="authorization_code" 
+		client-id="233668646673605" 
+		client-secret="33b17e044ee6a4fa383f46ec6e28ea1d"
+		authentication-scheme="query" 
+		access-token-uri="https://graph.facebook.com/oauth/access_token" 
+		user-authorization-uri="https://www.facebook.com/dialog/oauth"
+		token-name="oauth_token" 
+		client-authentication-scheme="form" />
+                    
+
+
+
+	
+	<bean id="butkeDemoService" class="com.watchdox.security.oauth.examples.impl.ButkeDemoServiceImpl">
+		<property name="demoUrl" value="${demoUrl}" />
+		<property name="butkeDemoRestTemplate">
+            <bean class="org.springframework.security.oauth2.client.OAuth2RestTemplate">
+                <constructor-arg ref="butkecResource" />
+            </bean>
+		</property>
+
+	</bean>
+	
+
+	<!-- bean id="butkeDemoService" class="com.watchdox.security.oauth.examples.impl.ButkeDemoServiceImpl">
+		<property name="demoUrl" value="${demoUrl}" />
+		<property name="butkeDemoRestTemplate">
+			<oauth:rest-template resource="butkecResource" />
+		</property>
+
+	</bean-->
+	
+</beans>

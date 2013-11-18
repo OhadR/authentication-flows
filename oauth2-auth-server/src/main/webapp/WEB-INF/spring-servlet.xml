@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/context
+							http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/security
+							http://www.springframework.org/schema/security/spring-security-3.1.xsd
+						http://www.springframework.org/schema/security/oauth2
+							http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
+						http://www.springframework.org/schema/mvc
+							http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+						">
+
+    <context:component-scan base-package="com.watchdox" />
+
+	<context:annotation-config />
+    <mvc:annotation-driven />
+    <mvc:default-servlet-handler />
+
+
+	<context:property-placeholder 
+		ignore-resource-not-found="true" 
+		system-properties-mode="OVERRIDE"
+		location="classpath*:com.watchdox.butke.properties,classpath*:com.watchdox.butke.sample-default.properties,classpath*:system.properties" />
+	<context:component-scan base-package="com.watchdox" />
+
+	<!-- security:http auto-config="true">
+		<security:intercept-url pattern="/publicKey" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/oauth/authorize" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/**" access="ROLE_USER" />
+		<security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" />
+	</security:http-->
+
+    
+    <!-- Protect the /oauth/token url to allow only registered clients -->
+    <security:http pattern="/oauth/token"  authentication-manager-ref="clientAuthenticationManager"        >
+        <security:intercept-url pattern="/oauth/token" access="ROLE_CLIENT" requires-channel="https"/>
+        <security:anonymous enabled="false" />
+        <security:http-basic />
+
+        <security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" />
+        <security:access-denied-handler ref="oauthAccessDeniedHandler" />
+    </security:http>
+
+
+
+    <security:http auto-config="true" authentication-manager-ref="usersAuthManager">
+		<security:intercept-url pattern="/publicKey" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <security:intercept-url pattern="/oauth/**"	access="ROLE_USER"  requires-channel="https" />
+		<security:intercept-url pattern="/**" access="ROLE_ADMIN"   requires-channel="https" />
+
+		<!-- security:form-login login-page="/login/loginPage.html" /-->
+        <security:anonymous enabled="false"/>
+
+        <security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" />
+        <security:access-denied-handler ref="oauthAccessDeniedHandler" />
+	</security:http>
+    
+
+
+    <bean id="clientCredentialsTokenEndpointFilter" class="org.springframework.security.oauth2.provider.filter.ClientCredentialsTokenEndpointFilter">
+        <property name="authenticationManager" ref="clientAuthenticationManager" />
+    </bean>
+
+    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler">
+    </bean>
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<security:authentication-manager alias="usersAuthManager">
+		<security:authentication-provider>
+			<security:user-service>
+				<security:user name="uri@watchdox.com" password="uripass" authorities="ROLE_USER" />
+				<security:user name="leah@watchdox.com" password="leahpass" authorities="ROLE_USER" />
+				<security:user name="demo@watchdox.com" password="demo" authorities="ROLE_USER" />
+			</security:user-service>
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+	<!-- OAuth2 Configuration -->
+	<oauth:authorization-server
+		client-details-service-ref="clientDetails" 
+		token-services-ref="watchdoxAuthorizationServerTokenServices"
+		user-approval-handler-ref="automaticUserApprovalHandler">
+		<oauth:authorization-code />
+		<oauth:implicit />
+		<oauth:refresh-token />
+		<oauth:client-credentials />
+		<oauth:password />
+	</oauth:authorization-server>
+
+	<security:authentication-manager id="clientAuthenticationManager">
+		<security:authentication-provider user-service-ref="clientDetailsUserService" />
+	</security:authentication-manager>
+
+	<bean id="clientDetailsUserService"
+		class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+		<constructor-arg ref="clientDetails" />
+	</bean>
+
+	<oauth:client-details-service id="clientDetails">
+		<oauth:client client-id="${com.watchdox.oauth2.client.name}"
+			secret="${com.watchdox.oauth2.client.secret}" 
+			scope="read,write,trust"
+			authorized-grant-types="authorization_code,refresh_token" 
+			authorities="ROLE_CLIENT"/>
+	</oauth:client-details-service>
+	
+
+</beans>
