@@ -1,4 +1,4 @@
-package com.watchdox.security.oauth.examples;
+package com.ohadr.security.oauth.examples;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

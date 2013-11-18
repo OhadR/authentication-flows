@@ -1,7 +1,8 @@
-package com.watchdox.security.oauth.examples.impl;
+package com.ohadr.security.oauth.examples.impl;
 
-import com.watchdox.security.oauth.examples.ButkeDemoService;
 import org.springframework.web.client.RestOperations;
+
+import com.ohadr.security.oauth.examples.ButkeDemoService;
 
 import java.net.URI;
 
