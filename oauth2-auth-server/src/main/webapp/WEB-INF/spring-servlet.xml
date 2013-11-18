@@ -92,7 +92,7 @@
 	<!-- OAuth2 Configuration -->
 	<oauth:authorization-server
 		client-details-service-ref="clientDetails" 
-		token-services-ref="watchdoxAuthorizationServerTokenServices"
+		token-services-ref="myAuthorizationServerTokenServices"
 		user-approval-handler-ref="automaticUserApprovalHandler">
 		<oauth:authorization-code />
 		<oauth:implicit />

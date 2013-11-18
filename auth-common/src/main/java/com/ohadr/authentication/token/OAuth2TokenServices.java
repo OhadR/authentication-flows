@@ -25,7 +25,7 @@ import com.ohadr.authentication.config.AuthProperties;
 import com.ohadr.authentication.token.interfaces.UsernameTranslationService;
 
 
-@Component("watchdoxAuthorizationServerTokenServices")
+@Component("myAuthorizationServerTokenServices")
 public class OAuth2TokenServices implements AuthorizationServerTokenServices, InitializingBean
 {
     private static final Logger log = Logger.getLogger(OAuth2TokenServices.class);
