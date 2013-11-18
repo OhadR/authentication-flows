@@ -1,4 +1,4 @@
-package com.watchdox.butke.token;
+package com.ohadr.butke.token;
 
 import org.springframework.security.core.Authentication;
 

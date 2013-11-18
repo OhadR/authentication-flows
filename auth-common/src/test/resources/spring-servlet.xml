@@ -17,7 +17,7 @@
 						">
 
     <!-- this line makes the autowire work: -->
-    <context:component-scan base-package="com.watchdox.*" />
+	<context:component-scan base-package="com.ohadr" />
 
 	<context:annotation-config />
 
@@ -25,8 +25,7 @@
 	<context:property-placeholder 
 		ignore-resource-not-found="true" 
 		system-properties-mode="OVERRIDE"
-		location="classpath*:com.watchdox.butke.test.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
-	<context:component-scan base-package="com.watchdox" />
+		location="classpath*:com..butke.test.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
 
 
 

@@ -1,4 +1,4 @@
-package com.watchdox.butke.token.interfaces;
+package com.ohadr.butke.token;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

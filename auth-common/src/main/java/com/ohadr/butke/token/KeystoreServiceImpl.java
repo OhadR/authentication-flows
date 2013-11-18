@@ -1,4 +1,4 @@
-package com.watchdox.butke.token;
+package com.ohadr.butke.token;
 
 import java.io.FileInputStream;
 import java.security.KeyStore;
@@ -9,8 +9,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.watchdox.butke.config.SecurityProperties;
-import com.watchdox.butke.token.interfaces.KeystoreService;
+import com.ohadr.butke.config.SecurityProperties;
+import com.ohadr.butke.token.interfaces.KeystoreService;
 
 @Service("keystoreService")
 public class KeystoreServiceImpl implements InitializingBean, KeystoreService

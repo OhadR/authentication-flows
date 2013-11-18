@@ -1,4 +1,4 @@
-package com.watchdox.butke.token;
+package com.ohadr.butke.token;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -14,7 +14,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.watchdox.butke.token.interfaces.KeystoreService;
+import com.ohadr.butke.token.interfaces.KeystoreService;
 
 @Component
 public class SignedTokenGenerator
