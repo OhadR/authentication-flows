@@ -15,8 +15,6 @@ public class AuthProperties
 	@Value("${com.ohadr.oauth2.token.refreshTimeToLive}")
 	private int refreshTokenTimeToLive;
 
-	@Value("${com.ohadr.oauth2.apiServer}")
-	private String apiServer;
 	
 	public String getTokenIssuer()
 	{
@@ -48,15 +46,4 @@ public class AuthProperties
 		this.refreshTokenTimeToLive = refreshTokenTimeToLive;
 	}
 
-	public String getApiServer()
-	{
-		return apiServer;
-	}
-
-	public void setApiServer(String apiServer)
-	{
-		this.apiServer = apiServer;
-	}
-	
-	
 }
