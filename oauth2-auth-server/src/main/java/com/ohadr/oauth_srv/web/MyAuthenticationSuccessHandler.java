@@ -1,4 +1,4 @@
-package com.watchdox.oauth_srv.web;
+package com.ohadr.oauth_srv.web;
 
 import java.io.IOException;
 

@@ -16,7 +16,7 @@
 							http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
 						">
 
-    <context:component-scan base-package="com.watchdox" />
+    <context:component-scan base-package="com.ohadr" />
 
 	<context:annotation-config />
     <mvc:annotation-driven />
@@ -26,8 +26,7 @@
 	<context:property-placeholder 
 		ignore-resource-not-found="true" 
 		system-properties-mode="OVERRIDE"
-		location="classpath*:com.watchdox.butke.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
-	<context:component-scan base-package="com.watchdox" />
+		location="classpath*:com.ohadr.authentication.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
 
     
     <!-- Protect the /oauth/token url to allow only registered clients -->

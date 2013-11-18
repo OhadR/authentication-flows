@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecurityProperties
 {
-	@Value("${com.watchdox.oauth2.sign.keyStore}")
+	@Value("${com.ohadr.oauth2.sign.keyStore}")
 	private String keystore;
 
-	@Value("${com.watchdox.oauth2.sign.storePass}")
+	@Value("${com.ohadr.oauth2.sign.storePass}")
 	private String storepass;
 
-	@Value("${com.watchdox.oauth2.sign.keyAlias}")
+	@Value("${com.ohadr.oauth2.sign.keyAlias}")
 	private String keysToken;
 
 	public String getKeystore()

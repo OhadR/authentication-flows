@@ -1,4 +1,4 @@
-package com.watchdox.oauth_srv.web;
+package com.ohadr.oauth_srv.web;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationListener;
