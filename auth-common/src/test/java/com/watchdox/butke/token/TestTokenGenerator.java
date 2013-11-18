@@ -30,8 +30,8 @@ public class TestTokenGenerator
         
 		try 
 		{
-			String token = signedTokenGenerator.generateToken("uri@watchdox.com",
-					"com.watchdox.shalom", //issuer
+			String token = signedTokenGenerator.generateToken("user@ohadr.com",		//username, from the DB/xml file
+					"com.ohadr.shalom", //issuer, same as in the props file
 					null,	//deviceName
 					null,	//clientPublicKey
 					100		//secondsToExpire

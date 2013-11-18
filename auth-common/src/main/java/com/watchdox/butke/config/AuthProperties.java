@@ -6,16 +6,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthProperties
 {
-	@Value("${com.watchdox.oauth2.token.issuer}")
+	@Value("${com.ohadr.oauth2.token.issuer}")
 	private String tokenIssuer;
 
-	@Value("${com.watchdox.oauth2.token.timeToLive}")
+	@Value("${com.ohadr.oauth2.token.timeToLive}")
 	private int tokenTimeToLive;
 
-	@Value("${com.watchdox.oauth2.token.refreshTimeToLive}")
+	@Value("${com.ohadr.oauth2.token.refreshTimeToLive}")
 	private int refreshTokenTimeToLive;
 
-	@Value("${com.watchdox.oauth2.apiServer}")
+	@Value("${com.ohadr.oauth2.apiServer}")
 	private String apiServer;
 	
 	public String getTokenIssuer()

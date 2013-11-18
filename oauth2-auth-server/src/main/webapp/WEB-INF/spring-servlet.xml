@@ -73,8 +73,8 @@
 	</security:authentication-manager>
 
     <security:user-service id="userDetailsService">
-				<security:user name="uri@watchdox.com" password="uripass" authorities="ROLE_USER" />
-				<security:user name="demo@watchdox.com" password="demo" authorities="ROLE_USER" />
+				<security:user name="user@ohadr.com" password="uripass" authorities="ROLE_USER" />
+				<security:user name="demo@ohadr.com" password="demo" authorities="ROLE_USER" />
     </security:user-service>
 
 
@@ -84,7 +84,7 @@
 		<security:authentication-provider>
 			<security:password-encoder hash="sha" />
 			<security:user-service>
-				<security:user name="ohadr@watchdox.com"
+				<security:user name="ohadr@ohadr.com"
 					password="c602cf34f3d3d37af9456daf7da4d210f6dc6662" authorities="ROLE_USER" />
 			</security:user-service>
 		</security:authentication-provider>
@@ -112,8 +112,8 @@
 	</bean>
 
 	<oauth:client-details-service id="clientDetails">
-		<oauth:client client-id="${com.watchdox.oauth2.client.name}"
-			secret="${com.watchdox.oauth2.client.secret}" 
+		<oauth:client client-id="${com.ohadr.oauth2.client.name}"
+			secret="${com.ohadr.oauth2.client.secret}" 
 			scope="read,write,trust"
 			authorized-grant-types="authorization_code,refresh_token" 
 			authorities="ROLE_CLIENT"/>
@@ -124,9 +124,9 @@
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="com.jamonapi.proxy.JAMonDriver"/>
         <property name="jdbcUrl"
-                  value="jdbc:jamon:mysql://${com.watchdox.oauth2.db.host}:${com.watchdox.oauth2.db.port}/${com.watchdox.oauth2.db.schema}?jamonrealdriver=org.gjt.mm.mysql.Driver;useUnicode=true&amp;characterEncoding=utf-8"/>
-        <property name="user" value="${com.watchdox.oauth2.db.username}"/>
-        <property name="password" value="${com.watchdox.oauth2.db.password}"/>
+                  value="jdbc:jamon:mysql://${com.ohadr.oauth2.db.host}:${com.ohadr.oauth2.db.port}/${com.ohadr.oauth2.db.schema}?jamonrealdriver=org.gjt.mm.mysql.Driver;useUnicode=true&amp;characterEncoding=utf-8"/>
+        <property name="user" value="${com.ohadr.oauth2.db.username}"/>
+        <property name="password" value="${com.ohadr.oauth2.db.password}"/>
         <property name="acquireIncrement" value="1"/>
         <property name="idleConnectionTestPeriod" value="100"/>
         <property name="maxPoolSize" value="10"/>
