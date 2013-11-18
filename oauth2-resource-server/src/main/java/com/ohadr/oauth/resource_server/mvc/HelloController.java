@@ -1,4 +1,4 @@
-package com.watchdox.security.oauth.resource_server.mvc;
+package com.ohadr.oauth.resource_server.mvc;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

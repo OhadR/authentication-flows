@@ -16,7 +16,7 @@
 							http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
 
 
-    <context:component-scan base-package="com.watchdox" />
+    <context:component-scan base-package="com.ohadr" />
 
     <context:annotation-config />
 
@@ -58,7 +58,7 @@
 	</bean>
 
 
-	<bean id="tokenStore" class="com.watchdox.security.oauth.resource_server.token.MyTokenStore" />
+	<bean id="tokenStore" class="com.ohadr.oauth.resource_server.token.MyTokenStore" />
 
 
     <bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">

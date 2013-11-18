@@ -1,4 +1,4 @@
-package com.watchdox.security.oauth.resource_server.token;
+package com.ohadr.oauth.resource_server.token;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
