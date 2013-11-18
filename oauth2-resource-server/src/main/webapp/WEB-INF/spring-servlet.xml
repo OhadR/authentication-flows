@@ -23,50 +23,50 @@
     <mvc:default-servlet-handler />
     
     <mvc:annotation-driven/>
-
+    
+    <!-- security:debug/-->
+    
 
 
     <security:http pattern="/index.html" security="none"/>
 	<security:http pattern="/browse" security="none"/>
-	<security:http pattern="/welcome" security="none"/>
+	<!-- security:http pattern="/welcome" security="none"/-->
 	<security:http pattern="/js/**" security="none"/>
 
 	<!-- TODO: make an access denied view that tells me something useful -->
-	<security:http 	entry-point-ref="oauthAuthenticationEntryPoint" 	
+	<security:http 	entry-point-ref="oauthAuthenticationEntryPoint"  	
 					access-decision-manager-ref="accessDecisionManager">
 		<security:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
-        <security:custom-filter ref="resourceServerFilter" after="PRE_AUTH_FILTER" />
+        <security:custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER" />
         <security:access-denied-handler ref="oauthAccessDeniedHandler" />
 		<security:anonymous />
 	</security:http>
 
 
-	<!-- It's just a "feature" of the Spring Security that an authentication manager is mandatory. so install an empty one because it isn't used at run time -->
+	<!-- It's just a "feature" of the Spring Security that an authentication manager is mandatory. 
+		so install an empty one because it isn't used at run time -->
 	<security:authentication-manager/>
 
 
 
     <oauth:resource-server id="resourceServerFilter" 
-    					resource-id="myResourceServer"
     					token-services-ref="tokenServices" />
 
 
-
-	<bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.RandomValueTokenServices">
+	<bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.DefaultTokenServices" >
 		<property name="tokenStore" ref="tokenStore" />
-		<property name="supportRefreshToken" value="true"/>
 	</bean>
 
-	<bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.InMemoryTokenStore" />
+
+	<bean id="tokenStore" class="com.watchdox.security.oauth.resource_server.token.MyTokenStore" />
 
 
-
-
-    <bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAuthenticationEntryPoint">
+    <bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
         <property name="realmName" value="butkec" />
     </bean>
 
-    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler" />
+
+    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler" />
 
     <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased" >
         <constructor-arg>

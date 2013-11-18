@@ -1,4 +1,4 @@
-package com.watchdox.auth.web;
+package com.watchdox.oauth_srv.web;
 
 import java.util.TreeMap;
 

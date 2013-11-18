@@ -26,26 +26,19 @@
 	<context:property-placeholder 
 		ignore-resource-not-found="true" 
 		system-properties-mode="OVERRIDE"
-		location="classpath*:com.watchdox.butke.properties,classpath*:com.watchdox.butke.sample-default.properties,classpath*:system.properties" />
+		location="classpath*:com.watchdox.butke.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
 	<context:component-scan base-package="com.watchdox" />
-
-	<!-- security:http auto-config="true">
-		<security:intercept-url pattern="/publicKey" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<security:intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<security:intercept-url pattern="/oauth/authorize" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<security:intercept-url pattern="/**" access="ROLE_USER" />
-		<security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" />
-	</security:http-->
 
     
     <!-- Protect the /oauth/token url to allow only registered clients -->
-    <security:http pattern="/oauth/token"  authentication-manager-ref="clientAuthenticationManager"        >
+    <!-- this statement enables the access to /oauth/token. without it we get "cannot access" -->
+    <security:http pattern="/oauth/token"  authentication-manager-ref="clientAuthenticationManager">
         <security:intercept-url pattern="/oauth/token" access="ROLE_CLIENT" requires-channel="https"/>
         <security:anonymous enabled="false" />
         <security:http-basic />
 
-        <security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" />
-        <security:access-denied-handler ref="oauthAccessDeniedHandler" />
+        <!-- security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" /-->
+        <!-- security:access-denied-handler ref="oauthAccessDeniedHandler" /-->
     </security:http>
 
 
@@ -58,18 +51,16 @@
 		<!-- security:form-login login-page="/login/loginPage.html" /-->
         <security:anonymous enabled="false"/>
 
-        <security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" />
-        <security:access-denied-handler ref="oauthAccessDeniedHandler" />
+        <!-- >security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" /-->
+        <!-- security:access-denied-handler ref="oauthAccessDeniedHandler" /-->
+
+		<security:remember-me
+			data-source-ref="dataSource"
+			user-service-ref="userDetailsService"/>
+			
 	</security:http>
     
 
-
-    <bean id="clientCredentialsTokenEndpointFilter" class="org.springframework.security.oauth2.provider.filter.ClientCredentialsTokenEndpointFilter">
-        <property name="authenticationManager" ref="clientAuthenticationManager" />
-    </bean>
-
-    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler">
-    </bean>
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -77,15 +68,27 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
+    <security:authentication-manager alias="usersAuthManager">
+        <security:authentication-provider user-service-ref="userDetailsService"/>
+	</security:authentication-manager>
+
+    <security:user-service id="userDetailsService">
+				<security:user name="uri@watchdox.com" password="uripass" authorities="ROLE_USER" />
+				<security:user name="demo@watchdox.com" password="demo" authorities="ROLE_USER" />
+    </security:user-service>
+
+
+
+	<!-- example for encoding the passwords; we keep them here encoded. the password is 'ohadr' encoded: >
 	<security:authentication-manager alias="usersAuthManager">
 		<security:authentication-provider>
+			<security:password-encoder hash="sha" />
 			<security:user-service>
-				<security:user name="uri@watchdox.com" password="uripass" authorities="ROLE_USER" />
-				<security:user name="leah@watchdox.com" password="leahpass" authorities="ROLE_USER" />
-				<security:user name="demo@watchdox.com" password="demo" authorities="ROLE_USER" />
+				<security:user name="ohadr@watchdox.com"
+					password="c602cf34f3d3d37af9456daf7da4d210f6dc6662" authorities="ROLE_USER" />
 			</security:user-service>
 		</security:authentication-provider>
-	</security:authentication-manager>
+	</security:authentication-manager-->
 
 	<!-- OAuth2 Configuration -->
 	<oauth:authorization-server
@@ -116,5 +119,19 @@
 			authorities="ROLE_CLIENT"/>
 	</oauth:client-details-service>
 	
+
+	<!-- data-source (for the remember me feature) -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="com.jamonapi.proxy.JAMonDriver"/>
+        <property name="jdbcUrl"
+                  value="jdbc:jamon:mysql://${com.watchdox.oauth2.db.host}:${com.watchdox.oauth2.db.port}/${com.watchdox.oauth2.db.schema}?jamonrealdriver=org.gjt.mm.mysql.Driver;useUnicode=true&amp;characterEncoding=utf-8"/>
+        <property name="user" value="${com.watchdox.oauth2.db.username}"/>
+        <property name="password" value="${com.watchdox.oauth2.db.password}"/>
+        <property name="acquireIncrement" value="1"/>
+        <property name="idleConnectionTestPeriod" value="100"/>
+        <property name="maxPoolSize" value="10"/>
+        <property name="maxStatements" value="5"/>
+        <property name="minPoolSize" value="5"/>
+    </bean>
 
 </beans>

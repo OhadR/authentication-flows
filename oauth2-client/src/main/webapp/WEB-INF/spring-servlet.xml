@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" 
 	xmlns:sec="http://www.springframework.org/schema/security"
 	xmlns:oauth="http://www.springframework.org/schema/security/oauth2" 
@@ -13,7 +14,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
 
-    <context:property-placeholder location="classpath:/butkec.properties" />
+    <context:property-placeholder location="classpath:/client.properties" />
 
     <context:component-scan base-package="com.watchdox.security.oauth.examples" />
 
@@ -43,14 +44,11 @@
 	</sec:http>
 
 
-
-
-
-    <bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAuthenticationEntryPoint">
+    <!-- bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAuthenticationEntryPoint">
         <property name="realmName" value="butkec" />
     </bean>
 
-    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler" />
+    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler" /-->
 
 
 
@@ -59,25 +57,16 @@
 	</sec:authentication-manager>
 
     <sec:user-service id="userDetailsService">
-        <sec:user name="shalom" password="shalom" authorities="ROLE_USER" />
         <sec:user name="admin"  password="admin"  authorities="ROLE_USER,ROLE_ADMIN" />
     </sec:user-service>
 
 
 
-    <!--apply the oauth client context -->
-	<oauth:client id="oauth2ClientFilter" 
-				resource-details-service-ref="resourceDetailsService"/>
+    <!--apply the oauth client context-->
+	<oauth:client 	id="oauth2ClientFilter" />
+					
 
-    <bean id="resourceDetailsService" class="org.springframework.security.oauth2.client.resource.InMemoryOAuth2ProtectedResourceDetailsService">
-        <property name="resourceDetailsStore">
-            <map>
-                <entry key="butkec" value-ref="butkecResource"/>
-            </map>
-        </property>
-    </bean>
-
-	<!--define an oauth 2 resource for sparklr -->
+	<!--define an oauth 2 resource for sparklr (creates instance of AuthorizationCodeResourceDetails [extends ... OAuth2ProtectedResourceDetails]) -->
 	<oauth:resource id="butkecResource"
                     type="authorization_code"
                     client-id="${oauth2.client.id}"
@@ -102,7 +91,7 @@
 
 
 	
-	<bean id="butkeDemoService" class="com.watchdox.security.oauth.examples.impl.ButkeDemoServiceImpl">
+	<!-- bean id="butkeDemoService" class="com.watchdox.security.oauth.examples.impl.ButkeDemoServiceImpl">
 		<property name="demoUrl" value="${demoUrl}" />
 		<property name="butkeDemoRestTemplate">
             <bean class="org.springframework.security.oauth2.client.OAuth2RestTemplate">
@@ -110,15 +99,15 @@
             </bean>
 		</property>
 
-	</bean>
+	</bean-->
 	
 
-	<!-- bean id="butkeDemoService" class="com.watchdox.security.oauth.examples.impl.ButkeDemoServiceImpl">
+	<bean id="butkeDemoService" class="com.watchdox.security.oauth.examples.impl.ButkeDemoServiceImpl">
 		<property name="demoUrl" value="${demoUrl}" />
 		<property name="butkeDemoRestTemplate">
 			<oauth:rest-template resource="butkecResource" />
 		</property>
 
-	</bean-->
+	</bean>
 	
 </beans>

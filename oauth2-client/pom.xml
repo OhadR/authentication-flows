@@ -91,25 +91,6 @@
 			<artifactId>spring-expression</artifactId>
 		</dependency>
 
-		<!-- we use the DB for the "persistent remember me -->
-		<!-- +++++++++++++++ DB: +++++++++++++++ -->
-		<dependency>
-			<groupId>c3p0</groupId>
-			<artifactId>c3p0</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>jamon</groupId>
-			<artifactId>jamon</artifactId>
-		</dependency>
-		<!-- ++++++++++++++++++++++++++++++++++++ -->
-
-
 
 		<dependency>
 			<groupId>cglib</groupId>
