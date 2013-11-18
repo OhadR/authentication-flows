@@ -5,7 +5,7 @@
 	<artifactId>oauth2-client</artifactId>
 	<packaging>war</packaging>
 	<name>oAuth2.0 - demo client app</name>
-	<description>version 1 worked with butke-sample, version 2 works with butke-up. ver3 uses 1.0.0.RC2a</description>
+	<description>client app that tries to access the resource server</description>
 
 
 

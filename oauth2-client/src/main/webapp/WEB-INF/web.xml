@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
 	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-    <display-name>butke sample client</display-name>
+    <display-name>oAuth2.0 client</display-name>
 
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
