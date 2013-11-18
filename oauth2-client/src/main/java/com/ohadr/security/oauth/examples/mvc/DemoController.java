@@ -6,7 +6,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.ohadr.security.oauth.examples.ButkeDemoService;
+import com.ohadr.security.oauth.examples.DemoService;
 
 
 /**
@@ -15,11 +15,11 @@ import com.ohadr.security.oauth.examples.ButkeDemoService;
  */
 @Controller
 @RequestMapping("/hello")
-public class ButkeDemoController
+public class DemoController
 {
 
     @Autowired
-	private ButkeDemoService butkeDemoService;
+	private DemoService butkeDemoService;
 
     @RequestMapping(method = RequestMethod.GET)
 	public String demo(ModelMap model) throws Exception {
@@ -28,7 +28,7 @@ public class ButkeDemoController
 	}
 
 
-	public void setButkeDemoService(ButkeDemoService butkeDemoService) {
+	public void setButkeDemoService(DemoService butkeDemoService) {
 		this.butkeDemoService = butkeDemoService;
 	}
 

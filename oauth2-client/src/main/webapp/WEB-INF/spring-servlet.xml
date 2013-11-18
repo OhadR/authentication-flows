@@ -16,7 +16,7 @@
 
     <context:property-placeholder location="classpath:/client.properties" />
 
-    <context:component-scan base-package="com.watchdox.security.oauth.examples" />
+    <context:component-scan base-package="com.ohadr.security.oauth.examples" />
 
     <context:annotation-config />
 
@@ -91,7 +91,7 @@
 
 
 	
-	<!-- bean id="butkeDemoService" class="com.watchdox.security.oauth.examples.impl.ButkeDemoServiceImpl">
+	<!-- bean id="butkeDemoService" class="com.ohadr.security.oauth.examples.impl.DemoServiceImpl">
 		<property name="demoUrl" value="${demoUrl}" />
 		<property name="butkeDemoRestTemplate">
             <bean class="org.springframework.security.oauth2.client.OAuth2RestTemplate">
@@ -102,7 +102,7 @@
 	</bean-->
 	
 
-	<bean id="butkeDemoService" class="com.watchdox.security.oauth.examples.impl.ButkeDemoServiceImpl">
+	<bean id="butkeDemoService" class="com.ohadr.security.oauth.examples.impl.DemoServiceImpl">
 		<property name="demoUrl" value="${demoUrl}" />
 		<property name="butkeDemoRestTemplate">
 			<oauth:rest-template resource="butkecResource" />

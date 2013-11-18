@@ -2,12 +2,12 @@ package com.ohadr.security.oauth.examples.impl;
 
 import org.springframework.web.client.RestOperations;
 
-import com.ohadr.security.oauth.examples.ButkeDemoService;
+import com.ohadr.security.oauth.examples.DemoService;
 
 import java.net.URI;
 
 
-public class ButkeDemoServiceImpl implements ButkeDemoService
+public class DemoServiceImpl implements DemoService
 {
 
 	private RestOperations butkeDemoRestTemplate;

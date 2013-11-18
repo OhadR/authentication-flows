@@ -4,7 +4,7 @@ package com.ohadr.security.oauth.examples;
 /**
  * @author Ryan Heaton
  */
-public interface ButkeDemoService
+public interface DemoService
 {
 
 
