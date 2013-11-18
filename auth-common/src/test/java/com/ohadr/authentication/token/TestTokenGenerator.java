@@ -1,4 +1,4 @@
-package com.ohadr.butke.token;
+package com.ohadr.authentication.token;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
