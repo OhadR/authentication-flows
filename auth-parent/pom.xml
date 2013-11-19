@@ -11,7 +11,7 @@
     <properties>
         <ohadr.spring.version>3.1.0.RELEASE</ohadr.spring.version>
         <ohadr.spring.security.version>3.1.0.RELEASE</ohadr.spring.security.version>
-        <ohadr.spring-security-oauth.version>1.0.0.RC2a</ohadr.spring-security-oauth.version>
+        <ohadr.spring-security-oauth.version>1.0.5.RELEASE</ohadr.spring-security-oauth.version>
     </properties>
 
 
