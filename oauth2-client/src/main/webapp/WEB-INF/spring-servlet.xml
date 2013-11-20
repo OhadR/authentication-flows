@@ -36,7 +36,7 @@
 
 
 
--	<sec:http authentication-manager-ref="authenticationManager">
+	<sec:http authentication-manager-ref="authenticationManager">
 		<sec:intercept-url pattern="/secure/**" access="ROLE_USER" />
 		<sec:anonymous/>
         <sec:form-login/>
