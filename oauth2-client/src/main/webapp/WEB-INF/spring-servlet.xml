@@ -36,12 +36,17 @@
 
 
 
-	<sec:http authentication-manager-ref="authenticationManager">
+-	<sec:http authentication-manager-ref="authenticationManager">
 		<sec:intercept-url pattern="/secure/**" access="ROLE_USER" />
-		<!-- sec:anonymous/-->
+		<sec:anonymous/>
         <sec:form-login/>
 		<sec:custom-filter ref="oauth2ClientFilter" after="EXCEPTION_TRANSLATION_FILTER" />
 	</sec:http>
+
+	<!-- bean name="loginUrlAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<property name="loginFormUrl" value="/oauth/commence" />
+		<property name="useForward" value="false" />
+	</bean-->
 
 
     <!-- bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAuthenticationEntryPoint">
@@ -49,17 +54,17 @@
     </bean>
 
     <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler" /-->
-
+ 
 
 
     <sec:authentication-manager alias="authenticationManager">
-        <sec:authentication-provider user-service-ref="userDetailsService"/>
+		<sec:authentication-provider user-service-ref="userDetailsService"/>
 	</sec:authentication-manager>
-
-    <sec:user-service id="userDetailsService">
-        <sec:user name="admin"  password="admin"  authorities="ROLE_USER,ROLE_ADMIN" />
-    </sec:user-service>
-
+	
+	<sec:user-service id="userDetailsService">
+		<sec:user name="admin"  password="admin"  authorities="ROLE_USER,ROLE_ADMIN" />
+	</sec:user-service>
+	
 
 
     <!--apply the oauth client context-->
@@ -71,8 +76,8 @@
                     type="authorization_code"
                     client-id="${oauth2.client.id}"
                     client-secret="${oauth2.client.secret}"
-		            access-token-uri="${accessTokenUri}"
-                    user-authorization-uri="${userAuthorizationUri}"
+		            access-token-uri="${oauth2.client.accessTokenUri}"
+                    user-authorization-uri="${oauth2.client.userAuthorizationUri}"
                     scope="read"/>
                     
 	<!--define an oauth2 resource for facebook. according to the facebook docs, the 'client-id' is the App ID, and the 'client-secret' 
@@ -88,26 +93,24 @@
 		client-authentication-scheme="form" />
                     
 
+	<!-- instead of defining oauth:resource (OAuth2ProtectedResourceDetails), we define our cusomt type
+		that enables us the "hack". Spring's type define in ctor all params, we do it lazily - ->
+	<bean id="WebAppOAuth2ResourceDetails" class="com.ohadr.security.oauth.examples.web.WebAppOAuth2ResourceDetails">
+  		<constructor-arg index="0"><value>${oauth2.client.id}</value></constructor-arg>
+  		<constructor-arg index="1"><value>${oauth2.client.secret}</value></constructor-arg>
+
+		<property name="userAuthorizationUri" value="${oauth2.client.userAuthorizationUri}" />
+		<property name="accessTokenUri" value="${oauth2.client.accessTokenUri}" />
+  		
+	</bean-->	
+
 
 
 	
-	<!-- bean id="butkeDemoService" class="com.ohadr.security.oauth.examples.impl.DemoServiceImpl">
-		<property name="demoUrl" value="${demoUrl}" />
-		<property name="butkeDemoRestTemplate">
-            <bean class="org.springframework.security.oauth2.client.OAuth2RestTemplate">
-                <constructor-arg ref="butkecResource" />
-            </bean>
-		</property>
-
-	</bean-->
-	
-
 	<bean id="butkeDemoService" class="com.ohadr.security.oauth.examples.impl.DemoServiceImpl">
 		<property name="demoUrl" value="${demoUrl}" />
-		<property name="butkeDemoRestTemplate">
-			<oauth:rest-template resource="butkecResource" />
-		</property>
-
 	</bean>
+	
+	<oauth:rest-template id="oauthRestTemplate" resource="butkecResource" />
 	
 </beans>
