@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ohadr</groupId>
+	<artifactId>common-crypto</artifactId>
+	<name>common-crypto</name>
+
+    <parent>
+		<groupId>com.ohadr.oauth2</groupId>
+        <artifactId>auth-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../auth-parent</relativePath>
+    </parent>
+
+	<dependencies>
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-expression</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
+		<!-- Java Sealer dependencies - -> <dependency> <groupId>org.bouncycastle</groupId> 
+			<artifactId>bcprov-jdk16</artifactId> <version>1.46</version> </dependency> 
+			<dependency> <groupId>org.bouncycastle</groupId> <artifactId>bcmail-jdk16</artifactId> 
+			<version>1.46</version> </dependency -->
+
+
+		<!-- Hex, Base64 -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+
+		<!-- Pair impl -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0</version>
+		</dependency>
+
+
+
+
+	</dependencies>
+
+
+	<!-- build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+		<artifactId>maven-dependency-plugin</artifactId> <version>2.7</version> <executions> 
+		<execution> <id>copy-dependencies-for-encrypt-string</id> <phase>package</phase> 
+		<goals> <goal>copy-dependencies</goal> </goals> <configuration> <excludeGroupIds>org.springframework.security</excludeGroupIds> 
+		<outputDirectory>${project.build.directory}/encrypt_string_jars</outputDirectory> 
+		</configuration> </execution> </executions> </plugin> </plugins> </build -->
+
+</project>
