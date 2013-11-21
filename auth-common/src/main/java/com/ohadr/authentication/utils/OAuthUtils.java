@@ -9,8 +9,6 @@ public abstract class OAuthUtils
 {
     private static final Logger log = Logger.getLogger(OAuthUtils.class);
 
-	public static final String OAUTH_WEB_APP_NAME = "oauth-srv";
-	public static final String ENCRYPTED_USERNAME_PARAM_NAME = "e";
 
 	/**
 	 * the SDK does not know how to encode params in the URL (only JSONs in the body...)
