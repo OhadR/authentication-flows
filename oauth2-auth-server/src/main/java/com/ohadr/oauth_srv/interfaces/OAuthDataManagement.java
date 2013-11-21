@@ -1,7 +1,7 @@
 package com.ohadr.oauth_srv.interfaces;
 
-import com.ohadr.oauth_srv.interfaces.AuthenticationPolicy;
-import com.ohadr.oauth_srv.interfaces.OauthAccountState;
+import com.ohadr.oauth_srv.types.AuthenticationPolicy;
+import com.ohadr.oauth_srv.types.OauthAccountState;
 
 
 /**
@@ -32,4 +32,6 @@ public interface OAuthDataManagement
 
 	public void changePassword(String email, String encodedCurrentPassword,
 			String encodedNewPassword);
+
+	public String getSecretQuestion(String email);
 }
