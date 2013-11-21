@@ -1,5 +1,7 @@
 package com.ohadr.oauth_srv.interfaces;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.ohadr.oauth_srv.types.AuthenticationPolicy;
 import com.ohadr.oauth_srv.types.OauthAccountState;
 
@@ -13,7 +15,7 @@ public interface OAuthDataManagement
 {
 	public boolean setLoginSuccessForUser(String username);
 
-	public void createUser(String email, String encodedPassword,
+	public Pair<String, String> createAccount(String email, String encodedPassword,
 			String secretQuestion, String encodedAnswer);
 
 	public AuthenticationPolicy getAuthenticationSettings();
@@ -30,7 +32,7 @@ public interface OAuthDataManagement
 
 	public void setPassword(String email, String encodedPassword);
 
-	public void changePassword(String email, String encodedCurrentPassword,
+	public Pair<String, String> changePassword(String email, String encodedCurrentPassword,
 			String encodedNewPassword);
 
 	public String getSecretQuestion(String email);
