@@ -1,11 +1,13 @@
 package com.ohadr.oauth_srv.core;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.stereotype.Component;
 
 import com.ohadr.oauth_srv.interfaces.OAuthDataManagement;
 import com.ohadr.oauth_srv.types.AuthenticationPolicy;
 import com.ohadr.oauth_srv.types.OauthAccountState;
 
+@Component
 public class OAuthDataMngmntImpl implements OAuthDataManagement 
 {
 
