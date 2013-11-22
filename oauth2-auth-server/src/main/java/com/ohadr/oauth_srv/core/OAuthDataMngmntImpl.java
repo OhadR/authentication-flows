@@ -13,7 +13,6 @@ import com.ohadr.oauth_srv.interfaces.OAuthRepository;
 import com.ohadr.oauth_srv.types.AuthenticationPolicy;
 import com.ohadr.oauth_srv.types.OAuthUser;
 import com.ohadr.oauth_srv.types.OauthAccountState;
-import com.ohadr.oauth_srv.web.UserActionController;
 
 @Component
 public class OAuthDataMngmntImpl implements OAuthDataManagement 
@@ -44,10 +43,10 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 			//if user exist, but not activated - we allow re-registration:
 			if(oauthUser != null && !oauthUser.getEnabled())
 			{
-				oAuthRepository.deleteOAuthUser( email );
+				oAuthRepository.deleteOAuthAccount( email );
 			}
 
-			oAuthRepository.createUser(email, encodedPassword, secretQuestion, encodedAnswer);
+			oAuthRepository.createAccount(email, encodedPassword, secretQuestion, encodedAnswer);
 		}
 		catch(DataIntegrityViolationException e)
 		{
@@ -62,16 +61,17 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 		}
 		
 
-		String serverPath = extractServerPath(request, redirectUri);
+//		String serverPath = extractServerPath(request, redirectUri);
 		
+//TODO
 		//we grab the "redirect-uri"from the login page, and pass it here, so after account-creation we will redirect the user back to his document:
-		sendMail(email,
+/*		sendMail(email,
 				MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
 				MailMessage.OAUTH_AUTHENTICATION_MAIL_BODY,
 				AuthenticationUtil.OAUTH_ACTIVATE_ACCOUNT,
 				serverPath, 
 				redirectUri );
-		
+*/		
 		return ImmutablePair.of(oAuthConstants.OK, "");
 	}
 
