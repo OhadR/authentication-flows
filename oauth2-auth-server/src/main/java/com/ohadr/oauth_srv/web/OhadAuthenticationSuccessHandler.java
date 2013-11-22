@@ -18,7 +18,7 @@ import com.ohadr.crypto.service.CryptoService;
 import com.ohadr.oauth_srv.interfaces.OAuthDataManagement;
 
 @Service("authenticationSuccessHandler")
-public class OhadOAuthSuccessHandler extends
+public class OhadAuthenticationSuccessHandler extends
 		SavedRequestAwareAuthenticationSuccessHandler
 {
 	@Autowired
@@ -29,7 +29,7 @@ public class OhadOAuthSuccessHandler extends
 
 	private static Logger log = Logger.getLogger(AuthenticationSuccessEventListener.class);
 
-	public OhadOAuthSuccessHandler()
+	public OhadAuthenticationSuccessHandler()
 	{
 		// TODO Auto-generated constructor stub
 	}
