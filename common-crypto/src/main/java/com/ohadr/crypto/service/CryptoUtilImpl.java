@@ -12,6 +12,7 @@ import javax.crypto.IllegalBlockSizeException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,9 @@ import com.ohadr.crypto.interfaces.KeyHive;
 @Scope("singleton")
 public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 {
+	@Autowired
 	private CryptoProperties cryptoProperties;
+	
 	private CryptoProvider activeProvider;
 
 	/**
@@ -49,9 +52,9 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 			if (Cipher.getMaxAllowedKeyLength("AES") < Integer.MAX_VALUE)
 			{
 				String tutorialUrl = "http://www.javamex.com/tutorials/cryptography/unrestricted_policy_files.shtml";
-				throw new CryptoException(
-				    "Your system has a restriction on the encryption algorithm key length. Please remove this restriction. For more info, see "
-				        + tutorialUrl);
+//				throw new CryptoException(
+//				    "Your system has a restriction on the encryption algorithm key length. Please remove this restriction. For more info, see "
+//				        + tutorialUrl);
 			}
 		}
 		catch (NoSuchAlgorithmException e)

@@ -14,7 +14,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ohadr.authentication.token.interfaces.KeystoreService;
+import com.ohadr.crypto.interfaces.KeystoreService;
+
 
 
 @Component
@@ -66,10 +67,5 @@ public class SignedTokenGenerator
 		String data = encodeQueryParams(parameters);
 		String signature = createSignature(data);
 		return data + ":" + signature;
-	}
-
-	public void setKeystoreService(KeystoreService keystoreService)
-	{
-		this.keystoreService = keystoreService;
 	}
 }

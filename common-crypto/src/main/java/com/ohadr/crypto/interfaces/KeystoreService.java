@@ -1,4 +1,4 @@
-package com.ohadr.authentication.token.interfaces;
+package com.ohadr.crypto.interfaces;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

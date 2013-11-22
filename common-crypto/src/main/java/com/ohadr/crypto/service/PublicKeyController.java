@@ -1,14 +1,13 @@
 package com.ohadr.crypto.service;
 
-import java.io.FileInputStream;
-import java.security.KeyStore;
-import java.security.PublicKey;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.ohadr.crypto.config.CryptoProperties;
+import com.ohadr.crypto.interfaces.KeystoreService;
 
 
 
@@ -16,29 +15,13 @@ import com.ohadr.crypto.config.CryptoProperties;
 public class PublicKeyController
 {
 	@Autowired
-	private CryptoProperties cryptoProperties;
+	private KeystoreService keystoreService;
 
-//	private PrivateKey privateKey;
-	private PublicKey publicKey;
-
-	
-	public String getPublicKey() throws Exception
+	@RequestMapping("/publicKey")
+	protected /*ModelAndView */ void getPublicKey(HttpServletResponse response) throws Exception
 	{
-		try
-		{
-			//note: we depend on the DefaultCryptoProvider !! names must match here and there!
-			KeyStore ks = KeyStore.getInstance("JCEKS");
-			ks.load(new FileInputStream(cryptoProperties.getSimpleKeystore()), cryptoProperties.getSimplePassword().toCharArray());
-//			char[] keyPassword = (cryptoProperties.getSimplePassword() + "__" + cryptoProperties.getKeyAlias()).toCharArray();	
-//			privateKey = (PrivateKey) ks.getKey(cryptoProperties.getKeyAlias(), keyPassword);
-			publicKey = ks.getCertificate(cryptoProperties.getKeyAlias()).getPublicKey();
-		}
-		catch (Throwable e)
-		{
-			throw new IllegalArgumentException("Failed to read the private token key from the keystore", e);
-		}
-
-		return Base64.encodeBase64String( publicKey.getEncoded() );
+		response.setContentType("text/plain");
+		String encodedKey = Base64.encodeBase64String(keystoreService.getPublicKey().getEncoded());
+		response.getWriter().append(encodedKey);
 	}
-
 }

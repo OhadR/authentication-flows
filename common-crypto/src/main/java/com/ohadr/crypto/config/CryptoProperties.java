@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class CryptoProperties
 {
-	@Value("${crypto.simple.keystore}")
+	@Value("${com.ohadr.crypto.keystore}")
 	private String simpleKeystore;
 
-	@Value("${crypto.simple.password}")
+	@Value("${com.ohadr.crypto.password}")
 	private String simplePassword;
 
-	@Value("${crypto.simple.keyAlias}")
+	@Value("${com.ohadr.crypto.keyAlias}")
 	private String keyAlias;
 
 	public String getSimpleKeystore()
