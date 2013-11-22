@@ -10,17 +10,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 public interface CryptoProvider
 {
 	/**
-	 * Returns an extractable seeded key based on the given key parameters. Given the same key parameters, the method
-	 * will always return the same key. The length of the key is always 256 bytes, and the key is extractable in the
-	 * sense that calling its getEncoded() method will return an array of 32 bytes.
-	 * 
-	 * @param seed
-	 *            Specifies the seed for the key. Different seeds results in completely different keys.
-	 * @return 256-bit extractable secure key based on the given seed.
-	 */
-//	Key getExtractable256BitKey(String seed);
-
-	/**
 	 * Returns a seeded key based on the given key parameters. Given the same key parameters, the method will always
 	 * return the same key.
 	 * 
@@ -28,7 +17,7 @@ public interface CryptoProvider
 	 *            Specifies the hive and the seed for generating the seeded key.
 	 * @return A key that can be used with the getCipher() method.
 	 */
-	Key getSeededKey(ImmutablePair<?, ?> keyParams);
+	Key getSeededKey(ImmutablePair<KeyHive, String> keyParams);
 
 	/**
 	 * Returns a cipher object for symmetric data encrpytion.

@@ -19,7 +19,7 @@ import com.ohadr.crypto.config.CryptoProperties;
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.interfaces.CryptoProvider;
 import com.ohadr.crypto.interfaces.ICryptoUtil;
-import com.watchdox.security.crypto.DefaultCryptoProvider;
+import com.ohadr.crypto.interfaces.KeyHive;
 
 @Component("cryptoUtil")
 @Scope("singleton")
@@ -66,7 +66,7 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 
 	public Key getCryptoKey(String seed)
 	{
-		return activeProvider.getSeededKey(new ImmutablePair<String, String>("hive", seed));
+		return activeProvider.getSeededKey(new ImmutablePair<KeyHive, String>(KeyHive.SYSTEM, seed));
 	}
 
 
