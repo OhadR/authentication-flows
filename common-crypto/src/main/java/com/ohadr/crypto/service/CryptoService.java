@@ -10,12 +10,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.ContextLoader;
 
 import com.ohadr.crypto.exception.CryptoException;
-import com.watchdox.security.crypto.KeyHive;
-import com.watchdox.security.crypto.SystemKeySeeds;
 
 @Component
 public class CryptoService
 {
+	private static final String URL_CONTENT = "UrlContent";
 	private static final String ENCRYPTION_VERSION = "a";
 	
 	@Autowired
@@ -40,7 +39,7 @@ public class CryptoService
 
 	private Key getKey()
 	{
-		return getCryptoUtil().getCryptoKey(KeyHive.SYSTEM, SystemKeySeeds.URL_CONTENT);
+		return getCryptoUtil().getCryptoKey(URL_CONTENT);
 	}
 
 	
