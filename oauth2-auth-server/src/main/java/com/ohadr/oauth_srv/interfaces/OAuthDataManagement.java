@@ -13,10 +13,27 @@ import com.ohadr.oauth_srv.types.OauthAccountState;
  */
 public interface OAuthDataManagement
 {
+	/**
+	 * 
+	 * @param username
+	 * @return boolean, passChangeRequired. true if change password is required.
+	 */
 	public boolean setLoginSuccessForUser(String username);
 
-	public Pair<String, String> createAccount(String email, String encodedPassword,
-			String secretQuestion, String encodedAnswer);
+	/**
+	 * 
+	 * @param email
+	 * @param encodedPassword
+	 * @param secretQuestion
+	 * @param encodedAnswer
+	 * @return pair of strings. left is the status OK | ERROR, right is the message
+	 */
+	public Pair<String, String> createAccount(
+			String email, 
+			String encodedPassword,
+			String secretQuestion, 
+			String encodedAnswer,
+			String redirectUri);
 
 	public AuthenticationPolicy getAuthenticationSettings();
 
@@ -32,8 +49,15 @@ public interface OAuthDataManagement
 
 	public void setPassword(String email, String encodedPassword);
 
+	/**
+	 * 
+	 * @param email
+	 * @param encodedCurrentPassword
+	 * @param encodedNewPassword
+	 * @return pair of strings. left is the status OK | ERROR, right is the message
+	 */
 	public Pair<String, String> changePassword(String email, String encodedCurrentPassword,
-			String encodedNewPassword);
+			String newEncodedPassword);
 
 	public String getSecretQuestion(String email);
 }
