@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.ContextLoader;
 
 import com.ohadr.crypto.exception.CryptoException;
+import com.ohadr.crypto.interfaces.ICryptoUtil;
 
 @Component
 public class CryptoService

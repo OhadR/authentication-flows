@@ -1,4 +1,4 @@
-package com.ohadr.crypto.service;
+package com.ohadr.crypto.interfaces;
  
 
 import java.security.Key;

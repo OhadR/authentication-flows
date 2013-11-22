@@ -15,13 +15,17 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.ohadr.crypto.config.CryptoProperties;
 import com.ohadr.crypto.exception.CryptoException;
-import com.watchdox.security.crypto.CryptoProvider;
+import com.ohadr.crypto.interfaces.CryptoProvider;
+import com.ohadr.crypto.interfaces.ICryptoUtil;
+import com.watchdox.security.crypto.DefaultCryptoProvider;
 
 @Component("cryptoUtil")
 @Scope("singleton")
 public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 {
+	private CryptoProperties cryptoProperties;
 	private CryptoProvider activeProvider;
 
 	/**
@@ -55,11 +59,14 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 			throw new CryptoException("No AES provider is installed on your system ?!", e);
 		}
 
+		activeProvider = new DefaultCryptoProvider(cryptoProperties.getSimpleKeystore(),
+			    cryptoProperties.getSimplePassword());
+
 	}
 
 	public Key getCryptoKey(String seed)
 	{
-		return activeProvider.getSeededKey(new ImmutablePair("hive", seed));
+		return activeProvider.getSeededKey(new ImmutablePair<String, String>("hive", seed));
 	}
 
 

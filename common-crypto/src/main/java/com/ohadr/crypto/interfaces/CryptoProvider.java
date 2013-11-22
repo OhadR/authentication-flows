@@ -1,4 +1,4 @@
-package com.watchdox.security.crypto;
+package com.ohadr.crypto.interfaces;
 
 import java.security.InvalidKeyException;
 import java.security.Key;
