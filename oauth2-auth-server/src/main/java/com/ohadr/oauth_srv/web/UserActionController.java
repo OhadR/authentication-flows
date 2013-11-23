@@ -82,6 +82,11 @@ public class UserActionController
 
 	
 	
+	/**
+	 * The UI calls this method in order to get the password policy
+	 * @param response
+	 * @throws Exception
+	 */
 	@RequestMapping("/createAccountPage")
 	protected void createAccount( HttpServletResponse response) throws Exception
 	{
