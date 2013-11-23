@@ -2,6 +2,7 @@ package com.ohadr.oauth_srv.interfaces;
 
 import java.util.Date;
 
+import com.ohadr.oauth_srv.types.AuthenticationPolicy;
 import com.ohadr.oauth_srv.types.OAuthUser;
 import com.ohadr.oauth_srv.types.OauthAccountState;
 
@@ -46,8 +47,16 @@ public interface OAuthRepository
 	boolean setPassword(String email, String newPassword); 
 	
 	String getEncodedPassword(String username);
-	String getEncodedSecretAnswer(String email);
 	Date getPasswordLastChangeDate(String email);
+
+	AuthenticationPolicy getAuthenticationPolicy();
+
+	/**
+	 * NOT IMPLEMENTED
+	 * 
+	 * 
+	String getEncodedSecretAnswer(String email);
+	*/
 
 
 }

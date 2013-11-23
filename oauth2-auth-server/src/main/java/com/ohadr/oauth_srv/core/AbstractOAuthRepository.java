@@ -101,12 +101,6 @@ public abstract class AbstractOAuthRepository implements OAuthRepository
 		}
 	}
 
-	@Override
-	public String getEncodedSecretAnswer(String email)
-	{
-		OAuthUser user = getUser(email);
-		return user.getAnswerToSecretQuestion();
-	}
 
 	@Override
 	public String getEncodedPassword(String email)

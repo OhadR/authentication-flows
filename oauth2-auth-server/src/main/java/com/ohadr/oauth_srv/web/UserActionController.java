@@ -83,8 +83,7 @@ public class UserActionController
 	
 	
 	@RequestMapping("/createAccountPage")
-	protected void createAccount(HttpServletRequest request,
-			HttpServletResponse response) throws Exception
+	protected void createAccount( HttpServletResponse response) throws Exception
 	{
 		addPasswordConstraintsToResponse(response);
 	}
@@ -102,7 +101,7 @@ public class UserActionController
 	 * @throws Exception
 	 */
 	@RequestMapping("/createAccount")
-	protected void handleRequestInternal(@RequestParam("name") String name,
+	protected void createAccount(@RequestParam("name") String name,
 			@RequestParam(EMAIL_PARAM_NAME) String email,
 			@RequestParam("password") String password,
 			@RequestParam("secretQuestion") String secretQuestion,
@@ -271,20 +270,6 @@ public class UserActionController
 		AuthenticationPolicy settings = dataManagement.getAuthenticationSettings();
 		log.info("got the policy from API: " + settings.toString());
 
-		List<String> secretQs = settings.getSecretQuestions();
-
-		for(String secretQ : secretQs)
-		{
-			secretQ = unescapeJaveAndEscapeHtml( secretQ );
-
-/*			secretQ = secretQ.replace("\\u", ";&#x");
-			if(secretQ.startsWith(";"))
-			{
-				secretQ = secretQ.substring(1);		//get rid of the first ";"
-			}
-*/			builder.append(secretQ);
-			builder.append( DELIMITER );
-		}
 
 		String passwordConstraints = 
 				"PasswordMaxLength="+ settings.getPasswordMaxLength()+ DELIMITER +

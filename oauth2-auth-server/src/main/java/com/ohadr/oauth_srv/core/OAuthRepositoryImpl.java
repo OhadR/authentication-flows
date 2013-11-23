@@ -1,5 +1,6 @@
 package com.ohadr.oauth_srv.core;
 
+import com.ohadr.oauth_srv.types.AuthenticationPolicy;
 import com.ohadr.oauth_srv.types.OAuthUser;
 
 //@Repository
@@ -32,6 +33,12 @@ public class OAuthRepositoryImpl extends AbstractOAuthRepository
 	public boolean changePassword(String username, String newEncodedPassword) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public AuthenticationPolicy getAuthenticationPolicy() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

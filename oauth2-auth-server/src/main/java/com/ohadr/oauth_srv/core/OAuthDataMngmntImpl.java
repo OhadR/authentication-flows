@@ -108,7 +108,7 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 	@Override
 	public AuthenticationPolicy getAuthenticationSettings() 
 	{
-		return null;
+		return oAuthRepository.getAuthenticationPolicy();
 	}
 
 	@Override

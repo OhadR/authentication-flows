@@ -1,6 +1,7 @@
 package com.ohadr.oauth_srv.mocks;
 
 import com.ohadr.oauth_srv.core.AbstractOAuthRepository;
+import com.ohadr.oauth_srv.types.AuthenticationPolicy;
 import com.ohadr.oauth_srv.types.OAuthUser;
 
 
@@ -32,6 +33,15 @@ public class OAuthRepositoryMock extends AbstractOAuthRepository
 	public boolean changePassword(String username, String newEncodedPassword) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public AuthenticationPolicy getAuthenticationPolicy() 
+	{
+		AuthenticationPolicy policy = new AuthenticationPolicy();
+		policy.setMaxPasswordEntryAttempts( 5 );
+
+		return policy;
 	}
 
 }

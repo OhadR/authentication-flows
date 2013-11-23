@@ -31,6 +31,8 @@
     <security:http pattern="/login/**" security="none" />
     <security:http pattern="/forgotPasswordPage" security="none" />
     <security:http pattern="/forgotPassword" security="none" />
+    <security:http pattern="/createAccountPage" security="none" />
+    <security:http pattern="/createAccount" security="none" />
 
     
     <!-- Protect the /oauth/token url to allow only registered clients -->
