@@ -9,9 +9,10 @@ import com.ohadr.oauth_srv.types.OauthAccountState;
 public interface OAuthRepository 
 {
 	void createAccount(String email, 
-			String encodedPassword,
-			String secretQuestion, 
-			String encodedAnswer);
+			String encodedPassword
+//			String secretQuestion, 		NOT IMPLEMENTED
+//			String encodedAnswer		NOT IMPLEMENTED
+			);
 
 	/**
 	 * 

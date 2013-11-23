@@ -7,7 +7,6 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +27,6 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.ohadr.authentication.utils.XSSValidator;
 import com.ohadr.authentication.utils.oAuthConstants;
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
@@ -62,7 +60,7 @@ public class UserActionController
 
 	
 	private static final String EMAIL_PARAM_NAME = "email";
-	private static final String LOGIN_ERROR_ATTRIB = "error";
+//	private static final String LOGIN_ERROR_ATTRIB = "error";
 	private static final String ERR_MSG = "err_msg";
 	private static final String DELIMITER = "|";
 
@@ -128,22 +126,11 @@ public class UserActionController
 		}
 
 
-		if(password.contains(secretQuestionAnswer) || secretQuestionAnswer.contains(password))
-		{
-			writer.println(ERR_MSG + DELIMITER + 
-					unescapeJaveAndEscapeHtml( SECRET_ANSWER_CANNOT_CONTAIN_THE_PASSWORD_AND_VICE_VERSA ) );
-			return;
-			
-		}
-		
 		String encodedPassword = encodeString(email, password);
-		secretQuestionAnswer = secretQuestionAnswer.toLowerCase();			//When analyzing answer ignore case sensitivity.so we change here, and in the 'forget password' flow
-		String encodedAnswer = encodeString(email, secretQuestionAnswer);
-
 
 		log.info("about to call API createUser() for user " + email);
 
-    	Pair<String, String> retVal = dataManagement.createAccount(email, encodedPassword, secretQuestion, encodedAnswer, redirectUri);
+    	Pair<String, String> retVal = dataManagement.createAccount(email, encodedPassword);
     	if( ! retVal.getLeft().equals(oAuthConstants.OK))
     	{
 			String errorText = retVal.getRight();
@@ -320,7 +307,8 @@ public class UserActionController
 	/**
 	 * (1)
 	 * we got here after the user clicked "forgot password". user needs to enter his email before clicking, so when we get
-	 * here, we already know his email address so we look for the secret question in the DB
+	 * here, we already know his email address. if "secret question" is implemented, this is the place to look for 
+	 * the 'question' in the DB (unless the impl forst send email and only then checks for the secret question)
 	 * 
 	 * @param request
 	 * @return
@@ -343,8 +331,7 @@ public class UserActionController
 			return;
 		}
 
-		String redirectUri = null;
-	    dataManagement.sendPasswordRestoreMail(email, redirectUri);
+	    dataManagement.sendPasswordRestoreMail(email);
 
 		writer.println(oAuthConstants.OK + DELIMITER + AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE);
 		//TODO: UI, instead of showing "secret Q" screen, show somethink like "an email has been sent"
@@ -355,7 +342,6 @@ public class UserActionController
 	/**
 	 * (2)
 	 * user clicks on the link in the "forgot password" email, and gets here.
-	 * here we request his secret question.
 	 *  
 	 * @param email
 	 * @param encUserAndTimestamp
@@ -396,170 +382,20 @@ public class UserActionController
 			return irv;
 		}
 
+		//after all the checks, all look good (link not expired, etc). so show the user the "set new password" page.
+		//if "secret question" is implemented, here you get the secret Q and show the user the screen to answer it. then
+		//check the answer, etc.  
 
-//		StringTokenizer tokenizer = new StringTokenizer(redirectUri, "?;&");
-//		redirectUri = tokenizer.nextToken();
 
-
-		RedirectView irv = new RedirectView("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=fpq"
+		RedirectView irv = new RedirectView("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/setNewPassword.htm"
 				+ "&"
 				+ oAuthConstants.HASH_PARAM_NAME 
-				+ "=" + encUserAndTimestamp
-				+ "&"
-				+ oAuthConstants.REDIRECT_URI_PARAM_NAME
-				+ "=" + redirectUri		//fp = forgot password question
-				);
+				+ "=" + encUserAndTimestamp );
 
 		return irv;
 	}
 	
 
-	/**
-	 * (3)
-	 * we got here after the user clicked the link in his email ("forgot password" flow). the AuthenticationServlet sent 
-	 * us to the 'forgotPasswordLinkCallback' method, that redirected to the UI. then, the UI asks for the secret Q of the user - and we get here. 
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/getSecretQuestion")
-	protected void getSecretQuestion(
-			@RequestParam(oAuthConstants.HASH_PARAM_NAME) String encUserAndTimestamp,
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception
-	{
-		PrintWriter writer = response.getWriter();
-
-		ImmutablePair<Date, String> stringAndDate = null;
-		try
-		{
-			stringAndDate = cryptoService.extractStringAndDate(encUserAndTimestamp);
-		}
-		catch(CryptoException cryptoEx)
-		{
-			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
-
-			writer.println(ERR_MSG + DELIMITER + LOGIN_ERROR_ATTRIB + "=" + BAD_EMAIL_PARAM);
-			return;		
-		}
-
-		String email = stringAndDate.getRight();
-
-		//if account is already locked, no need to ask the user the secret question:
-		OauthAccountState accountState = dataManagement.isAccountLocked(email);
-		if( accountState != OauthAccountState.OK )
-		{
-			//account has been locked: do not check the user's answer, but notify user:
-			writer.println(ERR_MSG + DELIMITER + ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
-			return;
-		}
-		
-
-		//use API to go to the DB and find the answer that this user with this given email chose.
-		String secretQ = dataManagement.getSecretQuestion(email);
-	
-		//null means we did not find this user in the DB
-		if(secretQ == null)
-		{
-			//error - old password is incorrect; redirect back to same page:
-			//adding PARAM to the redirect return value:
-			writer.println(ERR_MSG + DELIMITER + LOGIN_ERROR_ATTRIB + "=" + USER_DOES_NOT_EXIST);
-//			irv.setUrl("/login/login.jsp?" + LOGIN_ERROR_ATTRIB + "=" + USER_DOES_NOT_EXIST);
-		}
-		else
-		{
-			writer.println(oAuthConstants.OK + DELIMITER + secretQ);
-		}
-	}
-
-	
-	/**
-	 * (4)
-	 * we get here after the user answers the secret question and clicks submit:
-	 * if answer is correct, we show him the "set new password" page, since we already
-	 * sent him an email.
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/forgotPassword")
-	protected void forgotPassword(
-			@RequestParam(oAuthConstants.HASH_PARAM_NAME) String encUserAndTimestamp,
-			@RequestParam(oAuthConstants.REDIRECT_URI_PARAM_NAME) String redirectUri,
-			@RequestParam("answer") String answerFromForm,
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception
-	{
-		PrintWriter writer = response.getWriter();
-
-		ImmutablePair<Date, String> stringAndDate = null;
-		try
-		{
-			stringAndDate = cryptoService.extractStringAndDate(encUserAndTimestamp);
-		}
-		catch(CryptoException cryptoEx)
-		{
-			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
-			RedirectView irv = new RedirectView("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc"		//psnc = password not changed
-					);
-			writer.println(ERR_MSG + DELIMITER + LOGIN_ERROR_ATTRIB + "=" + BAD_EMAIL_PARAM);
-			return;		
-		}
-
-		String email = stringAndDate.getRight();
-
-		
-		if( XSSValidator.containsBlackChars(redirectUri) )
-		{
-			log.error("redirect-uri is suspected by XSS");
-			writer.println(ERR_MSG + DELIMITER + "account locked");
-		}
-
-		//use API to go to the DB and find the answer this user registered:
-		String secretA = dataManagement.getSecretAnswer(email);
-		
-		answerFromForm = answerFromForm.toLowerCase();				//When analyzing answer ignore case sensitivity.so we change here, and in the 'create account' flow
-
-		//if the answer is correct - send reset link to the given email
-		String encodedAnswer = encodeString(email, answerFromForm);
-		
-		if(secretA.equals(encodedAnswer))
-		{
-			//send notification email with link
-		    dataManagement.setLoginSuccessForUser(email);
-		    
-			StringTokenizer tokenizer = new StringTokenizer(redirectUri, "?;&");
-			redirectUri = tokenizer.nextToken();
-
-			//redirect to HTML that let the user set a new password. email is sent for display only:
-			writer.println(oAuthConstants.OK + DELIMITER + email);
-			return;
-
-		}
-		else
-		{
-		    //notify the API-client, that notifies the API (that updates the DB):
-		    boolean isLocked = dataManagement.setLoginFailureForUser(email);
-
-		    if( isLocked )
-			{
-				//account has been locked: send email and redirect to notify user:
-				dataManagement.sendUnlockAccountMail(email, redirectUri);
-				writer.println(ERR_MSG + DELIMITER + "account locked");
-				return;
-			}
-			else
-			{
-				//redirect to the same JSP, but this time with an error message
-				writer.println(ERR_MSG + DELIMITER + "Incorrect answer - please try again");
-				return;
-			}
-		}
-	}
-
-	
-	
 	/**********************************************************************************************************/
 	@Deprecated
 	@RequestMapping("/login/setNewPasswordPage")

@@ -7,8 +7,10 @@ public class OAuthRepositoryImpl extends AbstractOAuthRepository
 {
 
 	@Override
-	public void createAccount(String email, String encodedPassword,
-			String secretQuestion, String encodedAnswer) {
+	public void createAccount(String email, String encodedPassword
+			//NOT IMPLEMENTED: String secretQuestion, String encodedAnswer
+			)
+	{
 		// TODO Auto-generated method stub
 
 	}

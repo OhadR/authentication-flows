@@ -8,8 +8,8 @@ public class OAuthRepositoryMock extends AbstractOAuthRepository
 {
 
 	@Override
-	public void createAccount(String email, String encodedPassword,
-			String secretQuestion, String encodedAnswer) {
+	public void createAccount(String email, String encodedPassword)
+	{
 		// TODO Auto-generated method stub
 		
 	}

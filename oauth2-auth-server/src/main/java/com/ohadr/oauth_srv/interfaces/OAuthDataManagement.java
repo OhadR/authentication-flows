@@ -30,16 +30,17 @@ public interface OAuthDataManagement
 	 */
 	public Pair<String, String> createAccount(
 			String email, 
-			String encodedPassword,
-			String secretQuestion, 
-			String encodedAnswer,
-			String redirectUri);
+			String encodedPassword
+//			,String secretQuestion,		NOT IMPLEMENTED
+//			String encodedAnswer,		NOT IMPLEMENTED
+//			String redirectUri			NOT IMPLEMENTED
+			);
 
 	public AuthenticationPolicy getAuthenticationSettings();
 
 	public OauthAccountState isAccountLocked(String email);
 
-	public void sendPasswordRestoreMail(String email, String redirectUri);
+	public void sendPasswordRestoreMail(String email);
 
 	public String getSecretAnswer(String email);
 
@@ -59,5 +60,12 @@ public interface OAuthDataManagement
 	public Pair<String, String> changePassword(String email, String encodedCurrentPassword,
 			String newEncodedPassword);
 
+	/**
+	 * NOT IMPLEMENTED:
+	 * @param email
+	 * @return
+	 * 
 	public String getSecretQuestion(String email);
+		 */
+
 }

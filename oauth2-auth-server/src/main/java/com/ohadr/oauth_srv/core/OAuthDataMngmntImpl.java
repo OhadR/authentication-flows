@@ -58,10 +58,11 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 	@Override
 	public Pair<String, String> createAccount(
 			String email,
-			String encodedPassword, 
-			String secretQuestion,
-			String encodedAnswer,
-			String redirectUri)
+			String encodedPassword 
+//			String secretQuestion,		NOT IMPLEMENTED
+//			String encodedAnswer,		NOT IMPLEMENTED
+//			String redirectUri			NOT IMPLEMENTED
+			)
 	{
 		try
 		{
@@ -73,7 +74,9 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 				oAuthRepository.deleteOAuthAccount( email );
 			}
 
-			oAuthRepository.createAccount(email, encodedPassword, secretQuestion, encodedAnswer);
+			oAuthRepository.createAccount(email, encodedPassword
+					//NOT IMPLEMENTED		secretQuestion, encodedAnswer
+					);
 		}
 		catch(DataIntegrityViolationException e)
 		{
@@ -115,7 +118,7 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 	}
 
 	@Override
-	public void sendPasswordRestoreMail(String email, String redirectUri) {
+	public void sendPasswordRestoreMail(String email) {
 		// TODO Auto-generated method stub
 
 	}
@@ -189,13 +192,6 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 			log.error("could not change password to user " + username);
 		}
 		return changed;
-	}
-
-	@Override
-	public String getSecretQuestion(String email) 
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
