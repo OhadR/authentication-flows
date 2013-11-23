@@ -1,11 +1,11 @@
 <html>
 <head>
-<title>Login Page</title>
+<title>Create Account Page</title>
 </head>
 
 <body onload='document.f.j_username.focus();'>
-	<h3>Login with Username and Password</h3>
-	<form name='f' action='/oauth2-auth-server/j_spring_security_check'
+	<h3>Create Account</h3>
+	<form name='f' action='/oauth2-auth-server/createAccountPage'
 		method='POST'>
 		<table>
 			<tr>
@@ -23,10 +23,6 @@
 			<tr>
 				<td colspan='2'><input name="submit" type="submit"
 					value="Login" /></td>
-				<td><a href="/oauth2-auth-server/login/forgotPassword.htm">Forgot Password?</a></td>
-			</tr>
-			<tr>
-				<td><a href="/oauth2-auth-server/login/createAccount.htm">Register</a></td>
 			</tr>
 		</table>
 	</form>

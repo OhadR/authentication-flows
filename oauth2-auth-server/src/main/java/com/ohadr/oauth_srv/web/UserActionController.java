@@ -28,11 +28,9 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.ohadr.authentication.config.AuthProperties;
 import com.ohadr.authentication.utils.XSSValidator;
 import com.ohadr.authentication.utils.oAuthConstants;
 import com.ohadr.crypto.exception.CryptoException;
-import com.ohadr.crypto.interfaces.KeystoreService;
 import com.ohadr.crypto.service.CryptoService;
 import com.ohadr.oauth_srv.config.OAuthServerProperties;
 import com.ohadr.oauth_srv.interfaces.OAuthDataManagement;
@@ -73,23 +71,18 @@ public class UserActionController
 	private static Logger log = Logger.getLogger(UserActionController.class);
 	
 	@Autowired
-	private AuthProperties authProperties;
-	
-	@Autowired
 	private OAuthServerProperties oAuthServerProperties;
 
 	@Autowired
 	private CryptoService cryptoService;
-
 	
 	@Autowired
 	private AbstractRememberMeServices rememberMeService;
 
 	@Autowired
-	private KeystoreService keystoreService;
-	
 	private OAuthDataManagement dataManagement;
 
+	
 	
 	@RequestMapping("/createAccountPage")
 	protected void createAccount(HttpServletRequest request,
@@ -333,14 +326,13 @@ public class UserActionController
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/restorePasswordPage")
-	protected void restorePasswordPage(	@RequestParam(EMAIL_PARAM_NAME) String email,
-			@RequestParam(oAuthConstants.REDIRECT_URI_PARAM_NAME) String redirectUri,
+	@RequestMapping("/forgotPasswordPage")
+	protected void forgotPasswordPage(	
+			@RequestParam(EMAIL_PARAM_NAME) String email,
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception
 	{
 		PrintWriter writer = response.getWriter();
-		
 
 		//if account is already locked, no need to ask the user the secret question:
 		OauthAccountState accountState = dataManagement.isAccountLocked(email);
@@ -351,9 +343,7 @@ public class UserActionController
 			return;
 		}
 
-		StringTokenizer tokenizer = new StringTokenizer(redirectUri, "?;&");
-		redirectUri = tokenizer.nextToken();
-
+		String redirectUri = null;
 	    dataManagement.sendPasswordRestoreMail(email, redirectUri);
 
 		writer.println(oAuthConstants.OK + DELIMITER + AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE);
@@ -493,8 +483,8 @@ public class UserActionController
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/restorePassword")
-	protected void restorePassword(
+	@RequestMapping("/forgotPassword")
+	protected void forgotPassword(
 			@RequestParam(oAuthConstants.HASH_PARAM_NAME) String encUserAndTimestamp,
 			@RequestParam(oAuthConstants.REDIRECT_URI_PARAM_NAME) String redirectUri,
 			@RequestParam("answer") String answerFromForm,

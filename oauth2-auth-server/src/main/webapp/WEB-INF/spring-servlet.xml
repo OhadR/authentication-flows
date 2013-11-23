@@ -29,6 +29,8 @@
 		location="classpath*:com.ohadr.authentication.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
 
     <security:http pattern="/login/**" security="none" />
+    <security:http pattern="/forgotPasswordPage" security="none" />
+    <security:http pattern="/forgotPassword" security="none" />
 
     
     <!-- Protect the /oauth/token url to allow only registered clients -->
@@ -139,5 +141,8 @@
         <property name="maxStatements" value="5"/>
         <property name="minPoolSize" value="5"/>
     </bean>
+    
+    <bean class="com.ohadr.oauth_srv.mocks.OAuthRepositoryMock" />
+
 
 </beans>

@@ -103,15 +103,15 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 	}
 
 	@Override
-	public AuthenticationPolicy getAuthenticationSettings() {
-		// TODO Auto-generated method stub
+	public AuthenticationPolicy getAuthenticationSettings() 
+	{
 		return null;
 	}
 
 	@Override
-	public OauthAccountState isAccountLocked(String email) {
-		// TODO Auto-generated method stub
-		return null;
+	public OauthAccountState isAccountLocked(String email) 
+	{
+		return oAuthRepository.isAccountLocked(email);
 	}
 
 	@Override

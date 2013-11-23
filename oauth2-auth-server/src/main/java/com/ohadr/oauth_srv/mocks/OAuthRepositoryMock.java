@@ -1,29 +1,31 @@
-package com.ohadr.oauth_srv.core;
+package com.ohadr.oauth_srv.mocks;
 
+import com.ohadr.oauth_srv.core.AbstractOAuthRepository;
 import com.ohadr.oauth_srv.types.OAuthUser;
 
-//@Repository
-public class OAuthRepositoryImpl extends AbstractOAuthRepository 
+
+public class OAuthRepositoryMock extends AbstractOAuthRepository 
 {
 
 	@Override
 	public void createAccount(String email, String encodedPassword,
 			String secretQuestion, String encodedAnswer) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public OAuthUser getUser(String email) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		OAuthUser user = new OAuthUser();
+		
+		return user;
 	}
 
 	@Override
 	public void deleteOAuthAccount(String email) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
