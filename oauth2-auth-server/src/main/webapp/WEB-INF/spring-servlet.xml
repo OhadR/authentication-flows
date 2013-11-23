@@ -28,6 +28,8 @@
 		system-properties-mode="OVERRIDE"
 		location="classpath*:com.ohadr.authentication.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
 
+    <security:http pattern="/login/**" security="none" />
+
     
     <!-- Protect the /oauth/token url to allow only registered clients -->
     <!-- this statement enables the access to /oauth/token. without it we get "cannot access" -->
@@ -47,7 +49,12 @@
         <security:intercept-url pattern="/oauth/**"	access="ROLE_USER"  requires-channel="https" />
 		<security:intercept-url pattern="/**" access="ROLE_ADMIN"   requires-channel="https" />
 
-		<!-- security:form-login login-page="/login/loginPage.html" /-->
+		<security:form-login 
+			login-page="/login/login.htm" 
+			authentication-success-handler-ref="authenticationSuccessHandler"
+			authentication-failure-url="/login/login.htm?login_error=1" />
+
+
         <security:anonymous enabled="false"/>
 
         <!-- >security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" /-->

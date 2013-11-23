@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -21,6 +22,7 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 {
 	private static Logger log = Logger.getLogger(OAuthDataMngmntImpl.class);
 	
+	@Autowired
 	private OAuthRepository oAuthRepository;
 
 	@Override

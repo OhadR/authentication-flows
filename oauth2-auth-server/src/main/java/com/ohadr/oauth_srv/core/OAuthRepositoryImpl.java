@@ -1,10 +1,12 @@
 package com.ohadr.oauth_srv.core;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.ohadr.oauth_srv.types.OAuthUser;
 
-@Repository
+//@Repository
+@Component
 public class OAuthRepositoryImpl extends AbstractOAuthRepository 
 {
 
