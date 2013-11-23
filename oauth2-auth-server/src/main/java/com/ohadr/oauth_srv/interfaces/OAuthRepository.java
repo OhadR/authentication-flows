@@ -13,7 +13,13 @@ public interface OAuthRepository
 			String secretQuestion, 
 			String encodedAnswer);
 
+	/**
+	 * 
+	 * @param email
+	 * @return null if username was not found
+	 */
 	OAuthUser getUser(String email);
+	
 	void deleteOAuthAccount(String email);
 
 	void setEnabled(String email);

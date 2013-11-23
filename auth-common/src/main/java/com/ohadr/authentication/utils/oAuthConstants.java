@@ -13,6 +13,7 @@ public class oAuthConstants
 
 	public static final String HASH_PARAM_NAME = "enc";
 	public static final String REDIRECT_URI_PARAM_NAME = "redirect_uri";
+	public static final int DAY_IN_MILLI = 24 * 60 * 60 * 1000;
 
 
 }

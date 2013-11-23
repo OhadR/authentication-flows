@@ -1,5 +1,7 @@
 package com.ohadr.oauth_srv.core;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
@@ -24,8 +26,31 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 	@Override
 	public boolean setLoginSuccessForUser(String username) 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		//via oAuthProcessor, since we want to UPDATE the DB:
+		oAuthRepository.setLoginSuccess(username);
+		
+		Date passwordLastChangeDate = oAuthRepository.getPasswordLastChangeDate(username);
+		
+		//in case of 'demo' user (when the oauth client invokes actions like create account), the user will not be found in the DB:
+		if(null == passwordLastChangeDate)
+		{
+			//error, technically:
+			return false;
+		}
+		long passwordLastChange = passwordLastChangeDate.getTime();
+		AuthenticationPolicy policy = getAuthenticationSettings();
+		long passwordLifeInMilisecs = policy.getPasswordLifeInDays() * oAuthConstants.DAY_IN_MILLI;
+		Date passwordLimitDate = new Date( passwordLastChange + passwordLifeInMilisecs );
+		Date current = new Date(System.currentTimeMillis());
+		
+		//if current is after the pass-limit, then user must change his password.
+		boolean passChangeRequired =  current.after( passwordLimitDate );
+		if(passChangeRequired)
+		{
+			log.info("password expired for user " + username);
+		}
+
+		return passChangeRequired;		
 	}
 
 	@Override
