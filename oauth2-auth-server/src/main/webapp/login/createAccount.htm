@@ -3,26 +3,26 @@
 <title>Create Account Page</title>
 </head>
 
-<body onload='document.f.j_username.focus();'>
+<body onload='document.f.email.focus();'>
 	<h3>Create Account</h3>
 	<form name='f' action='/oauth2-auth-server/createAccountPage'
 		method='POST'>
 		<table>
 			<tr>
 				<td>User:</td>
-				<td><input type='text' name='j_username' value=''></td>
+				<td><input type='text' name='email' value=''></td>
 			</tr>
 			<tr>
 				<td>Password:</td>
-				<td><input type='password' name='j_password' /></td>
+				<td><input type='password' name='password' /></td>
 			</tr>
 			<tr>
-				<td><input type='checkbox' name='_spring_security_remember_me' /></td>
-				<td>Remember me on this computer.</td>
+				<td>Confirm Password:</td>
+				<td><input type='password' name='confirm_password' /></td>
 			</tr>
 			<tr>
 				<td colspan='2'><input name="submit" type="submit"
-					value="Login" /></td>
+					value='Create Account' /></td>
 			</tr>
 		</table>
 	</form>
