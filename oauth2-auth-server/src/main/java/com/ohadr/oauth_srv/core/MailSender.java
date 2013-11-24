@@ -23,8 +23,8 @@ public class MailSender
 	
     public MailSender()
     {
-        final String username = "ohadr@*********.com";
-        final String password = "*******";
+        final String username = "***incubator@gmail.com";
+        final String password = "***";
 
         Properties props = new Properties();
         props.put("mail.smtp.starttls.enable", "true");
@@ -65,18 +65,4 @@ public class MailSender
         }    	
     }
 
-	public static void main(String[] args)
-    {
-		MailSender sender = new MailSender();
-
-
-		sender.sendMail(
-				"ohad.redlich@gmail.com",
-				"Testing Subject", 
-				"Dear Mail Crawler, \n\n No spam to my email, please!",
-				null
-				);
-
-        System.out.println("Done");
-    }
 }
