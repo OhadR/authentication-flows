@@ -15,13 +15,6 @@ public interface OAuthDataManagement
 {
 	/**
 	 * 
-	 * @param username
-	 * @return boolean, passChangeRequired. true if change password is required.
-	 */
-	public boolean setLoginSuccessForUser(String username);
-
-	/**
-	 * 
 	 * @param email
 	 * @param encodedPassword
 	 * @param secretQuestion
@@ -35,6 +28,14 @@ public interface OAuthDataManagement
 //			String encodedAnswer,		NOT IMPLEMENTED
 //			String redirectUri			NOT IMPLEMENTED
 			);
+
+	/**
+	 * 
+	 * @param username
+	 * @return boolean, passChangeRequired. true if change password is required.
+	 */
+	public boolean setLoginSuccessForUser(String username);
+
 
 	public AuthenticationPolicy getAuthenticationSettings();
 

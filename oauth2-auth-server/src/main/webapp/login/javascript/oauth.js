@@ -1,57 +1,24 @@
 var backend_url = '../createAccountPage';
-var SOLVE 	= 'Solve!';
-var BACK	= 'Back';
 
 function InitCreateAccount()
 {
 	getPasswordPolicy();
 }
 
-function getPolicy()
+
+function getPasswordPolicy()
 {
-	if(buttonText == SOLVE)
-	{
-		var puzzle = getTableAsJson();
-
-		$.ajax({
-			url : backend_url,
-			type: 'GET',
-			data: 
-			{
-				puzzle: puzzle,
-				command: 'solve'
-			},
-			dataType: "json",
-			success: function(response)
-			{
-				populateResult(response);
-			}
-		});
-
-		document.getElementById('solve_and_reset').value = BACK;
-
-	}
-	else if(buttonText == BACK)
-	{
-		//clear the puzzle and set again the button the "Solve!":
-		var x, y;
-		for(x=0; x<9; ++x)
+	$.ajax({
+		url : backend_url,
+		type: 'GET',
+//		dataType: "json",
+		success: function(response)
 		{
-			for(y=0; y<9; ++y)
-			{
-				var xStr = x+''; 
-				var yStr = y+'';
-				var indexStr = xStr + yStr;
-				var element = document.getElementById('_' + indexStr);
-				element.value = '';
-			}
+			populateResult(response);
 		}
-
-		setButtonToSolve();
-	}
-
-
+	});
 }
+
 
 function populateResult(response)
 {
@@ -109,15 +76,3 @@ this.InitQuestionsAndPasswordInstructions = function ()
    m_szPassInstructions = szReqText.substring(nPos+2);
 }
 
-function getPasswordPolicy()
-{
-	$.ajax({
-		url : backend_url,
-		type: 'GET',
-//		dataType: "json",
-		success: function(response)
-		{
-			populateResult(response);
-		}
-	});
-}

@@ -109,9 +109,9 @@ public class UserActionController
 	protected void createAccount(@RequestParam("name") String name,
 			@RequestParam(EMAIL_PARAM_NAME) String email,
 			@RequestParam("password") String password,
-			@RequestParam("secretQuestion") String secretQuestion,
-			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,
-			@RequestParam(oAuthConstants.REDIRECT_URI_PARAM_NAME) String redirectUri,
+//			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
+//			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,			NOT IMPLEMENTED
+//			@RequestParam(oAuthConstants.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception
 	{
