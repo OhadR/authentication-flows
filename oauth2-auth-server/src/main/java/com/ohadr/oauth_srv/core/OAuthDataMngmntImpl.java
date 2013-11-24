@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mail.MailMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -24,6 +25,9 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 	
 	@Autowired
 	private OAuthRepository oAuthRepository;
+	
+	@Autowired
+	private MailSender		mailSender;
 
 
 	
@@ -65,18 +69,15 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 
 //		String serverPath = extractServerPath(request, redirectUri);
 		
-//TODO
-		//we grab the "redirect-uri"from the login page, and pass it here, so after account-creation we will redirect the user back to his document:
-/*		sendMail(email,
-				MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
-				MailMessage.OAUTH_AUTHENTICATION_MAIL_BODY,
-				AuthenticationUtil.OAUTH_ACTIVATE_ACCOUNT,
-				serverPath, 
-				redirectUri );
-*/		
+		sendMail(email,
+				oAuthConstants.MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
+				oAuthConstants.MailMessage.OAUTH_AUTHENTICATION_MAIL_BODY,
+				oAuthConstants.Authentication.OAUTH_ACTIVATE_ACCOUNT );
+		
 		return ImmutablePair.of(oAuthConstants.OK, "");
 	}
 	
+
 	@Override
 	public boolean setLoginSuccessForUser(String username) 
 	{
@@ -198,4 +199,13 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 		return changed;
 	}
 
+
+
+	private void sendMail(String email, 
+			String mailSubject,
+			String mailBody, 
+			String action)
+	{
+		mailSender.sendMail(email, mailSubject, mailBody, action);
+	}
 }
