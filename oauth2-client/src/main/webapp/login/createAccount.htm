@@ -1,0 +1,32 @@
+<html>
+<head>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="./javascript/oauth.js"></script>
+	<title>Create Account Page</title>
+</head>
+
+<body onload='document.f.email.focus();InitCreateAccount();'>
+	<h3>Create Account</h3>
+	<form name='f' action='/oauth2-auth-server/createAccount'
+		method='POST'>
+		<table>
+			<tr>
+				<td>User:</td>
+				<td><input type='text' name='email' value=''></td>
+			</tr>
+			<tr>
+				<td>Password:</td>
+				<td><input type='password' name='password' /></td>
+			</tr>
+			<tr>
+				<td>Confirm Password:</td>
+				<td><input type='password' name='confirm_password' /></td>
+			</tr>
+			<tr>
+				<td colspan='2'><input name="submit" type="submit"
+					value='Create Account' /></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

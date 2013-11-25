@@ -39,7 +39,14 @@
 	<sec:http authentication-manager-ref="authenticationManager">
 		<sec:intercept-url pattern="/secure/**" access="ROLE_USER" />
 		<sec:anonymous/>
-        <sec:form-login/>
+
+        <!-- sec:form-login/-->
+        
+		<sec:form-login 
+			login-page="/login/login.htm" 
+			authentication-failure-url="/login/login.htm?login_error=1" />
+
+        
 		<sec:custom-filter ref="oauth2ClientFilter" after="EXCEPTION_TRANSLATION_FILTER" />
 	</sec:http>
 
