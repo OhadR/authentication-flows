@@ -18,8 +18,8 @@ public class oAuthConstants
 	
 	public class MailMessage
 	{
-		public static final String AUTHENTICATION_MAIL_SUBJECT = "AUTHENTICATION_MAIL_SUBJECT";
-		public static final String OAUTH_AUTHENTICATION_MAIL_BODY = "OAUTH_AUTHENTICATION_MAIL_BODY";
+		public static final String AUTHENTICATION_MAIL_SUBJECT = "OhadR Authentication Service: Account Created Successfully";
+		public static final String OAUTH_AUTHENTICATION_MAIL_BODY = "Account Created Successfully. bla bla bla...";
 	}
 
 

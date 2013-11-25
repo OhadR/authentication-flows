@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.stereotype.Controller;
@@ -79,6 +80,9 @@ public class UserActionController
 
 	@Autowired
 	private OAuthDataManagement dataManagement;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	
 	
@@ -106,7 +110,7 @@ public class UserActionController
 	 * @throws Exception
 	 */
 	@RequestMapping("/createAccount")
-	protected void createAccount(@RequestParam("name") String name,
+	protected void createAccount(
 			@RequestParam(EMAIL_PARAM_NAME) String email,
 			@RequestParam("password") String password,
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
@@ -131,8 +135,6 @@ public class UserActionController
 
 
 		String encodedPassword = encodeString(email, password);
-
-		log.info("about to call API createUser() for user " + email);
 
     	Pair<String, String> retVal = dataManagement.createAccount(email, encodedPassword);
     	if( ! retVal.getLeft().equals(oAuthConstants.OK))
@@ -243,12 +245,10 @@ public class UserActionController
 	}
 
 
-	private static String encodeString(String email, String stringToEncode) 
+	private String encodeString(String email, String stringToEncode) 
 	{
 		//encoding the password:
-        ApplicationContext context = new ClassPathXmlApplicationContext("../spring-servlet.xml");
-        ShaPasswordEncoder encoder = (ShaPasswordEncoder)context.getBean("passwordEncoder");
-        String encodedPassword = encoder.encodePassword(stringToEncode, email);	//the email is the salt
+        String encodedPassword = passwordEncoder.encodePassword(stringToEncode, email);	//the email is the salt
 		return encodedPassword;
 	}
 	

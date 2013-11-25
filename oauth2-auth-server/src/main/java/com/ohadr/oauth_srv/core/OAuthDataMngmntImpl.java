@@ -7,7 +7,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.mail.MailMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -40,6 +39,8 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 //			String redirectUri			NOT IMPLEMENTED
 			)
 	{
+		log.info("Manager: createAccount() for user " + email);
+
 		try
 		{
 			OAuthUser oauthUser = oAuthRepository.getUser( email );
@@ -67,8 +68,8 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 		}
 		
 
-//		String serverPath = extractServerPath(request, redirectUri);
-		
+		log.info("Manager: sending registration email to " + email + "...");
+
 		sendMail(email,
 				oAuthConstants.MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
 				oAuthConstants.MailMessage.OAUTH_AUTHENTICATION_MAIL_BODY,
@@ -206,6 +207,6 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 			String mailBody, 
 			String action)
 	{
-		mailSender.sendMail(email, mailSubject, mailBody, action);
+		mailSender.sendMail(email, mailSubject, mailBody);
 	}
 }

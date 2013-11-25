@@ -8,6 +8,7 @@ function InitCreateAccount()
 
 function getPasswordPolicy()
 {
+	//AJAX call to get the password policy:
 	$.ajax({
 		url : backend_url,
 		type: 'GET',

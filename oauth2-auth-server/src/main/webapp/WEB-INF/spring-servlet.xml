@@ -146,5 +146,9 @@
     
     <bean class="com.ohadr.oauth_srv.mocks.OAuthRepositoryMock" />
 
+	<bean id="passwordEncoder" 	class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<constructor-arg value="256"/>
+	</bean>
+
 
 </beans>
