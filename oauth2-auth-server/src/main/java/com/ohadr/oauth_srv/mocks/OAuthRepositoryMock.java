@@ -40,6 +40,7 @@ public class OAuthRepositoryMock extends AbstractOAuthRepository
 	{
 		AuthenticationPolicy policy = new AuthenticationPolicy();
 		policy.setMaxPasswordEntryAttempts( 5 );
+		policy.setPasswordMaxLength( 8 );
 
 		return policy;
 	}

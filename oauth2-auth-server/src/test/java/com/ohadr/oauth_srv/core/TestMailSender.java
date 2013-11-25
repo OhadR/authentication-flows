@@ -15,8 +15,7 @@ public class TestMailSender
 		sender.sendMail(
 				"ohad.redlich@gmail.com",
 				"Testing Subject", 
-				"Dear Mail Crawler, \n\n No spam to my email, please!",
-				null
+				"Dear Mail Crawler, \n\n No spam to my email, please!"
 				);
 
         System.out.println("Done");
