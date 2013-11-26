@@ -13,9 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
+import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.authentication.utils.oAuthConstants;
 import com.ohadr.crypto.service.CryptoService;
-import com.ohadr.oauth_srv.interfaces.OAuthDataManagement;
 
 @Service("authenticationSuccessHandler")
 public class OhadAuthenticationSuccessHandler extends
@@ -25,7 +25,7 @@ public class OhadAuthenticationSuccessHandler extends
 	private CryptoService cryptoService;
 	
 	@Autowired
-	private OAuthDataManagement dataManagement;
+	private AuthenticationFlowsProcessor authFlowsProcessor;
 
 	private static Logger log = Logger.getLogger(AuthenticationSuccessEventListener.class);
 
@@ -42,7 +42,7 @@ public class OhadAuthenticationSuccessHandler extends
 	    log.info("login success for user: " + username);
 
 	    //notify the API-client, that notifies the API (that updates the DB):
-	    boolean passChangeRequired = dataManagement.setLoginSuccessForUser(username);
+	    boolean passChangeRequired = authFlowsProcessor.setLoginSuccessForUser(username);
 		if(passChangeRequired)
 		{
 			//start "change password" flow:

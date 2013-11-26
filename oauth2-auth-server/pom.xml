@@ -34,6 +34,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.ohadr.oauth2</groupId>
+			<artifactId>authentication-flows</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 		</dependency>
