@@ -1,8 +1,9 @@
-package com.ohadr.oauth_srv.types;
+package com.ohadr.auth_flows.types;
+
 
 import java.util.Date;
 
-public class OAuthUser {
+public class AuthenticationUser {
 
 	public boolean getEnabled() 
 	{

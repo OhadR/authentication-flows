@@ -1,4 +1,4 @@
-package com.ohadr.oauth_srv.core;
+package com.ohadr.auth_flows.core;
 
 import java.util.Date;
 
@@ -10,20 +10,20 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
+import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
+import com.ohadr.auth_flows.types.AccountState;
+import com.ohadr.auth_flows.types.AuthenticationPolicy;
+import com.ohadr.auth_flows.types.AuthenticationUser;
 import com.ohadr.authentication.utils.oAuthConstants;
-import com.ohadr.oauth_srv.interfaces.OAuthDataManagement;
-import com.ohadr.oauth_srv.interfaces.OAuthRepository;
-import com.ohadr.oauth_srv.types.AuthenticationPolicy;
-import com.ohadr.oauth_srv.types.OAuthUser;
-import com.ohadr.oauth_srv.types.OauthAccountState;
 
 @Component
-public class OAuthDataMngmntImpl implements OAuthDataManagement 
+public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProcessor 
 {
-	private static Logger log = Logger.getLogger(OAuthDataMngmntImpl.class);
+	private static Logger log = Logger.getLogger(AuthenticationFlowsProcessorImpl.class);
 	
 	@Autowired
-	private OAuthRepository oAuthRepository;
+	private AuthenticationAccountRepository oAuthRepository;
 	
 	@Autowired
 	private MailSender		mailSender;
@@ -43,7 +43,7 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 
 		try
 		{
-			OAuthUser oauthUser = oAuthRepository.getUser( email );
+			AuthenticationUser oauthUser = oAuthRepository.getUser( email );
 			
 			//if user exist, but not activated - we allow re-registration:
 			if(oauthUser != null && !oauthUser.getEnabled())
@@ -118,7 +118,7 @@ public class OAuthDataMngmntImpl implements OAuthDataManagement
 	}
 
 	@Override
-	public OauthAccountState isAccountLocked(String email) 
+	public AccountState isAccountLocked(String email) 
 	{
 		return oAuthRepository.isAccountLocked(email);
 	}

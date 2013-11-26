@@ -1,10 +1,11 @@
-package com.ohadr.oauth_srv.core;
+package com.ohadr.auth_flows.core;
 
-import com.ohadr.oauth_srv.types.AuthenticationPolicy;
-import com.ohadr.oauth_srv.types.OAuthUser;
+import com.ohadr.auth_flows.types.AuthenticationPolicy;
+import com.ohadr.auth_flows.types.AuthenticationUser;
+
 
 //@Repository
-public class OAuthRepositoryImpl extends AbstractOAuthRepository 
+public class AuthenticationAccountRepositoryImpl extends AbstractAuthenticationAccountRepository 
 {
 
 	@Override
@@ -17,7 +18,7 @@ public class OAuthRepositoryImpl extends AbstractOAuthRepository
 	}
 
 	@Override
-	public OAuthUser getUser(String email) 
+	public AuthenticationUser getUser(String email) 
 	{
 		// TODO Auto-generated method stub
 		return null;

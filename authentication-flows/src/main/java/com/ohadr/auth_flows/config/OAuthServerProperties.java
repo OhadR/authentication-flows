@@ -1,4 +1,4 @@
-package com.ohadr.oauth_srv.config;
+package com.ohadr.auth_flows.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

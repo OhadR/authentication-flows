@@ -1,11 +1,12 @@
-package com.ohadr.oauth_srv.mocks;
+package com.ohadr.auth_flows.mocks;
 
-import com.ohadr.oauth_srv.core.AbstractOAuthRepository;
-import com.ohadr.oauth_srv.types.AuthenticationPolicy;
-import com.ohadr.oauth_srv.types.OAuthUser;
+import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
+import com.ohadr.auth_flows.types.AuthenticationPolicy;
+import com.ohadr.auth_flows.types.AuthenticationUser;
 
 
-public class OAuthRepositoryMock extends AbstractOAuthRepository 
+
+public class OAuthRepositoryMock extends AbstractAuthenticationAccountRepository 
 {
 
 	@Override
@@ -16,9 +17,9 @@ public class OAuthRepositoryMock extends AbstractOAuthRepository
 	}
 
 	@Override
-	public OAuthUser getUser(String email) 
+	public AuthenticationUser getUser(String email) 
 	{
-		OAuthUser user = new OAuthUser();
+		AuthenticationUser user = new AuthenticationUser();
 		
 		return user;
 	}

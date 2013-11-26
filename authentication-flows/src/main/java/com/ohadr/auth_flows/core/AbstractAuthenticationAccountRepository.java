@@ -1,16 +1,16 @@
-package com.ohadr.oauth_srv.core;
+package com.ohadr.auth_flows.core;
 
 
 import java.util.Date;
 
-import com.ohadr.oauth_srv.interfaces.OAuthRepository;
-import com.ohadr.oauth_srv.types.OAuthUser;
-import com.ohadr.oauth_srv.types.OauthAccountState;
+import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
+import com.ohadr.auth_flows.types.AccountState;
+import com.ohadr.auth_flows.types.AuthenticationUser;
 
 
-public abstract class AbstractOAuthRepository implements OAuthRepository
+public abstract class AbstractAuthenticationAccountRepository implements AuthenticationAccountRepository
 {
-	public AbstractOAuthRepository()
+	public AbstractAuthenticationAccountRepository()
 	{
 		System.out.println(this.getClass().getName() + " created");
 	}
@@ -19,7 +19,7 @@ public abstract class AbstractOAuthRepository implements OAuthRepository
 	@Override
 	public void setEnabled (String email)
 	{
-		OAuthUser user = getUser(email);
+		AuthenticationUser user = getUser(email);
 		user.setEnabled(true);
 	}
 	
@@ -27,7 +27,7 @@ public abstract class AbstractOAuthRepository implements OAuthRepository
 	@Override
 	public boolean setLoginFailure(String email, int maxPasswordEntryAttempts) 
 	{
-		OAuthUser user = getUser(email);
+		AuthenticationUser user = getUser(email);
 		
 		//user does not exist:
 		if(user == null)
@@ -52,7 +52,7 @@ public abstract class AbstractOAuthRepository implements OAuthRepository
 	@Override
 	public void setLoginSuccess(String email) 
 	{
-		OAuthUser user = getUser(email);
+		AuthenticationUser user = getUser(email);
 		
 		//user might be null since we "login-success" once to the user account, and then to the client-application (oAuth mechanism)
 		//so if 'email' is the "client app", there will be no 'user' and it will be null:
@@ -67,28 +67,28 @@ public abstract class AbstractOAuthRepository implements OAuthRepository
 	 * not-activated account.
 	 */
 	@Override
-	public OauthAccountState isAccountLocked(String email) 
+	public AccountState isAccountLocked(String email) 
 	{
-		OAuthUser user = getUser(email);
+		AuthenticationUser user = getUser(email);
 		
 		//user does not exist:
 		if(user == null)
 		{
-			return OauthAccountState.NOT_EXIST;
+			return AccountState.NOT_EXIST;
 		}
 		
 		boolean isLocked = !user.getEnabled() && user.getLoginAttemptsCounter() != 0;
 		if(isLocked)
 		{
-			return OauthAccountState.LOCKED;
+			return AccountState.LOCKED;
 		}
-		return OauthAccountState.OK;
+		return AccountState.OK;
 	}
 
 	@Override
 	public boolean setPassword(String email, String newPassword)
 	{
-		OAuthUser user = getUser(email);
+		AuthenticationUser user = getUser(email);
 		if(user != null)
 		{
 			user.setPassword(newPassword);
@@ -105,7 +105,7 @@ public abstract class AbstractOAuthRepository implements OAuthRepository
 	@Override
 	public String getEncodedPassword(String email)
 	{
-		OAuthUser user = getUser(email);
+		AuthenticationUser user = getUser(email);
 		String retVal = null;
 		if(user != null)
 		{
@@ -117,7 +117,7 @@ public abstract class AbstractOAuthRepository implements OAuthRepository
 	@Override
 	public Date getPasswordLastChangeDate(String email)
 	{
-		OAuthUser user = getUser(email);
+		AuthenticationUser user = getUser(email);
 		Date retVal = null;
 		if(user != null)
 		{

@@ -1,13 +1,13 @@
-package com.ohadr.oauth_srv.interfaces;
+package com.ohadr.auth_flows.interfaces;
 
 import java.util.Date;
 
-import com.ohadr.oauth_srv.types.AuthenticationPolicy;
-import com.ohadr.oauth_srv.types.OAuthUser;
-import com.ohadr.oauth_srv.types.OauthAccountState;
+import com.ohadr.auth_flows.types.AccountState;
+import com.ohadr.auth_flows.types.AuthenticationPolicy;
+import com.ohadr.auth_flows.types.AuthenticationUser;
 
 
-public interface OAuthRepository 
+public interface AuthenticationAccountRepository 
 {
 	void createAccount(String email, 
 			String encodedPassword
@@ -20,7 +20,7 @@ public interface OAuthRepository
 	 * @param email
 	 * @return null if username was not found
 	 */
-	OAuthUser getUser(String email);
+	AuthenticationUser getUser(String email);
 	
 	void deleteOAuthAccount(String email);
 
@@ -36,7 +36,7 @@ public interface OAuthRepository
 	 */
 	boolean setLoginFailure(String email, int maxPasswordEntryAttempts); 
 	void setLoginSuccess(String email);
-	OauthAccountState isAccountLocked(String email);
+	AccountState isAccountLocked(String email);
 
 	/**
 	 * sets a password for a given user

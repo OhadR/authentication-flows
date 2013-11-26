@@ -1,4 +1,4 @@
-package com.ohadr.oauth_srv.types;
+package com.ohadr.auth_flows.types;
 
 import java.util.*;
 

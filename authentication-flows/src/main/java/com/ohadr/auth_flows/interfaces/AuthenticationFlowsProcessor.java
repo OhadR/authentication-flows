@@ -1,9 +1,9 @@
-package com.ohadr.oauth_srv.interfaces;
+package com.ohadr.auth_flows.interfaces;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.ohadr.oauth_srv.types.AuthenticationPolicy;
-import com.ohadr.oauth_srv.types.OauthAccountState;
+import com.ohadr.auth_flows.types.AccountState;
+import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
 
 /**
@@ -11,7 +11,7 @@ import com.ohadr.oauth_srv.types.OauthAccountState;
  * @author OhadR
  *
  */
-public interface OAuthDataManagement
+public interface AuthenticationFlowsProcessor
 {
 	/**
 	 * 
@@ -39,7 +39,7 @@ public interface OAuthDataManagement
 
 	public AuthenticationPolicy getAuthenticationSettings();
 
-	public OauthAccountState isAccountLocked(String email);
+	public AccountState isAccountLocked(String email);
 
 	public void sendPasswordRestoreMail(String email);
 

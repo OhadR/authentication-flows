@@ -1,4 +1,4 @@
-package com.ohadr.oauth_srv.web;
+package com.ohadr.auth_flows.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,10 +16,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +28,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.ohadr.authentication.utils.oAuthConstants;
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
-import com.ohadr.oauth_srv.config.OAuthServerProperties;
-import com.ohadr.oauth_srv.interfaces.OAuthDataManagement;
-import com.ohadr.oauth_srv.types.AuthenticationPolicy;
-import com.ohadr.oauth_srv.types.OauthAccountState;
+import com.ohadr.auth_flows.config.OAuthServerProperties;
+import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
+import com.ohadr.auth_flows.types.AuthenticationPolicy;
+import com.ohadr.auth_flows.types.AccountState;
 
 @Controller
 public class UserActionController
@@ -79,7 +76,7 @@ public class UserActionController
 	private AbstractRememberMeServices rememberMeService;
 
 	@Autowired
-	private OAuthDataManagement dataManagement;
+	private AuthenticationFlowsProcessor flowsProcessor;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -122,7 +119,7 @@ public class UserActionController
 		PrintWriter writer = response.getWriter();
 
 		//validate the input:
-		AuthenticationPolicy settings = dataManagement.getAuthenticationSettings();
+		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
 		
 		String passwordValidityMsg = validatePassword(password, settings);
 		if( !passwordValidityMsg.equals(oAuthConstants.OK) )
@@ -136,7 +133,7 @@ public class UserActionController
 
 		String encodedPassword = encodeString(email, password);
 
-    	Pair<String, String> retVal = dataManagement.createAccount(email, encodedPassword);
+    	Pair<String, String> retVal = flowsProcessor.createAccount(email, encodedPassword);
     	if( ! retVal.getLeft().equals(oAuthConstants.OK))
     	{
 			String errorText = retVal.getRight();
@@ -272,7 +269,7 @@ public class UserActionController
 		StringBuilder builder = new StringBuilder();
 //		builder.append("secretQuestions=");
 
-		AuthenticationPolicy settings = dataManagement.getAuthenticationSettings();
+		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
 		log.info("got the policy from API: " + settings.toString());
 
 
@@ -313,15 +310,15 @@ public class UserActionController
 		PrintWriter writer = response.getWriter();
 
 		//if account is already locked, no need to ask the user the secret question:
-		OauthAccountState accountState = dataManagement.isAccountLocked(email);
-		if( accountState != OauthAccountState.OK )
+		AccountState accountState = flowsProcessor.isAccountLocked(email);
+		if( accountState != AccountState.OK )
 		{
 			//account has been locked: do not check the user's answer, but notify user:
 			writer.println(ERR_MSG + DELIMITER + ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
 			return;
 		}
 
-	    dataManagement.sendPasswordRestoreMail(email);
+	    flowsProcessor.sendPasswordRestoreMail(email);
 
 		writer.println(oAuthConstants.OK + DELIMITER + AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE);
 		//TODO: UI, instead of showing "secret Q" screen, show somethink like "an email has been sent"
@@ -480,7 +477,7 @@ public class UserActionController
 		String encodedPassword = encodeString(email, password);
 
 		//validate the input:
-		AuthenticationPolicy settings = dataManagement.getAuthenticationSettings();
+		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
 
 		String passwordValidityMsg = validatePassword(password, settings);
 		if( !passwordValidityMsg.equals(oAuthConstants.OK) )
@@ -491,7 +488,7 @@ public class UserActionController
 		}
 
 		//use API to go to the DB and update the password, and activate the account:
-		dataManagement.setPassword(email, encodedPassword);
+		flowsProcessor.setPassword(email, encodedPassword);
 
 		writer.println(oAuthConstants.OK);
 	}
@@ -523,8 +520,8 @@ public class UserActionController
 
 		// we need to check is account locked?! (for hackers...)
 		//if account is already locked, no need to ask the user the secret question:
-		OauthAccountState accountState = dataManagement.isAccountLocked(email);
-		if( accountState != OauthAccountState.OK )
+		AccountState accountState = flowsProcessor.isAccountLocked(email);
+		if( accountState != AccountState.OK )
 		{
 			//account has been locked: do not check the user's answer, but notify user:
 			writer.println(ERR_MSG + DELIMITER + ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
@@ -532,7 +529,7 @@ public class UserActionController
 		}
 
 		//validate the input:
-		AuthenticationPolicy settings = dataManagement.getAuthenticationSettings();
+		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
 
 		String passwordValidityMsg = validatePassword(newPassword, settings);
 		
@@ -558,7 +555,7 @@ public class UserActionController
 		String encodedNewPassword = encodeString(email, newPassword);
 
 		//use API to go to the DB, validate current pswd and update the new one, and activate the account:
-		Pair<String, String> retVal = dataManagement.changePassword(email, encodedCurrentPassword, encodedNewPassword);
+		Pair<String, String> retVal = flowsProcessor.changePassword(email, encodedCurrentPassword, encodedNewPassword);
 		if( ! retVal.getLeft().equals(oAuthConstants.OK))
 		{
 			String errorText = retVal.getRight();
@@ -594,8 +591,8 @@ public class UserActionController
 		
 		String isLockedStr = "false";
 		
-		OauthAccountState accountState = dataManagement.isAccountLocked(email);
-		if( accountState == OauthAccountState.LOCKED )
+		AccountState accountState = flowsProcessor.isAccountLocked(email);
+		if( accountState == AccountState.LOCKED )
 		{
 			isLockedStr = "true";
 		}

@@ -1,4 +1,4 @@
-package com.ohadr.oauth_srv.core;
+package com.ohadr.auth_flows.core;
 
 
 import java.util.Properties;
@@ -23,35 +23,36 @@ public class MailSender
 	
     public MailSender()
     {
-        final String username = "***incubator@gmail.com";
-        final String password = "***";
+    	final String username = "bmc.incubator@gmail.com";
+    	final String password = "theheatison";
 
-        Properties props = new Properties();
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+    	Properties props = new Properties();
+    	props.put("mail.smtp.starttls.enable", "true");
+    	props.put("mail.smtp.auth", "true");
+    	props.put("mail.smtp.host", "smtp.gmail.com");
+    	props.put("mail.smtp.starttls.enable", "true");
+    	props.put("mail.smtp.port", "587");
+//    	props.put("mail.smtp.port", "465");
 
-        session = Session.getInstance(props,
-          new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() 
-            {
-                return new PasswordAuthentication(username, password);
-            }
-          });
-    	
+    	session = Session.getInstance(props,
+    			new javax.mail.Authenticator() {
+    		protected PasswordAuthentication getPasswordAuthentication() 
+    		{
+    			return new PasswordAuthentication(username, password);
+    		}
+    	});
+
     }
 	
 	public void sendMail(
     		String adressee,
     		String subject,
-    		String mailBody,
-    		String action)
+    		String mailBody)
     {
         try 
         {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("your_user_name@gmail.com"));
+//            message.setFrom(new InternetAddress("your_user_name@gmail.com"));
             message.setRecipients(Message.RecipientType.TO, 
                 InternetAddress.parse( adressee ));
             message.setSubject( subject );
