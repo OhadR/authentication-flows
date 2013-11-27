@@ -1,4 +1,5 @@
-package com.ohadr.oauth_srv.core;
+package com.ohadr.auth_flows.core;
+
 
 
 import org.junit.Test;
