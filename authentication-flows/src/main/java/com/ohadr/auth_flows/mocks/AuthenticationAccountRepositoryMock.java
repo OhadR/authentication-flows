@@ -42,6 +42,7 @@ public class AuthenticationAccountRepositoryMock extends AbstractAuthenticationA
 		AuthenticationPolicy policy = new AuthenticationPolicy();
 		policy.setMaxPasswordEntryAttempts( 5 );
 		policy.setPasswordMaxLength( 8 );
+		policy.setRememberMeTokenValidityInDays( 30 );
 
 		return policy;
 	}

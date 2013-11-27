@@ -10,7 +10,7 @@ public class TestMailSender
 	@Test
 	public void test() 
 	{
-		MailSender sender = new MailSender();
+		MailSenderImpl sender = new MailSenderImpl();
 
 
 		sender.sendMail(

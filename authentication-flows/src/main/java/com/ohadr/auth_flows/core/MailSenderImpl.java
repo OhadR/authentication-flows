@@ -13,15 +13,17 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.stereotype.Service;
 
+import com.ohadr.auth_flows.interfaces.MailSender;
+
 
 //TODO: consider using Spring' JavaMailSenderImpl
-@Service
-public class MailSender 
+//@Service
+public class MailSenderImpl implements MailSender 
 {
 	private Session session;
 	
 	
-    public MailSender()
+    public MailSenderImpl()
     {
     	final String username = "bmc.incubator@gmail.com";
     	final String password = "theheatison";

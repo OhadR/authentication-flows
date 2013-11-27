@@ -34,3 +34,6 @@ KeyStore things to know:
 3. algorithm should be DSA (because in the access-token signature my code expects it to be "SHA1withDSA"
 4. if you want to work with "localhost", you should make the name "localhost": 
 5. http://stackoverflow.com/questions/6908948/java-sun-security-provider-certpath-suncertpathbuilderexception-unable-to-find/12146838#12146838
+
+creating a token using Java's keytool:
+keytool.exe -genkeypair -alias <alias> -keypass <key-password> -keyalg DSA -keystore <file-name> -storepass <ks-password> -storetype JCEKS -v
