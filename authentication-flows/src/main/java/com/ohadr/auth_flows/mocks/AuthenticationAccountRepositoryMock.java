@@ -6,7 +6,7 @@ import com.ohadr.auth_flows.types.AuthenticationUser;
 
 
 
-public class OAuthRepositoryMock extends AbstractAuthenticationAccountRepository 
+public class AuthenticationAccountRepositoryMock extends AbstractAuthenticationAccountRepository 
 {
 
 	@Override

@@ -144,7 +144,7 @@
         <property name="minPoolSize" value="5"/>
     </bean>
     
-    <bean class="com.ohadr.oauth_srv.mocks.OAuthRepositoryMock" />
+    <bean class="com.ohadr.auth_flows.mocks.AuthenticationAccountRepositoryMock" />
 
 	<bean id="passwordEncoder" 	class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
 		<constructor-arg value="256"/>
