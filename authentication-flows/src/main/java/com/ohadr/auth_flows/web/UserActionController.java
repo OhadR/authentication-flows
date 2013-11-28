@@ -96,7 +96,8 @@ public class UserActionController
 
 	
 	/**
-	 * we get the params from the HTML-form
+	 * we get the params from the HTML-form. 
+	 * this method is called by AJAX from "create-account" form submission
 	 * @param name
 	 * @param email
 	 * @param password
@@ -107,7 +108,7 @@ public class UserActionController
 	 * @throws Exception
 	 */
 	@RequestMapping("/createAccount")
-	protected void createAccount(
+	protected View createAccount(
 			@RequestParam(EMAIL_PARAM_NAME) String email,
 			@RequestParam("password") String password,
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
@@ -116,6 +117,10 @@ public class UserActionController
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception
 	{
+		RedirectView rv = new RedirectView();
+
+//		InternalResourceView irv = new InternalResourceView();
+
 		PrintWriter writer = response.getWriter();
 
 		//validate the input:
@@ -127,7 +132,7 @@ public class UserActionController
 			//redirect back to createAccount page, with error message:
 			writer.println(ERR_MSG + DELIMITER + 
 					unescapeJaveAndEscapeHtml( ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + passwordValidityMsg ) );
-			return;
+			return rv;
 		}
 
 
@@ -143,7 +148,7 @@ public class UserActionController
 			//redirecting back to the same page, just add a message to the screen and let the user re-try:
 			writer.println(ERR_MSG + DELIMITER + 
 					unescapeJaveAndEscapeHtml( ACCOUNT_CREATION_HAS_FAILED_PLEASE_TRY_AGAIN_ERROR_MESSAGE + errorText ));
-			return;
+			return rv;
     	}
         
 
@@ -158,7 +163,10 @@ public class UserActionController
 		attributes.put(EMAIL_PARAM_NAME,  email);		
 
 		//adding attributes to the redirect return value:
-		writer.println("OK" + DELIMITER + EMAIL_PARAM_NAME + "=" + email);
+		rv.setAttributesMap(attributes);
+		rv.setUrl("/login/checkInbox.jsp");
+		return rv;
+
 	}
 
 

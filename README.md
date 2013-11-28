@@ -37,3 +37,7 @@ KeyStore things to know:
 
 creating a token using Java's keytool:
 keytool.exe -genkeypair -alias <alias> -keypass <key-password> -keyalg DSA -keystore <file-name> -storepass <ks-password> -storetype JCEKS -v
+
+
+HTML forms:
+onSubmit vs action

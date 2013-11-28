@@ -1,4 +1,4 @@
-var backend_url = '../createAccountPage';
+var get_policy_backend_url = 		'../createAccountPage';
 
 function InitCreateAccount()
 {
@@ -10,7 +10,7 @@ function getPasswordPolicy()
 {
 	//AJAX call to get the password policy:
 	$.ajax({
-		url : backend_url,
+		url : get_policy_backend_url,
 		type: 'GET',
 //		dataType: "json",
 		success: function(response)
@@ -23,10 +23,11 @@ function getPasswordPolicy()
 
 function populateResult(response)
 {
-//	$('#status').html( response.message );
 	if (response.indexOf("OK|") == -1)
 		return;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 
 this.InitPassReq = function()
