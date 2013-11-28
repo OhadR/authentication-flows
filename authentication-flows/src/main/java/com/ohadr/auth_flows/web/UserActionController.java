@@ -164,7 +164,7 @@ public class UserActionController
 
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
-		rv.setUrl("login/accountCreatedSuccess.htm");
+		rv.setUrl("login/accountCreatedSuccess.jsp");
 		return rv;
 
 	}
