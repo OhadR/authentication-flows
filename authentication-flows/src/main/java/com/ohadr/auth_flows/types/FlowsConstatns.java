@@ -1,9 +1,6 @@
-package com.ohadr.authentication.utils;
+package com.ohadr.auth_flows.types;
 
-import org.springframework.stereotype.Component;
-
-@Component
-public class oAuthConstants
+public abstract class FlowsConstatns 
 {
 	public static final String OK = "OK";
 	public static final String ERROR = "ERROR";
@@ -20,15 +17,8 @@ public class oAuthConstants
 	{
 		public static final String AUTHENTICATION_MAIL_SUBJECT = "OhadR Authentication Service: Account Created Successfully";
 		public static final String OAUTH_AUTHENTICATION_MAIL_BODY = "Account Created Successfully. bla bla bla...";
-	}
-
-
-	public class Authentication
-	{
 
 		public static final String OAUTH_ACTIVATE_ACCOUNT = "aa";
-		
 	}
-
 
 }

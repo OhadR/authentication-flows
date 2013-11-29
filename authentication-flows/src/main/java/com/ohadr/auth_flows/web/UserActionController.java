@@ -25,13 +25,13 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.ohadr.authentication.utils.oAuthConstants;
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
 import com.ohadr.auth_flows.config.OAuthServerProperties;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.AccountState;
+import com.ohadr.auth_flows.types.FlowsConstatns;
 
 @Controller
 public class UserActionController
@@ -72,7 +72,7 @@ public class UserActionController
 	@Autowired
 	private CryptoService cryptoService;
 	
-	@Autowired
+//TODO	@Autowired
 	private AbstractRememberMeServices rememberMeService;
 
 	@Autowired
@@ -113,7 +113,7 @@ public class UserActionController
 			@RequestParam("password") String password,
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
 //			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,			NOT IMPLEMENTED
-//			@RequestParam(oAuthConstants.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED
+//			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception
 	{
@@ -127,7 +127,7 @@ public class UserActionController
 		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
 		
 		String passwordValidityMsg = validatePassword(password, settings);
-		if( !passwordValidityMsg.equals(oAuthConstants.OK) )
+		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
 		{
 			//redirect back to createAccount page, with error message:
 			writer.println(ERR_MSG + DELIMITER + 
@@ -139,7 +139,7 @@ public class UserActionController
 		String encodedPassword = encodeString(email, password);
 
     	Pair<String, String> retVal = flowsProcessor.createAccount(email, encodedPassword);
-    	if( ! retVal.getLeft().equals(oAuthConstants.OK))
+    	if( ! retVal.getLeft().equals(FlowsConstatns.OK))
     	{
 			String errorText = retVal.getRight();
 
@@ -154,8 +154,9 @@ public class UserActionController
 
         //update the "remember-me" token validity:
         int rememberMeTokenValidityInDays = settings.getRememberMeTokenValidityInDays();
+
         //get the "remem-me" bean and update its validity:
-		rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
+//TODO		rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
                 
 
 //		request.setAttribute("email", email);
@@ -225,7 +226,7 @@ public class UserActionController
 		
 		Formatter formatter = new Formatter();
 
-		String retVal = oAuthConstants.OK;
+		String retVal = FlowsConstatns.OK;
 		
 		if(uppersCounter < settings.getPasswordMinUpCaseLetters())
 		{
@@ -263,7 +264,7 @@ public class UserActionController
 		try
 		{
 			PrintWriter writer = response.getWriter();
-			writer.println(oAuthConstants.OK + DELIMITER);
+			writer.println(FlowsConstatns.OK + DELIMITER);
 			writer.write( buildPasswordConstraintsString() );
 		}
 		catch (IOException e)
@@ -328,7 +329,7 @@ public class UserActionController
 
 	    flowsProcessor.sendPasswordRestoreMail(email);
 
-		writer.println(oAuthConstants.OK + DELIMITER + AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE);
+		writer.println(FlowsConstatns.OK + DELIMITER + AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE);
 		//TODO: UI, instead of showing "secret Q" screen, show somethink like "an email has been sent"
 
 	}
@@ -346,8 +347,8 @@ public class UserActionController
 	 */
 	@RequestMapping("/login/forgotPasswordLinkCallback")
 	protected View forgotPasswordLinkCallback(
-			@RequestParam(oAuthConstants.HASH_PARAM_NAME) String encUserAndTimestamp,
-			@RequestParam(oAuthConstants.REDIRECT_URI_PARAM_NAME) String redirectUri,
+			@RequestParam(FlowsConstatns.HASH_PARAM_NAME) String encUserAndTimestamp,
+			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception
 	{
@@ -359,7 +360,7 @@ public class UserActionController
 		catch(CryptoException cryptoEx)
 		{
 			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
-			RedirectView irv = new RedirectView("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc"		//psnc = password not changed
+			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc"		//psnc = password not changed
 					);
 			return irv;		
 		}
@@ -371,7 +372,7 @@ public class UserActionController
 			log.error("link has expired");
 
 			//adding attributes to the redirect return value:
-			RedirectView irv = new RedirectView("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc"		//psnc = password not changed
+			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc"		//psnc = password not changed
 					);
 			
 			return irv;
@@ -382,9 +383,9 @@ public class UserActionController
 		//check the answer, etc.  
 
 
-		RedirectView irv = new RedirectView("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/setNewPassword.htm"
+		RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/setNewPassword.htm"
 				+ "&"
-				+ oAuthConstants.HASH_PARAM_NAME 
+				+ FlowsConstatns.HASH_PARAM_NAME 
 				+ "=" + encUserAndTimestamp );
 
 		return irv;
@@ -395,7 +396,7 @@ public class UserActionController
 	@Deprecated
 	@RequestMapping("/login/setNewPasswordPage")
 	protected View setNewPasswordPage(@RequestParam(EMAIL_PARAM_NAME) String email,
-			@RequestParam(oAuthConstants.HASH_PARAM_NAME) String encUserAndTimestamp,
+			@RequestParam(FlowsConstatns.HASH_PARAM_NAME) String encUserAndTimestamp,
 			HttpServletRequest request) throws Exception
 	{
 		ImmutablePair<Date, String> stringAndDate = null;
@@ -406,7 +407,7 @@ public class UserActionController
 		catch(CryptoException cryptoEx)
 		{
 			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
-			RedirectView irv = new RedirectView("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc");		//psnc = password not changed
+			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc");		//psnc = password not changed
 			return irv;		
 		}
 		
@@ -417,7 +418,7 @@ public class UserActionController
 			log.error("link has expired");
 
 			//adding attributes to the redirect return value:
-			RedirectView irv = new RedirectView("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc");		//psnc = password not changed
+			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc");		//psnc = password not changed
 			
 			return irv;
 		}
@@ -427,7 +428,7 @@ public class UserActionController
 		{
 			log.error("signed email is different than the email parameter");
 
-			RedirectView irv = new RedirectView("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc");		//psnc = password not changed
+			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc");		//psnc = password not changed
 			return irv;
 		}
 
@@ -448,7 +449,7 @@ public class UserActionController
 	 */
 	@RequestMapping("/setNewPassword")
 	protected void setNewPassword( 
-			@RequestParam(oAuthConstants.HASH_PARAM_NAME) String encUserAndTimestamp,
+			@RequestParam(FlowsConstatns.HASH_PARAM_NAME) String encUserAndTimestamp,
 			@RequestParam("password") String password,
 			HttpServletResponse response) throws Exception
 	{
@@ -488,7 +489,7 @@ public class UserActionController
 		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
 
 		String passwordValidityMsg = validatePassword(password, settings);
-		if( !passwordValidityMsg.equals(oAuthConstants.OK) )
+		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
 		{
 			writer.println(ERR_MSG + DELIMITER + 
 					unescapeJaveAndEscapeHtml( SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + passwordValidityMsg ));
@@ -498,7 +499,7 @@ public class UserActionController
 		//use API to go to the DB and update the password, and activate the account:
 		flowsProcessor.setPassword(email, encodedPassword);
 
-		writer.println(oAuthConstants.OK);
+		writer.println(FlowsConstatns.OK);
 	}
 	/**********************************************************************************************************/
 	
@@ -518,7 +519,7 @@ public class UserActionController
 	protected void changePassword( 
 								@RequestParam("currentPassword") String currentPassword,
 								@RequestParam("newPassword") String newPassword,
-								@RequestParam(oAuthConstants.ENCRYPTED_USERNAME_PARAM_NAME) String encUser,
+								@RequestParam(FlowsConstatns.ENCRYPTED_USERNAME_PARAM_NAME) String encUser,
 								HttpServletResponse response) throws Exception
 	{
 		PrintWriter writer = response.getWriter();
@@ -541,7 +542,7 @@ public class UserActionController
 
 		String passwordValidityMsg = validatePassword(newPassword, settings);
 		
-		if( !passwordValidityMsg.equals(oAuthConstants.OK) )
+		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
 		{
 			//UI will redirect back to createAccount page, with error message:
 			writer.println(ERR_MSG + DELIMITER + 
@@ -564,7 +565,7 @@ public class UserActionController
 
 		//use API to go to the DB, validate current pswd and update the new one, and activate the account:
 		Pair<String, String> retVal = flowsProcessor.changePassword(email, encodedCurrentPassword, encodedNewPassword);
-		if( ! retVal.getLeft().equals(oAuthConstants.OK))
+		if( ! retVal.getLeft().equals(FlowsConstatns.OK))
 		{
 			String errorText = retVal.getRight();
 
@@ -578,7 +579,7 @@ public class UserActionController
 		}
 		
 
-		writer.println(oAuthConstants.OK);
+		writer.println(FlowsConstatns.OK);
 
 	}
 	/**********************************************************************************************************/
@@ -606,7 +607,7 @@ public class UserActionController
 		}
 
 		//account has been locked: send email and redirect to notify user:
-		writer.println(oAuthConstants.OK + DELIMITER + isLockedStr);
+		writer.println(FlowsConstatns.OK + DELIMITER + isLockedStr);
 	}
 
 	private static String unescapeJaveAndEscapeHtml(String input)

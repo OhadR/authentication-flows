@@ -1,11 +1,13 @@
 package com.ohadr.auth_flows.mocks;
 
+import org.springframework.stereotype.Component;
+
 import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.AuthenticationUser;
 
 
-
+@Component
 public class AuthenticationAccountRepositoryMock extends AbstractAuthenticationAccountRepository 
 {
 

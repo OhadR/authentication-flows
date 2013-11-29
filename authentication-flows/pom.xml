@@ -19,12 +19,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.ohadr.oauth2</groupId>
-			<artifactId>auth-common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.ohadr</groupId>
 			<artifactId>common-crypto</artifactId>
 			<version>${project.version}</version>

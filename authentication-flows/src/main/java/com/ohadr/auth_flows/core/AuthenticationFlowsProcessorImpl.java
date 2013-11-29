@@ -16,7 +16,7 @@ import com.ohadr.auth_flows.interfaces.MailSender;
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.AuthenticationUser;
-import com.ohadr.authentication.utils.oAuthConstants;
+import com.ohadr.auth_flows.types.FlowsConstatns;
 
 @Component
 public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProcessor 
@@ -65,18 +65,18 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			
 
 			log.error( msg );
-			return Pair.of(oAuthConstants.ERROR, "USER_ALREADY_EXIST");
+			return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
 		}
 		
 
 		log.info("Manager: sending registration email to " + email + "...");
 
 		sendMail(email,
-				oAuthConstants.MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
-				oAuthConstants.MailMessage.OAUTH_AUTHENTICATION_MAIL_BODY,
-				oAuthConstants.Authentication.OAUTH_ACTIVATE_ACCOUNT );
+				FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
+				FlowsConstatns.MailMessage.OAUTH_AUTHENTICATION_MAIL_BODY,
+				FlowsConstatns.Authentication.OAUTH_ACTIVATE_ACCOUNT );
 		
-		return ImmutablePair.of(oAuthConstants.OK, "");
+		return ImmutablePair.of(FlowsConstatns.OK, "");
 	}
 	
 
@@ -96,7 +96,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		}
 		long passwordLastChange = passwordLastChangeDate.getTime();
 		AuthenticationPolicy policy = getAuthenticationSettings();
-		long passwordLifeInMilisecs = policy.getPasswordLifeInDays() * oAuthConstants.DAY_IN_MILLI;
+		long passwordLifeInMilisecs = policy.getPasswordLifeInDays() * FlowsConstatns.DAY_IN_MILLI;
 		Date passwordLimitDate = new Date( passwordLastChange + passwordLifeInMilisecs );
 		Date current = new Date(System.currentTimeMillis());
 		
@@ -163,7 +163,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		if(dbPassword == null)
 		{
 //			throw errorsHandler.createError(ApiErrors.USER_NOT_EXIST, username);
-			return Pair.of(oAuthConstants.ERROR, "USER_NOT_EXIST");
+			return Pair.of(FlowsConstatns.ERROR, "USER_NOT_EXIST");
 		}
 		if( !dbPassword.equals(encodedCurrentPassword) )
 		{
@@ -172,17 +172,17 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 //			boolean retVal = Boolean.valueOf(isLocked);
 
 //			throw errorsHandler.createError(ApiErrors.CHANGE_PASSWORD_BAD_OLD_PASSWORD, username);
-			return Pair.of(oAuthConstants.ERROR, "CHANGE_PASSWORD_BAD_OLD_PASSWORD");
+			return Pair.of(FlowsConstatns.ERROR, "CHANGE_PASSWORD_BAD_OLD_PASSWORD");
 		}
 		
 		
 		if( changePassword(username, newEncodedPassword) )
 		{
-			return Pair.of(oAuthConstants.OK, "");
+			return Pair.of(FlowsConstatns.OK, "");
 		}
 		else
 		{
-			return Pair.of(oAuthConstants.ERROR, "CHANGE PASSWORD FAILED - DB");
+			return Pair.of(FlowsConstatns.ERROR, "CHANGE PASSWORD FAILED - DB");
 		}
 	}
 
