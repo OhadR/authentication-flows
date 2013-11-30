@@ -23,10 +23,11 @@ public interface AuthenticationFlowsProcessor
 	 */
 	public Pair<String, String> createAccount(
 			String email, 
-			String encodedPassword
+			String encodedPassword,
 //			,String secretQuestion,		NOT IMPLEMENTED
 //			String encodedAnswer,		NOT IMPLEMENTED
 //			String redirectUri			NOT IMPLEMENTED
+			String serverPath
 			);
 
 	/**

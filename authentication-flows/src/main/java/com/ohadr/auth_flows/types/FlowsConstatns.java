@@ -14,14 +14,14 @@ public abstract class FlowsConstatns
 
 	
 	
-	public static final String EMAIL_URL_ENDPOINT = "null";
+	public static final String ACTIVATE_ACCOUNT_ENDPOINT = "/aa";
 	
 	public class MailMessage
 	{
 		public static final String AUTHENTICATION_MAIL_SUBJECT = "OhadR Authentication Service: Account Created Successfully";
 		public static final String OAUTH_AUTHENTICATION_MAIL_BODY = "Account Created Successfully. bla bla bla...";
 
-		public static final String OAUTH_ACTIVATE_ACCOUNT = "aa";
+//		public static final String OAUTH_ACTIVATE_ACCOUNT = "aa";
 	}
 
 }

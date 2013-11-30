@@ -39,5 +39,17 @@ creating a token using Java's keytool:
 keytool.exe -genkeypair -alias <alias> -keypass <key-password> -keyalg DSA -keystore <file-name> -storepass <ks-password> -storetype JCEKS -v
 
 
+Java Encryption:
+================
+Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");  
+SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+String encryptedString = Base64.encodeBase64String(cipher.doFinal(strToEncrypt.getBytes()));
+return encryptedString;
+
+http://techie-experience.blogspot.co.il/2012/10/encryption-and-decryption-using-aes.html
+http://docs.oracle.com/javase/7/docs/api/javax/crypto/Cipher.html#init(int, java.security.Key)
+
+
 HTML forms:
 onSubmit vs action

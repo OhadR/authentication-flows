@@ -42,6 +42,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 //			String secretQuestion,		NOT IMPLEMENTED
 //			String encodedAnswer,		NOT IMPLEMENTED
 //			String redirectUri			NOT IMPLEMENTED
+			, 
+			String serverPath
 			)
 	{
 		log.info("Manager: createAccount() for user " + email);
@@ -76,9 +78,10 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		log.info("Manager: sending registration email to " + email + "...");
 
 		
-		 String activationUrl = "serverPath" + FlowsConstatns.EMAIL_URL_ENDPOINT +
-			"?a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + 
-			"&uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
+		String activationUrl = serverPath + FlowsConstatns.ACTIVATE_ACCOUNT_ENDPOINT +
+			"?" + 
+//			"a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + "&" + 
+			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
 		
 		sendMail(email,
 				FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
