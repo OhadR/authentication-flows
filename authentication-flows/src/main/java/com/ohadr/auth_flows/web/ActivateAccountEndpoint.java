@@ -70,7 +70,7 @@ public class ActivateAccountEndpoint
 //				// fallback: (we might get here if login failed and account is locked and we have no redirect-uri:
 //				if (redirectUri == null || redirectUri.isEmpty())
 //				{
-					redirectUri = request.getContextPath() + "OAUTH_WEB_APP_NAME" + "/login/AccountActivated.htm";
+					redirectUri = request.getContextPath() + "/login/AccountActivated.htm";
 //				}
 //			}
 
