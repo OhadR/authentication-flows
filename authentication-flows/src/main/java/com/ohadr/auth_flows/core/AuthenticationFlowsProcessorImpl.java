@@ -17,6 +17,7 @@ import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.AuthenticationUser;
 import com.ohadr.auth_flows.types.FlowsConstatns;
+import com.ohadr.crypto.service.CryptoService;
 
 @Component
 public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProcessor 
@@ -25,6 +26,9 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	
 	@Autowired
 	private AuthenticationAccountRepository oAuthRepository;
+	
+	@Autowired
+	private CryptoService	cryptoService;
 	
 	@Autowired
 	private MailSender		mailSender;
@@ -71,10 +75,14 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 		log.info("Manager: sending registration email to " + email + "...");
 
+		
+		 String activationUrl = "serverPath" + FlowsConstatns.EMAIL_URL_ENDPOINT +
+			"?a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + 
+			"&uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
+		
 		sendMail(email,
 				FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
-				FlowsConstatns.MailMessage.OAUTH_AUTHENTICATION_MAIL_BODY,
-				FlowsConstatns.Authentication.OAUTH_ACTIVATE_ACCOUNT );
+				FlowsConstatns.MailMessage.OAUTH_AUTHENTICATION_MAIL_BODY + activationUrl);
 		
 		return ImmutablePair.of(FlowsConstatns.OK, "");
 	}
@@ -125,19 +133,22 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	}
 
 	@Override
-	public void sendPasswordRestoreMail(String email) {
+	public void sendPasswordRestoreMail(String email) 
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public String getSecretAnswer(String email) {
+	public String getSecretAnswer(String email) 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean setLoginFailureForUser(String email) {
+	public boolean setLoginFailureForUser(String email) 
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -205,8 +216,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 	private void sendMail(String email, 
 			String mailSubject,
-			String mailBody, 
-			String action)
+			String mailBody)
 	{
 		mailSender.sendMail(email, mailSubject, mailBody);
 	}

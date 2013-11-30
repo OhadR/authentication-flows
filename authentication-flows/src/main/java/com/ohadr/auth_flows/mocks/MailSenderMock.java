@@ -15,6 +15,7 @@ public class MailSenderMock implements MailSender
 	public void sendMail(String adressee, String subject, String mailBody) 
 	{
 		log.info("MOCK: sending mail to " + adressee + ", subject: " + subject);
+		log.info("MOCK: mail body: " + mailBody);
 	}
 
 }
