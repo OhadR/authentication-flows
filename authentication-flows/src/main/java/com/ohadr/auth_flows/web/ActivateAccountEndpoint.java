@@ -1,16 +1,23 @@
 package com.ohadr.auth_flows.web;
 
-import java.util.Map;
+import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.ContextLoader;
 
+import com.ohadr.auth_flows.config.OAuthServerProperties;
+import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.crypto.service.CryptoService;
 
@@ -19,6 +26,9 @@ import com.ohadr.crypto.service.CryptoService;
 public class ActivateAccountEndpoint 
 {
 	@Autowired
+	private OAuthServerProperties oAuthServerProperties;
+
+	@Autowired
 	private AuthenticationAccountRepository oAuthRepository;
 
 	@Autowired
@@ -26,7 +36,7 @@ public class ActivateAccountEndpoint
 
 	
 	@RequestMapping
-    public void getAccessToken(HttpServletRequest request, HttpServletResponse response) 
+    public void activateAccount(HttpServletRequest request, HttpServletResponse response) throws IOException 
     {
 		String redirectUri;
 
@@ -36,10 +46,10 @@ public class ActivateAccountEndpoint
 		
 		if (!extractedData.expired)
 		{
-			PlatformTransactionManager transactionManager = (PlatformTransactionManager) ContextLoader.getCurrentWebApplicationContext()
-			                                                                                          .getBean("oAuthTransactionManager");
-
-			TransactionStatus oAuthTransaction = transactionManager.getTransaction(new DefaultTransactionAttribute());
+//TODO			PlatformTransactionManager transactionManager = (PlatformTransactionManager) ContextLoader.getCurrentWebApplicationContext()
+//			                                                                                          .getBean("oAuthTransactionManager");
+//
+//			TransactionStatus oAuthTransaction = transactionManager.getTransaction(new DefaultTransactionAttribute());
 
 			// enable the account
 			oAuthRepository.setEnabled(extractedData.userEmail);
@@ -47,7 +57,7 @@ public class ActivateAccountEndpoint
 			// (in the email), we get here and enable the account and reset the attempts number
 			oAuthRepository.setLoginSuccess(extractedData.userEmail);
 
-			transactionManager.commit(oAuthTransaction);
+//TODO			transactionManager.commit(oAuthTransaction);
 
 			request.getSession().invalidate();
 			request.getSession(true);
@@ -60,8 +70,7 @@ public class ActivateAccountEndpoint
 //				// fallback: (we might get here if login failed and account is locked and we have no redirect-uri:
 //				if (redirectUri == null || redirectUri.isEmpty())
 //				{
-					redirectUri = request.getContextPath() + OAUTH_WEB_APP_NAME + "/login/index.htm?dt=ua" 		//ua : unlock account
-							;
+					redirectUri = request.getContextPath() + "OAUTH_WEB_APP_NAME" + "/login/AccountActivated.htm";
 //				}
 //			}
 
@@ -73,8 +82,8 @@ public class ActivateAccountEndpoint
 	
 	private EmailExtractedData extractEmailData(HttpServletRequest request) 
 	{
-		String encRedirectUri = ManagedBeansUtil.getParamRedirectUri(request);
-		String encUserAndTimestamp = ManagedBeansUtil.getParamsUserAndTimestamp(request);
+//		String encRedirectUri = FlowsUtil.getParamRedirectUri(request);
+		String encUserAndTimestamp = FlowsUtil.getParamsUserAndTimestamp(request);
 		
 		
 		EmailExtractedData extractedData = new EmailExtractedData();
@@ -83,8 +92,9 @@ public class ActivateAccountEndpoint
 		
 		extractedData.userEmail = stringAndDate.getRight();
 		extractedData.emailCreationDate = stringAndDate.getLeft();
-		extractedData.redirectUri = cryptoService.extractString(encRedirectUri);
-		extractedData.expired = (System.currentTimeMillis() - extractedData.emailCreationDate.getTime() > AuthenticationUtil.EXPIRY_TIME);
+//		extractedData.redirectUri = cryptoService.extractString(encRedirectUri);
+		extractedData.expired = (System.currentTimeMillis() - extractedData.emailCreationDate.getTime() > 
+			(oAuthServerProperties.getLinksExpirationMinutes() * 1000 * 60L));
 		return extractedData;
 	}
 	

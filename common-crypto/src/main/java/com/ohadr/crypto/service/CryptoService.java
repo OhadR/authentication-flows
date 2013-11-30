@@ -230,7 +230,7 @@ public class CryptoService
 	
 	
 	
-	public byte[] getDecodedStringFromEncodedBased64String(String based64EncryptedContent)
+	private byte[] getDecodedStringFromEncodedBased64String(String based64EncryptedContent)
 	{
 		// Step 1: Cut version character
 		String contentWithSuffix = based64EncryptedContent.substring(1);
