@@ -5,36 +5,20 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.security.Signature;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
-
-
-
-
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.log4j.Logger;
@@ -49,9 +33,7 @@ public class DefaultCryptoProvider implements CryptoProvider
 	private static final Logger logger = Logger.getLogger(DefaultCryptoProvider.class);
 
 	private static final String SYMMETRIC_ALGORITHM = "AES/ECB/PKCS5Padding";
-	private static final int SYMMETRIC_KEY_LENGTH = 
-			//256;
-			128;
+	private static final int SYMMETRIC_KEY_LENGTH = 128;		//128 bit (16 bytes)
 
 	private static final String ASYMMETRIC_ALGORITHM = "DSA";
 	private static final String ASSYMETRIC_SIGNATURE_ALGORITHM = "SHA256withDSA";
@@ -230,13 +212,14 @@ public class DefaultCryptoProvider implements CryptoProvider
 	}
 
 
-	public Key getSeededKey(ImmutablePair<KeyHive, String> keyParams)
+	public Key getKey(ImmutablePair<KeyHive, String> keyParams)
 	{
 		Key masterKey = keys.get(keyParams.getLeft());
 
 		return masterKey;
 	}
 
+	
 	public Cipher getCipher(Key key, int cryptMode) throws InvalidKeyException
 	{
 		Cipher cipher = null;

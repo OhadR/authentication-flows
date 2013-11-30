@@ -31,11 +31,6 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 	
 	private CryptoProvider activeProvider;
 
-	/**
-	 * this const is used both by the oAuth server and the webapp. when the webapp wanna send hashed value to
-	 * the oAuth srv (or vice versa), they use this constant
-	 */
-	public static final String WATCHDOX_HASH_VALUE = "watchdox-hash-123";
 
 	/**
 	 * The size of a bare DSA signature (two 160-bit integers)
@@ -69,7 +64,7 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 
 	public Key getCryptoKey(String seed)
 	{
-		return activeProvider.getSeededKey(new ImmutablePair<KeyHive, String>(KeyHive.SYSTEM, seed));
+		return activeProvider.getKey(new ImmutablePair<KeyHive, String>(KeyHive.SYSTEM, seed));
 	}
 
 
@@ -104,14 +99,14 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 	//@Override
 	public String encryptAndBase64(byte[] data, Key key)
 	{
-		return Base64.encodeBase64String(encryptBytes(data, key));
+		return Base64.encodeBase64String( encryptBytes(data, key) );
 	}
 
 	//@Override
 	public byte[] decryptBase64(String base64andEncrypted, Key key) throws IllegalBlockSizeException,
 	                                                               BadPaddingException
 	{
-		return decryptBytes(Base64.decodeBase64(base64andEncrypted), key);
+		return decryptBytes( Base64.decodeBase64(base64andEncrypted), key );
 	}
 
 }

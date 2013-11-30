@@ -17,7 +17,7 @@ public interface CryptoProvider
 	 *            Specifies the hive and the seed for generating the seeded key.
 	 * @return A key that can be used with the getCipher() method.
 	 */
-	Key getSeededKey(ImmutablePair<KeyHive, String> keyParams);
+	Key getKey(ImmutablePair<KeyHive, String> keyParams);
 
 	/**
 	 * Returns a cipher object for symmetric data encrpytion.
