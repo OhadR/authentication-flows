@@ -24,7 +24,7 @@ public class KeystoreServiceImpl implements InitializingBean, KeystoreService
 
 	public void afterPropertiesSet() throws Exception
 	{
-		try
+/*		try
 		{
 			//note: we depend on the DefaultCryptoProvider !! names must match here and there!
 			KeyStore ks = KeyStore.getInstance("JKS");
@@ -39,7 +39,7 @@ public class KeystoreServiceImpl implements InitializingBean, KeystoreService
 		catch (Throwable e)
 		{
 			throw new IllegalArgumentException("Failed to read the private token key from the keystore", e);
-		}
+		}*/
 	}
 
 	public PrivateKey getPrivateKey()

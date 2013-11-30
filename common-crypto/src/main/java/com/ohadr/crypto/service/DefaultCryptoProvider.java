@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -49,8 +48,10 @@ public class DefaultCryptoProvider implements CryptoProvider
 {
 	private static final Logger logger = Logger.getLogger(DefaultCryptoProvider.class);
 
-	private static final String SYMMETRIC_ALGORITHM = "AES/CBC/PKCS5Padding";
-	private static final int SYMMETRIC_KEY_LENGTH = 256;
+	private static final String SYMMETRIC_ALGORITHM = "AES/ECB/PKCS5Padding";
+	private static final int SYMMETRIC_KEY_LENGTH = 
+			//256;
+			128;
 
 	private static final String ASYMMETRIC_ALGORITHM = "DSA";
 	private static final String ASSYMETRIC_SIGNATURE_ALGORITHM = "SHA256withDSA";
@@ -63,7 +64,7 @@ public class DefaultCryptoProvider implements CryptoProvider
 	private static final byte[] ZERO_IV = new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 	private final KeyStore keyStore;
-	private final Map<KeyHive, Key> keys = null;
+	private final Map<KeyHive, Key> keys;
 	private PrivateKey privateKey;
 	private Certificate certificate;
 
@@ -85,6 +86,8 @@ public class DefaultCryptoProvider implements CryptoProvider
 				}
 			}
 */			
+			keys = new HashMap<KeyHive, Key>();
+
 			keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
 			logger.info("Using keystore " + keystoreFile);
 			loadMasterKeys(keystoreFile, keystorePassword);
@@ -161,7 +164,7 @@ public class DefaultCryptoProvider implements CryptoProvider
 		}
 
 		// Load Symmetric keys
-/*		for (KeyHive hive : KeyHive.values())
+		for (KeyHive hive : KeyHive.values())
 		{
 			Key key = null;
 			String keyAlias = "WatchDox_" + hive.toString();
@@ -172,7 +175,7 @@ public class DefaultCryptoProvider implements CryptoProvider
 			}
 			catch (UnrecoverableKeyException e)
 			{
-				 This key does not exist; Will be created by the next if statement 
+				 //This key does not exist; Will be created by the next if statement 
 			}
 			if (key == null)
 			{
@@ -191,7 +194,7 @@ public class DefaultCryptoProvider implements CryptoProvider
 				logger.info("Loaded symmetric key: " + keyAlias);
 			}
 			keys.put(hive, key);
-		}*/
+		}
 
 		// Load asymmetric keys
 		char[] keyPassword = (password + "__" + ASYMMETRIC_KEY_NAME).toCharArray();
@@ -226,61 +229,12 @@ public class DefaultCryptoProvider implements CryptoProvider
 
 	}
 
-//TODO: needed?
-/*	private Key getSeeded256BitKey(KeyHive hive, String seed)
-	{
-		try
-		{
-			MessageDigest md = MessageDigest.getInstance("SHA256");
-			byte[] digest = md.digest(seed.getBytes());
-			Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-			Key masterKey = keys.get(hive);
-			cipher.init(Cipher.ENCRYPT_MODE, masterKey, new IvParameterSpec(ZERO_IV));
-			byte[] generatedKey = cipher.doFinal(digest);
-			return new SecretKeySpec(generatedKey, "AES");
-		}
-		catch (GeneralSecurityException e)
-		{
-			throw new CryptoException("Failed to create an extractable 256 bit key", e);
-		}
-	}
-*/
-	
+
 	public Key getSeededKey(ImmutablePair<KeyHive, String> keyParams)
 	{
 		Key masterKey = keys.get(keyParams.getLeft());
-		if (masterKey.getEncoded().length == 16)
-		{
-			if (keyParams.getLeft() == KeyHive.SYSTEM)
-			{
-				// System hive did not support seeding, so we just return the master key itself.
-				return masterKey;
-			}
 
-			// Old, 128-bit keys. We will use the old algorithm
-			try
-			{
-				Cipher cipher = javax.crypto.Cipher.getInstance("AES");
-				cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, masterKey);
-				byte[] encrypted = cipher.doFinal(keyParams.getRight().replaceAll("-", "").getBytes());
-				if (encrypted.length > 16)
-				{
-					encrypted = Arrays.copyOfRange(encrypted, 0, 16);
-				}
-				return new SecretKeySpec(encrypted, "AES");
-			}
-			catch (GeneralSecurityException e)
-			{
-				throw new CryptoException("Failed to create an extractable 256 bit key", e);
-			}
-		}
-		else
-		{
-			// New, 256-bit keys. We use a standard hashing function for generating the seeded key.
-			return 
-					//getSeeded256BitKey(keyParams.getLeft(), keyParams.getRight());
-					null;
-		}
+		return masterKey;
 	}
 
 	public Cipher getCipher(Key key, int cryptMode) throws InvalidKeyException
@@ -290,31 +244,20 @@ public class DefaultCryptoProvider implements CryptoProvider
 		{
 			if (key.getEncoded().length > 16)
 			{
-				cipher = javax.crypto.Cipher.getInstance(SYMMETRIC_ALGORITHM);
+				cipher = Cipher.getInstance(SYMMETRIC_ALGORITHM);
 			}
 			else
 			{
-				cipher = javax.crypto.Cipher.getInstance("AES");
+				cipher = Cipher.getInstance("AES");
 			}
 		}
 		catch (GeneralSecurityException e)
 		{
 			throw new CryptoException("Cipher creation failed", e);
 		}
-		try
-		{
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] ivContent = md.digest(key.getEncoded());
-			cipher.init(cryptMode, key, new IvParameterSpec(ivContent));
-		}
-		catch (InvalidAlgorithmParameterException e)
-		{
-			throw new CryptoException("Cipher creation failed", e);
-		}
-		catch (NoSuchAlgorithmException e)
-		{
-			throw new CryptoException("Cipher creation failed", e);
-		}
+
+		cipher.init(cryptMode, key);
+
 		return cipher;
 	}
 }
