@@ -42,13 +42,15 @@ public interface AuthenticationFlowsProcessor
 
 	public AccountState isAccountLocked(String email);
 
-	public void sendPasswordRestoreMail(String email);
+	public void sendPasswordRestoreMail(String email, 
+			String serverPath);
 
 	public String getSecretAnswer(String email);
 
 	public boolean setLoginFailureForUser(String email);
 
-	public void sendUnlockAccountMail(String email, String redirectUri);
+	public void sendUnlockAccountMail(String email, 
+			String serverPath);
 
 	public void setPassword(String email, String encodedPassword);
 

@@ -116,8 +116,7 @@ public class UserActionController
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
 //			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,			NOT IMPLEMENTED
 //			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception
+			HttpServletRequest request) throws Exception
 	{
 		RedirectView rv = new RedirectView();
 
@@ -128,7 +127,7 @@ public class UserActionController
 		
 //		InternalResourceView irv = new InternalResourceView();
 
-		PrintWriter writer = response.getWriter();
+		PrintWriter writer = null;
 
 		//validate the input:
 		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
@@ -146,14 +145,7 @@ public class UserActionController
 		String encodedPassword = encodeString(email, password);
 
 
-		String path = null;
-		String contextPath = request.getServletPath();					//e.g. /createAccount
-		String requestURL = request.getRequestURL().toString();			//e.g. https://ohadr.com:8443/client/createAccount
-		int indexOf = StringUtils.indexOf(requestURL, contextPath);
-		if(indexOf != -1)
-		{
-			path = StringUtils.substring(requestURL, 0, indexOf);
-		}
+		String path = getServerPath(request);
 		
 		Pair<String, String> retVal = flowsProcessor.createAccount(email, encodedPassword, path);
     	if( ! retVal.getLeft().equals(FlowsConstatns.OK))
@@ -184,6 +176,20 @@ public class UserActionController
 		rv.setUrl("login/accountCreatedSuccess.jsp");
 		return rv;
 
+	}
+
+
+	private String getServerPath(HttpServletRequest request)
+	{
+		String path = null;
+		String contextPath = request.getServletPath();					//e.g. /createAccount
+		String requestURL = request.getRequestURL().toString();			//e.g. https://ohadr.com:8443/client/createAccount
+		int indexOf = StringUtils.indexOf(requestURL, contextPath);
+		if(indexOf != -1)
+		{
+			path = StringUtils.substring(requestURL, 0, indexOf);
+		}
+		return path;
 	}
 
 
@@ -354,11 +360,13 @@ public class UserActionController
 			return rv;
 		}
 
-	    flowsProcessor.sendPasswordRestoreMail(email);
+		String path = getServerPath(request);
+
+		flowsProcessor.sendPasswordRestoreMail(email, path);
 
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
-		rv.setUrl("login/accountCreatedSuccess.htm");//AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE
+		rv.setUrl("login/passwordRestoreEmailSent.jsp");
 		return rv;
 	}
 

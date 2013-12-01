@@ -53,7 +53,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			AuthenticationUser oauthUser = oAuthRepository.getUser( email );
 			
 			//if user exist, but not activated - we allow re-registration:
-			if(oauthUser != null && !oauthUser.getEnabled())
+			if(oauthUser != null && !oauthUser.isActivated())
 			{
 				oAuthRepository.deleteOAuthAccount( email );
 			}
@@ -90,7 +90,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		
 		sendMail(email,
 				FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
-				FlowsConstatns.MailMessage.OAUTH_AUTHENTICATION_MAIL_BODY + activationUrl);
+				FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_BODY + activationUrl);
 		
 		return ImmutablePair.of(FlowsConstatns.OK, "");
 	}
@@ -141,9 +141,17 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	}
 
 	@Override
-	public void sendPasswordRestoreMail(String email) 
+	public void sendPasswordRestoreMail(String email,
+			String serverPath) 
 	{
-		// TODO Auto-generated method stub
+		String passwordRestoreUrl = serverPath + FlowsConstatns.RESTORE_PASSWORD_ENDPOINT +
+				"?" + 
+//				"a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + "&" + 
+				"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
+
+		sendMail(email,
+				FlowsConstatns.MailMessage.RESTORE_PASSWORD_MAIL_SUBJECT, 
+				FlowsConstatns.MailMessage.RESTORE_PASSWORD_MAIL_BODY + passwordRestoreUrl);
 
 	}
 
@@ -162,7 +170,9 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	}
 
 	@Override
-	public void sendUnlockAccountMail(String email, String redirectUri) {
+	public void sendUnlockAccountMail(String email, 
+			String serverPath)
+	{
 		// TODO Auto-generated method stub
 
 	}

@@ -28,7 +28,7 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 			AuthenticationUser user = new AuthenticationUser();
 			user.setEmail(email);
 			user.setPassword(encodedPassword);
-			user.setEnabled(false);
+			user.setActivated(false);
 			
 			users.put(email, user);
 			
@@ -66,5 +66,4 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 
 		return policy;
 	}
-
 }

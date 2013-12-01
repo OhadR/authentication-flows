@@ -25,6 +25,9 @@ public interface AuthenticationAccountRepository
 	void deleteOAuthAccount(String email);
 
 	void setEnabled(String email);
+	boolean isActivated(String email);
+
+	AccountState isAccountLocked(String email);
 
 	boolean changePassword(String username, String newEncodedPassword);
 	
@@ -36,7 +39,6 @@ public interface AuthenticationAccountRepository
 	 */
 	boolean setLoginFailure(String email, int maxPasswordEntryAttempts); 
 	void setLoginSuccess(String email);
-	AccountState isAccountLocked(String email);
 
 	/**
 	 * sets a password for a given user

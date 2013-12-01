@@ -20,9 +20,16 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	public void setEnabled (String email)
 	{
 		AuthenticationUser user = getUser(email);
-		user.setEnabled(true);
+		user.setActivated(true);
 	}
 	
+	@Override
+	public boolean isActivated(String email) 
+	{
+		AuthenticationUser user = getUser(email);
+		return user.isActivated();
+	}
+
 
 	@Override
 	public boolean setLoginFailure(String email, int maxPasswordEntryAttempts) 
@@ -39,7 +46,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 		if(++attempts >= maxPasswordEntryAttempts)
 		{
 			//lock the user:
-			user.setEnabled(false);
+			user.setActivated(false);
 			return true;
 		}
 		else
@@ -77,7 +84,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 			return AccountState.NOT_EXIST;
 		}
 		
-		boolean isLocked = !user.getEnabled() && user.getLoginAttemptsCounter() != 0;
+		boolean isLocked = !user.isActivated() && user.getLoginAttemptsCounter() != 0;
 		if(isLocked)
 		{
 			return AccountState.LOCKED;

@@ -6,6 +6,7 @@ import java.util.Date;
 public class AuthenticationUser 
 {
 	private String email;
+	private boolean activated;
 	
 	
 
@@ -19,15 +20,14 @@ public class AuthenticationUser
 		this.email = email;
 	}
 
-	public boolean getEnabled() 
+	public boolean isActivated() 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return activated;
 	}
 
-	public void setEnabled(boolean b) {
-		// TODO Auto-generated method stub
-		
+	public void setActivated(boolean b) 
+	{
+		activated = b;
 	}
 
 	public int getLoginAttemptsCounter() {
