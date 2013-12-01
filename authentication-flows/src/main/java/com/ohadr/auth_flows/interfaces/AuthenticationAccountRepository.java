@@ -9,7 +9,7 @@ import com.ohadr.auth_flows.types.AuthenticationUser;
 
 public interface AuthenticationAccountRepository 
 {
-	void createAccount(String email, 
+	AccountState createAccount(String email, 
 			String encodedPassword
 //			String secretQuestion, 		NOT IMPLEMENTED
 //			String encodedAnswer		NOT IMPLEMENTED

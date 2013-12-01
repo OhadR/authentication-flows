@@ -1,19 +1,21 @@
 package com.ohadr.auth_flows.core;
 
+import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.AuthenticationUser;
 
 
 //@Repository
-public class AuthenticationAccountRepositoryImpl extends AbstractAuthenticationAccountRepository 
+public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticationAccountRepository 
 {
 
 	@Override
-	public void createAccount(String email, String encodedPassword
+	public AccountState createAccount(String email, String encodedPassword
 			//NOT IMPLEMENTED: String secretQuestion, String encodedAnswer
 			)
 	{
 		// TODO Auto-generated method stub
+		return AccountState.OK;
 
 	}
 
