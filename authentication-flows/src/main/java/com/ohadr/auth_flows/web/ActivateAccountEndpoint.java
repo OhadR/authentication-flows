@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,23 +15,14 @@ import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.ContextLoader;
 
-import com.ohadr.auth_flows.config.OAuthServerProperties;
-import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
-import com.ohadr.crypto.service.CryptoService;
 
 @Controller
 @RequestMapping(value = "/aa")
-public class ActivateAccountEndpoint 
+public class ActivateAccountEndpoint extends FlowsEndpointsCommon 
 {
 	@Autowired
-	private OAuthServerProperties oAuthServerProperties;
-
-	@Autowired
 	private AuthenticationAccountRepository oAuthRepository;
-
-	@Autowired
-	private CryptoService	cryptoService;
 
 	
 	@RequestMapping
@@ -76,33 +66,5 @@ public class ActivateAccountEndpoint
 
 			response.sendRedirect(redirectUri);
 		}
-	}
-
-	
-	
-	private EmailExtractedData extractEmailData(HttpServletRequest request) 
-	{
-//		String encRedirectUri = FlowsUtil.getParamRedirectUri(request);
-		String encUserAndTimestamp = FlowsUtil.getParamsUserAndTimestamp(request);
-		
-		
-		EmailExtractedData extractedData = new EmailExtractedData();
-		ImmutablePair<Date, String> stringAndDate = cryptoService.extractStringAndDate(encUserAndTimestamp);
-		
-		
-		extractedData.userEmail = stringAndDate.getRight();
-		extractedData.emailCreationDate = stringAndDate.getLeft();
-//		extractedData.redirectUri = cryptoService.extractString(encRedirectUri);
-		extractedData.expired = (System.currentTimeMillis() - extractedData.emailCreationDate.getTime() > 
-			(oAuthServerProperties.getLinksExpirationMinutes() * 1000 * 60L));
-		return extractedData;
-	}
-	
-	private class EmailExtractedData
-	{
-		String redirectUri;
-		String userEmail;
-		Date emailCreationDate;
-		boolean expired;
 	}
 }
