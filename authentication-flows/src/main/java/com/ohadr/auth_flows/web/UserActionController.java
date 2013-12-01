@@ -370,113 +370,10 @@ public class UserActionController
 		return rv;
 	}
 
-	
-	/**
-	 * (2)
-	 * user clicks on the link in the "forgot password" email, and gets here.
-	 *  
-	 * @param email
-	 * @param encUserAndTimestamp
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/login/forgotPasswordLinkCallback")
-	protected View forgotPasswordLinkCallback(
-			@RequestParam(FlowsConstatns.HASH_PARAM_NAME) String encUserAndTimestamp,
-			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception
-	{
-		ImmutablePair<Date, String> stringAndDate = null;
-		try
-		{
-			stringAndDate = cryptoService.extractStringAndDate(encUserAndTimestamp);
-		}
-		catch(CryptoException cryptoEx)
-		{
-			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
-			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc"		//psnc = password not changed
-					);
-			return irv;		
-		}
-		
-		//check expiration:
-		boolean expired = (System.currentTimeMillis() - stringAndDate.getLeft().getTime()) > (oAuthServerProperties.getLinksExpirationMinutes() * 1000 * 60L);
-		if(expired)
-		{
-			log.error("link has expired");
-
-			//adding attributes to the redirect return value:
-			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc"		//psnc = password not changed
-					);
-			
-			return irv;
-		}
-
-		//after all the checks, all look good (link not expired, etc). so show the user the "set new password" page.
-		//if "secret question" is implemented, here you get the secret Q and show the user the screen to answer it. then
-		//check the answer, etc.  
-
-
-		RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/setNewPassword.htm"
-				+ "&"
-				+ FlowsConstatns.HASH_PARAM_NAME 
-				+ "=" + encUserAndTimestamp );
-
-		return irv;
-	}
-	
-
 	/**********************************************************************************************************/
-	@Deprecated
-	@RequestMapping("/login/setNewPasswordPage")
-	protected View setNewPasswordPage(@RequestParam(EMAIL_PARAM_NAME) String email,
-			@RequestParam(FlowsConstatns.HASH_PARAM_NAME) String encUserAndTimestamp,
-			HttpServletRequest request) throws Exception
-	{
-		ImmutablePair<Date, String> stringAndDate = null;
-		try
-		{
-			stringAndDate = cryptoService.extractStringAndDate(encUserAndTimestamp);
-		}
-		catch(CryptoException cryptoEx)
-		{
-			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
-			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc");		//psnc = password not changed
-			return irv;		
-		}
-		
-		//check expiration:
-		boolean expired = (System.currentTimeMillis() - stringAndDate.getLeft().getTime()) > (oAuthServerProperties.getLinksExpirationMinutes() * 1000 * 60L);
-		if(expired)
-		{
-			log.error("link has expired");
-
-			//adding attributes to the redirect return value:
-			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc");		//psnc = password not changed
-			
-			return irv;
-		}
-
-
-		if( ! stringAndDate.getRight().equals(email))
-		{
-			log.error("signed email is different than the email parameter");
-
-			RedirectView irv = new RedirectView("/" + FlowsConstatns.OAUTH_WEB_APP_NAME + "/login/index.htm?dt=psnc");		//psnc = password not changed
-			return irv;
-		}
-
-		return new InternalResourceView("/login/index.htm");
-	}
-
-
-
-
 
 	/**
-	 *  (5)
+	 *  (3)
 	 *  
 	 * @param email
 	 * @param password
@@ -538,7 +435,6 @@ public class UserActionController
 		writer.println(FlowsConstatns.OK);
 	}
 	/**********************************************************************************************************/
-	
 
 	
 	/**********************************************************************************************************/

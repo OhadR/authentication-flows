@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.auth_flows.types.FlowsConstatns;
-import com.ohadr.auth_flows.web.FlowsEndpointsCommon.EmailExtractedData;
 
+/**
+ * user clicks on the link in the "forgot password" email, and gets here.
+ * @author OhadR
+ *
+ */
 @Controller
 @RequestMapping(value = "/rp")
 public class RestorePasswordEndpoint extends FlowsEndpointsCommon
@@ -62,6 +66,7 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 			if(lastChange.after(emailCreationDate))
 			{
 				log.error("user " + extractedData.userEmail + " tried to use an expired link: password was already changed AFTER the timestamp of the link");
+//TODO
 				redirectUri = request.getContextPath() + "/login/index.htm"; 		//psns=password not changed 
 				response.sendRedirect( redirectUri );
 				return;
@@ -72,8 +77,17 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 //			String escaped = StringEscapeUtils.escapeHtml4( redirectUri );
 
 
-			response.sendRedirect(request.getContextPath() + "/login/forgotPasswordLinkCallback?"
-					+ FlowsConstatns.HASH_PARAM_NAME + "=" + encodedEmailAndTimestamp	);
+			
+			//after all the checks, all look good (link not expired, etc). so show the user the "set new password" page.
+			//if "secret question" is implemented, here you get the secret Q and show the user the screen to answer it. then
+			//check the answer, etc.  
+
+			redirectUri = request.getContextPath() + "/login/setNewPassword.htm"
+					+ "&"
+					+ FlowsConstatns.HASH_PARAM_NAME 
+					+ "=" + encodedEmailAndTimestamp;
+
+			response.sendRedirect( redirectUri );
 		}
 	}
 }
