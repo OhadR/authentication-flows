@@ -38,6 +38,7 @@ import com.ohadr.auth_flows.types.FlowsConstatns;
 public class UserActionController
 {
 
+	private static final String ACCOUNT_CREATION_FAILED = "Account Creation Failed";
 	public static final String PASSWORD_IS_INCORRECT = "password is incorrect";
 	public static final String USER_DOES_NOT_EXIST = "user does not exist";
 	public static final String BAD_EMAIL_PARAM = "Bad email param";
@@ -52,7 +53,7 @@ public class UserActionController
 	public static final String CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD = "CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD";
 	public static final String ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE = "Account creation has failed. Please note the password policy and try again. Error message: ";
 	public static final String SECRET_ANSWER_CANNOT_CONTAIN_THE_PASSWORD_AND_VICE_VERSA = "Secret Answer cannot contain the password, and vice versa.";
-	public static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "account locked or does not exist";
+	public static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "Account is locked or does not exist";
 	public static final String SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE = "Setting a new password has failed. Please note the password policy and try again. Error message: ";
 	public static final String AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE = "an email was sent to the given address. click on the link there";
 
@@ -61,6 +62,7 @@ public class UserActionController
 //	private static final String LOGIN_ERROR_ATTRIB = "error";
 	private static final String ERR_MSG = "err_msg";
 	private static final String DELIMITER = "|";
+	private static final String ERR_HEADER = "err_header";
 
 
 
@@ -160,10 +162,12 @@ public class UserActionController
 
 			log.error(errorText);
 
-			attributes.put(ERR_MSG,  errorText);		
+			attributes.put(ERR_MSG,  errorText);
+			attributes.put(ERR_HEADER,  ACCOUNT_CREATION_FAILED);
+			
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/accountCreationFailed.jsp");
+			rv.setUrl("login/error.jsp");
 			return rv;
     	}
         
@@ -323,27 +327,39 @@ public class UserActionController
 	 * @throws Exception
 	 */
 	@RequestMapping("/forgotPasswordPage")
-	protected void forgotPasswordPage(	
+	protected View forgotPasswordPage(	
 			@RequestParam(EMAIL_PARAM_NAME) String email,
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception
 	{
-		PrintWriter writer = response.getWriter();
+		RedirectView rv = new RedirectView();
 
+//		request.setAttribute("email", email);
+		Map<String, String> attributes = new HashMap<String, String>();
+		attributes.put(EMAIL_PARAM_NAME,  email);		
+
+		
 		//if account is already locked, no need to ask the user the secret question:
 		AccountState accountState = flowsProcessor.isAccountLocked(email);
 		if( accountState != AccountState.OK )
 		{
-			//account has been locked: do not check the user's answer, but notify user:
-			writer.println(ERR_MSG + DELIMITER + ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
-			return;
+			//account has been locked/does not exist: notify user:
+			log.error(ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
+
+			attributes.put(ERR_MSG,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);		
+			attributes.put(ERR_HEADER,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl("login/error.jsp");		//TODO make "account creation failed" more generic error page
+			return rv;
 		}
 
 	    flowsProcessor.sendPasswordRestoreMail(email);
 
-		writer.println(FlowsConstatns.OK + DELIMITER + AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE);
-		//TODO: UI, instead of showing "secret Q" screen, show somethink like "an email has been sent"
-
+		//adding attributes to the redirect return value:
+		rv.setAttributesMap(attributes);
+		rv.setUrl("login/accountCreatedSuccess.htm");//AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE
+		return rv;
 	}
 
 	
