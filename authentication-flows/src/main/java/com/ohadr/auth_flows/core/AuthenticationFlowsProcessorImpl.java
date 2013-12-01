@@ -58,9 +58,14 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 				oAuthRepository.deleteOAuthAccount( email );
 			}
 
-			oAuthRepository.createAccount(email, encodedPassword
+			AccountState accountState = oAuthRepository.createAccount(email, encodedPassword
 					//NOT IMPLEMENTED		secretQuestion, encodedAnswer
 					);
+			if(accountState == AccountState.ALREADY_EXIST)
+			{
+				log.error( "Account ALREADY_EXIST for user " + email );
+				return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
+			}
 		}
 		catch(DataIntegrityViolationException e)
 		{

@@ -52,7 +52,6 @@ public class UserActionController
 	public static final String CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD = "CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD";
 	public static final String ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE = "Account creation has failed. Please note the password policy and try again. Error message: ";
 	public static final String SECRET_ANSWER_CANNOT_CONTAIN_THE_PASSWORD_AND_VICE_VERSA = "Secret Answer cannot contain the password, and vice versa.";
-	public static final String ACCOUNT_CREATION_HAS_FAILED_PLEASE_TRY_AGAIN_ERROR_MESSAGE = "Account creation has failed. Please try again. Error message: ";
 	public static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "account locked or does not exist";
 	public static final String SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE = "Setting a new password has failed. Please note the password policy and try again. Error message: ";
 	public static final String AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE = "an email was sent to the given address. click on the link there";
@@ -120,6 +119,11 @@ public class UserActionController
 	{
 		RedirectView rv = new RedirectView();
 
+//		request.setAttribute("email", email);
+		Map<String, String> attributes = new HashMap<String, String>();
+		attributes.put(EMAIL_PARAM_NAME,  email);		
+
+		
 //		InternalResourceView irv = new InternalResourceView();
 
 		PrintWriter writer = response.getWriter();
@@ -156,9 +160,10 @@ public class UserActionController
 
 			log.error(errorText);
 
-			//redirecting back to the same page, just add a message to the screen and let the user re-try:
-			writer.println(ERR_MSG + DELIMITER + 
-					unescapeJaveAndEscapeHtml( ACCOUNT_CREATION_HAS_FAILED_PLEASE_TRY_AGAIN_ERROR_MESSAGE + errorText ));
+			attributes.put(ERR_MSG,  errorText);		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl("login/accountCreationFailed.jsp");
 			return rv;
     	}
         
@@ -169,10 +174,6 @@ public class UserActionController
         //get the "remem-me" bean and update its validity:
 //TODO		rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
                 
-
-//		request.setAttribute("email", email);
-		Map<String, String> attributes = new HashMap<String, String>();
-		attributes.put(EMAIL_PARAM_NAME,  email);		
 
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
