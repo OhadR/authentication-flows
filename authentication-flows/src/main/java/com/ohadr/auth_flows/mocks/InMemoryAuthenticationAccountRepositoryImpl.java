@@ -1,5 +1,6 @@
 package com.ohadr.auth_flows.mocks;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 			user.setEmail(email);
 			user.setPassword(encodedPassword);
 			user.setActivated(false);
+			user.setPasswordLastChangeDate( new Date(System.currentTimeMillis()) );
 			
 			users.put(email, user);
 			

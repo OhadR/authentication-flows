@@ -5,8 +5,9 @@ import java.util.Date;
 
 public class AuthenticationUser 
 {
-	private String email;
-	private boolean activated;
+	private String 		email;
+	private boolean 	activated;
+	private Date 		passwordLastChangeDate;
 	
 	
 
@@ -45,19 +46,14 @@ public class AuthenticationUser
 		
 	}
 
-	public void setPasswordLastChangeDate(Date date) {
-		// TODO Auto-generated method stub
-		
+	public void setPasswordLastChangeDate(Date date) 
+	{
+		passwordLastChangeDate = date;
 	}
 
-	public String getAnswerToSecretQuestion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Date getPasswordLastChangeDate() {
-		// TODO Auto-generated method stub
-		return null;
+	public Date getPasswordLastChangeDate() 
+	{
+		return passwordLastChangeDate;
 	}
 
 	public String getPassword() {
