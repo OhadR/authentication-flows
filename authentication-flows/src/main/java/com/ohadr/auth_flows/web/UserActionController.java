@@ -375,7 +375,7 @@ public class UserActionController
 	/**
 	 *  (3)
 	 *  
-	 * @param email
+	 * @param encUserAndTimestamp
 	 * @param password
 	 * @return
 	 * @throws Exception

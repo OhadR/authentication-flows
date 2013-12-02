@@ -83,7 +83,7 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 			//check the answer, etc.  
 
 			redirectUri = request.getContextPath() + "/login/setNewPassword.htm"
-					+ "&"
+					+ "?"
 					+ FlowsConstatns.HASH_PARAM_NAME 
 					+ "=" + encodedEmailAndTimestamp;
 
