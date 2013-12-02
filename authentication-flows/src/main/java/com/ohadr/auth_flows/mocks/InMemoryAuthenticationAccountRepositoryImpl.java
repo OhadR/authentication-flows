@@ -7,9 +7,9 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
+import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
-import com.ohadr.auth_flows.types.AuthenticationUser;
 
 
 @Component
@@ -17,6 +17,14 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 {
 	private Map<String, AuthenticationUser> users = new HashMap<String, AuthenticationUser>();
 
+	
+	public InMemoryAuthenticationAccountRepositoryImpl()
+	{
+		createAccount("ohad@ohadr.com", "aaaa");		
+	}
+	
+	
+	
 	@Override
 	public AccountState createAccount(String email, String encodedPassword)
 	{
@@ -26,7 +34,7 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 		}
 		else
 		{
-			AuthenticationUser user = new AuthenticationUser();
+			AuthenticationUser user = new InMemoryAuthenticationUserImpl();
 			user.setEmail(email);
 			user.setPassword(encodedPassword);
 			user.setActivated(false);

@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
-import com.ohadr.auth_flows.types.AuthenticationUser;
 
 
 public interface AuthenticationAccountRepository 

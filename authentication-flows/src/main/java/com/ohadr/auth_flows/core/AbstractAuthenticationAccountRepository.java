@@ -4,8 +4,8 @@ package com.ohadr.auth_flows.core;
 import java.util.Date;
 
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
+import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 import com.ohadr.auth_flows.types.AccountState;
-import com.ohadr.auth_flows.types.AuthenticationUser;
 
 
 public abstract class AbstractAuthenticationAccountRepository implements AuthenticationAccountRepository
