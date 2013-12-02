@@ -12,7 +12,7 @@ import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
 
-@Component
+//@Component
 public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthenticationAccountRepository 
 {
 	private Map<String, AuthenticationUser> users = new HashMap<String, AuthenticationUser>();

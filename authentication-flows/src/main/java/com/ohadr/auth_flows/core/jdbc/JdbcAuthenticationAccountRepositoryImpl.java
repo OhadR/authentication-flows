@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
-import com.ohadr.auth_flows.mocks.InMemoryAuthenticationUserImpl;
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
@@ -72,9 +71,15 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	}
 
 	@Override
-	public AuthenticationPolicy getAuthenticationPolicy() {
-		// TODO Auto-generated method stub
-		return null;
+	public AuthenticationPolicy getAuthenticationPolicy()
+	{
+		// TODO read from DB!!!
+		AuthenticationPolicy policy = new AuthenticationPolicy();
+		policy.setMaxPasswordEntryAttempts( 5 );
+		policy.setPasswordMaxLength( 8 );
+		policy.setRememberMeTokenValidityInDays( 30 );
+
+		return policy;
 	}
 
 }
