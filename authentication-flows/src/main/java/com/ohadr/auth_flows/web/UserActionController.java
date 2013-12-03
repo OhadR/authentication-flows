@@ -346,7 +346,7 @@ public class UserActionController
 
 		
 		//if account is already locked, no need to ask the user the secret question:
-		AccountState accountState = flowsProcessor.isAccountLocked(email);
+		AccountState accountState = flowsProcessor.getAccountState(email);
 		if( accountState != AccountState.OK )
 		{
 			//account has been locked/does not exist: notify user:
@@ -461,7 +461,7 @@ public class UserActionController
 
 		// we need to check is account locked?! (for hackers...)
 		//if account is already locked, no need to ask the user the secret question:
-		AccountState accountState = flowsProcessor.isAccountLocked(email);
+		AccountState accountState = flowsProcessor.getAccountState(email);
 		if( accountState != AccountState.OK )
 		{
 			//account has been locked: do not check the user's answer, but notify user:
@@ -532,7 +532,7 @@ public class UserActionController
 		
 		String isLockedStr = "false";
 		
-		AccountState accountState = flowsProcessor.isAccountLocked(email);
+		AccountState accountState = flowsProcessor.getAccountState(email);
 		if( accountState == AccountState.LOCKED )
 		{
 			isLockedStr = "true";

@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
 import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 import com.ohadr.auth_flows.types.AccountState;
@@ -76,4 +74,12 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 
 		return policy;
 	}
+	
+	@Override
+	public void setEnabled(String email) 
+	{
+		AuthenticationUser user = getUser(email);
+		user.setActivated(true);
+	}
+
 }

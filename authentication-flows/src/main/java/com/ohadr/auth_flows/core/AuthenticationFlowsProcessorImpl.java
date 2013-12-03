@@ -135,7 +135,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	}
 
 	@Override
-	public AccountState isAccountLocked(String email) 
+	public AccountState getAccountState(String email) 
 	{
 		return oAuthRepository.isAccountLocked(email);
 	}

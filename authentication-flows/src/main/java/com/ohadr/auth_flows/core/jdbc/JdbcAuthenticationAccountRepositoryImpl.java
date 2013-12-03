@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
@@ -24,7 +23,7 @@ import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
 
-@Repository
+//@Repository
 public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticationAccountRepository
 		implements InitializingBean
 {
@@ -43,7 +42,12 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 			+ " from " + TABLE_NAME + " where EMAIL = ?";
 
 	private static final String DEFAULT_USER_DELETE_STATEMENT = "delete from " + TABLE_NAME + " where EMAIL = ?";
+	
+	private static final String DEFAULT_UPDATE_PASSWORD_STATEMENT = "update " + TABLE_NAME + " set password = ? where EMAIL = ?";
+	
+	private static final String DEFAULT_UPDATE_ACTIVATED_STATEMENT = "update " + TABLE_NAME + " set enabled = ? where EMAIL = ?";
 
+	
 	@Autowired
 	private DataSource dataSource;
 
@@ -65,9 +69,9 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 				new Object[] { email, encodedPassword, false, 0, new Date( System.currentTimeMillis()) },
 				new int[] { Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.DATE });
 
-		if(rowsUpdated == 1)
+		if(rowsUpdated != 1)
 		{
-			return AccountState.OK;
+			throw new RuntimeException("could not insert new entry to DB");
 		}
 		
 		return AccountState.OK;
@@ -97,10 +101,9 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	@Override
 	public void deleteOAuthAccount(String email)
 	{
-		AuthenticationUser user = getUser(email);
-
 		int count = jdbcTemplate.update(DEFAULT_USER_DELETE_STATEMENT, email);
-		if (count != 1) {
+		if (count != 1)
+		{
 			throw new NoSuchElementException("No user with email: " + email);
 		}
 	}
@@ -147,6 +150,17 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 			user.setPasswordLastChangeDate(rs.getDate(5));
 			
 			return user;
+		}
+	}
+
+
+	@Override
+	public void setEnabled(String email) 
+	{
+		int count = jdbcTemplate.update(DEFAULT_UPDATE_ACTIVATED_STATEMENT, true, email);
+		if (count != 1)
+		{
+			throw new NoSuchElementException("No user with email: " + email);
 		}
 	}
 

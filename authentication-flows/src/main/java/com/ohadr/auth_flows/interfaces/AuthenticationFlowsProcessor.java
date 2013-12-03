@@ -40,7 +40,7 @@ public interface AuthenticationFlowsProcessor
 
 	public AuthenticationPolicy getAuthenticationSettings();
 
-	public AccountState isAccountLocked(String email);
+	public AccountState getAccountState(String email);
 
 	public void sendPasswordRestoreMail(String email, 
 			String serverPath);

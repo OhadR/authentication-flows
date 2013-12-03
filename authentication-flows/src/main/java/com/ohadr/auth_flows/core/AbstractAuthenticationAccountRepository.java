@@ -17,13 +17,6 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	
 
 	@Override
-	public void setEnabled (String email)
-	{
-		AuthenticationUser user = getUser(email);
-		user.setActivated(true);
-	}
-	
-	@Override
 	public boolean isActivated(String email) 
 	{
 		AuthenticationUser user = getUser(email);
@@ -84,11 +77,18 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 			return AccountState.NOT_EXIST;
 		}
 		
-		boolean isLocked = !user.isActivated() && user.getLoginAttemptsCounter() != 0;
-		if(isLocked)
+		if(!user.isActivated())
 		{
-			return AccountState.LOCKED;
+			if( user.getLoginAttemptsCounter() != 0 )
+			{
+				return AccountState.LOCKED;
+			}
+			else
+			{
+				return AccountState.DEACTIVATED;
+			}
 		}
+
 		return AccountState.OK;
 	}
 
