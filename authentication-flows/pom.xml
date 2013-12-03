@@ -102,10 +102,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 
-		<!-- dependency>
-			<groupId>jamon</groupId>
+		<dependency>
+			<groupId>com.jamonapi</groupId>
 			<artifactId>jamon</artifactId>
-		</dependency-->
+		</dependency>
+            		
 		<!-- ++++++++++++++++++++++++++++++++++++ -->
 
 
@@ -136,12 +137,12 @@
 			<artifactId>mail</artifactId>
 		</dependency>
 		
-		
-		<dependency>
+		<!-- dont need javax.persistency since I wrok with Spring objects, and parse them with jackson -->
+		<!-- dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>ejb3-persistence</artifactId>
 			<version>3.3.2.Beta1</version>
-		</dependency>
+		</dependency-->
             
 		
 
