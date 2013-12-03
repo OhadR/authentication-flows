@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -27,15 +28,19 @@ import com.ohadr.auth_flows.types.AuthenticationPolicy;
 public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticationAccountRepository
 		implements InitializingBean
 {
-	private static final String TABLE_NAME = "auth_user";
+	private static Logger log = Logger.getLogger(JdbcAuthenticationAccountRepositoryImpl.class);
 
-	private static final String AUTHENTICATION_USER_FIELDS = null;
+	private static final String TABLE_NAME = "auth_users";
+
+	private static final String AUTHENTICATION_USER_FIELDS = "email, password, enabled, "
+			+ "LOGIN_ATTEMPTS_COUNTER,"
+			+ "LAST_PSWD_CHANGE_DATE";
 
 	private static final String DEFAULT_USER_INSERT_STATEMENT = "insert into " + TABLE_NAME + "(" + AUTHENTICATION_USER_FIELDS
-			+ ") values (?,?,?,?,?,?,?,?,?,?)";
+			+ ") values (?,?,?,?,?)";
 
 	private static final String DEFAULT_USER_SELECT_STATEMENT = "select " + AUTHENTICATION_USER_FIELDS
-			+ " from oauth_client_details where client_id = ?";
+			+ " from " + TABLE_NAME + " where EMAIL = ?";
 
 	private static final String DEFAULT_USER_DELETE_STATEMENT = "delete from " + TABLE_NAME + " where EMAIL = ?";
 
@@ -44,8 +49,6 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 	private JdbcTemplate jdbcTemplate;
 
-//	protected EntityManager entityManager;
-
 	@Override
 	public void afterPropertiesSet() throws Exception 
 	{
@@ -53,29 +56,19 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
-/*	@PersistenceContext(unitName = "oauth")
-	public void setEntityManager(EntityManager entityManager)
-	{
-		this.entityManager = entityManager;
-	}
-*/
 	@Override
 	public AccountState createAccount(String email, String encodedPassword
 			//NOT IMPLEMENTED: String secretQuestion, String encodedAnswer
 			)
 	{
-		AuthenticationUser user = new JdbcAuthenticationUserImpl();
-		user.setEmail(email);
-		user.setPassword(encodedPassword);
-		user.setActivated( false );
-		user.setLoginAttemptsCounter(0);
-		user.setPasswordLastChangeDate(new Date( System.currentTimeMillis() ));
-//		entityManager.persist(user);
-
-		jdbcTemplate.update(DEFAULT_USER_INSERT_STATEMENT,
-				new Object[] { email, encodedPassword, false, 0, null },
+		int rowsUpdated = jdbcTemplate.update(DEFAULT_USER_INSERT_STATEMENT,
+				new Object[] { email, encodedPassword, false, 0, new Date( System.currentTimeMillis()) },
 				new int[] { Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.DATE });
 
+		if(rowsUpdated == 1)
+		{
+			return AccountState.OK;
+		}
 		
 		return AccountState.OK;
 
@@ -87,13 +80,14 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		AuthenticationUser userFromDB = null;
 		try
 		{
+			log.info("query: " + DEFAULT_USER_SELECT_STATEMENT + " " + email);
 			userFromDB = jdbcTemplate.queryForObject(DEFAULT_USER_SELECT_STATEMENT, 
 					new AuthenticationUserRowMapper(), email);
 		}
 		catch (EmptyResultDataAccessException e) 
 		{
-			throw new NoSuchElementException("No user with email: " + email);
-//			log.info();
+			log.info("no record was found for email=" + email);
+//			throw new NoSuchElementException("No user with email: " + email);
 		}
 
 
@@ -143,29 +137,15 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	
 	private static class AuthenticationUserRowMapper implements RowMapper<AuthenticationUser>
 	{
-//		private ObjectMapper mapper = new ObjectMapper();
-
 		public AuthenticationUser mapRow(ResultSet rs, int rowNum) throws SQLException 
 		{
 			AuthenticationUser user = new InMemoryAuthenticationUserImpl();
-/*			user.setClientSecret(rs.getString(2));
-			if (rs.getObject(8) != null) {
-				user.setAccessTokenValiditySeconds(rs.getInt(8));
-			}
-			if (rs.getObject(9) != null) {
-				user.setRefreshTokenValiditySeconds(rs.getInt(9));
-			}
-			String json = rs.getString(10);
-			if (json != null) {
-				try {
-					@SuppressWarnings("unchecked")
-					Map<String, Object> additionalInformation = mapper.readValue(json, Map.class);
-					user.setAdditionalInformation(additionalInformation);
-				}
-				catch (Exception e) {
-					logger.warn("Could not decode JSON for additional information: " + user, e);
-				}
-			}*/
+			user.setEmail(rs.getString(1));
+			user.setPassword(rs.getString(2));
+			user.setActivated(rs.getBoolean(3));
+			user.setLoginAttemptsCounter(rs.getInt(4));
+			user.setPasswordLastChangeDate(rs.getDate(5));
+			
 			return user;
 		}
 	}

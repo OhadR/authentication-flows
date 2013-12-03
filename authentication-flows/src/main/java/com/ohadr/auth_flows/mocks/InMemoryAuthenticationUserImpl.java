@@ -8,8 +8,10 @@ import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 public class InMemoryAuthenticationUserImpl implements AuthenticationUser 
 {
 	private String 		email;
+	private String 		password;
 	private boolean 	activated;
 	private Date 		passwordLastChangeDate;
+	private int 		loginAttemptsCounter;
 	
 	
 
@@ -31,6 +33,25 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 		this.email = email;
 	}
 
+
+	/* (non-Javadoc)
+	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setPassword(java.lang.String)
+	 */
+	@Override
+	public void setPassword(String newPassword) 
+	{
+		password = newPassword;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getPassword()
+	 */
+	@Override
+	public String getPassword()
+	{
+		return password;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#isActivated()
 	 */
@@ -53,28 +74,20 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getLoginAttemptsCounter()
 	 */
 	@Override
-	public int getLoginAttemptsCounter() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getLoginAttemptsCounter() 
+	{
+		return loginAttemptsCounter;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setLoginAttemptsCounter(int)
 	 */
 	@Override
-	public void setLoginAttemptsCounter(int attempts) {
-		// TODO Auto-generated method stub
-		
+	public void setLoginAttemptsCounter(int attempts) 
+	{
+		loginAttemptsCounter = attempts;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setPassword(java.lang.String)
-	 */
-	@Override
-	public void setPassword(String newPassword) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	/* (non-Javadoc)
 	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setPasswordLastChangeDate(java.util.Date)
@@ -94,13 +107,5 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 		return passwordLastChangeDate;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getPassword()
-	 */
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
