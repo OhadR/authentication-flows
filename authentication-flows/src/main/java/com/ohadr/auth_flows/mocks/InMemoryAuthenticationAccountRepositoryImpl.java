@@ -32,10 +32,10 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 		}
 		else
 		{
-			AuthenticationUser user = new InMemoryAuthenticationUserImpl();
-			user.setEmail(email);
-			user.setPassword(encodedPassword);
-			user.setActivated(false);
+			AuthenticationUser user = new InMemoryAuthenticationUserImpl(email,
+					encodedPassword,
+					false);
+
 			user.setPasswordLastChangeDate( new Date(System.currentTimeMillis()) );
 			
 			users.put(email, user);
@@ -57,11 +57,34 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
+	@Override
+	public boolean setPassword(String email, String newPassword)
+	{
+		return changePassword(email, newPassword);
+	}
+
 
 	@Override
-	public boolean changePassword(String username, String newEncodedPassword) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean changePassword(String username, String newEncodedPassword) 
+	{
+		AuthenticationUser storedUser = getUser(username);
+		if(storedUser != null)
+		{
+			AuthenticationUser newUser = new InMemoryAuthenticationUserImpl(
+					username, newEncodedPassword, true);
+			newUser.setPasswordLastChangeDate(new Date( System.currentTimeMillis() ));
+
+			//delete old user and set a new one, since iface does not support "setPassword()":
+			users.remove(username);
+			users.put(username, newUser);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override
@@ -76,10 +99,51 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	}
 	
 	@Override
-	public void setEnabled(String email) 
+	public void setEnabled(String username) 
 	{
-		AuthenticationUser user = getUser(email);
-		user.setActivated(true);
+		setEnabledFlag(username, true);
+	}
+
+	@Override
+	public void setDisabled(String username) 
+	{
+		setEnabledFlag(username, false);
+	}
+
+
+
+	@Override
+	protected void setEnabledFlag(String username, boolean flag) 
+	{
+		AuthenticationUser storedUser = getUser(username);
+		if(storedUser != null)
+		{
+			AuthenticationUser newUser = new InMemoryAuthenticationUserImpl(
+					username, storedUser.getPassword(), flag);
+
+			//delete old user and set a new one, since iface does not support "setPassword()":
+			users.remove(username);
+			users.put(username, newUser);
+		}
+	}
+
+
+
+	@Override
+	protected void updateLoginAttemptsCounter(String username, int attempts) 
+	{
+		AuthenticationUser storedUser = getUser(username);
+		if(storedUser != null)
+		{
+			AuthenticationUser newUser = new InMemoryAuthenticationUserImpl(
+					username, storedUser.getPassword(),
+					storedUser.isEnabled());
+			newUser.setLoginAttemptsCounter(attempts);
+			
+			//delete old user and set a new one, since iface does not support "setPassword()":
+			users.remove(username);
+			users.put(username, newUser);
+		}
 	}
 
 }

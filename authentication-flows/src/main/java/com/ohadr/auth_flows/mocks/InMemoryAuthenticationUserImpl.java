@@ -1,7 +1,10 @@
 package com.ohadr.auth_flows.mocks;
 
 
+import java.util.Collection;
 import java.util.Date;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 
@@ -14,34 +17,25 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	private int 		loginAttemptsCounter;
 	
 	
+	public InMemoryAuthenticationUserImpl(
+			String username,
+			String password,
+			boolean activated)
+	{
+		this.email = username;
+		this.password = password;
+		this.activated = activated;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getEmail()
 	 */
 	@Override
-	public String getEmail() 
+	public String getUsername() 
 	{
 		return email;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setEmail(java.lang.String)
-	 */
-	@Override
-	public void setEmail(String email)
-	{
-		this.email = email;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setPassword(java.lang.String)
-	 */
-	@Override
-	public void setPassword(String newPassword) 
-	{
-		password = newPassword;
-	}
 
 	/* (non-Javadoc)
 	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getPassword()
@@ -56,18 +50,9 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#isActivated()
 	 */
 	@Override
-	public boolean isActivated() 
+	public boolean isEnabled() 
 	{
 		return activated;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setActivated(boolean)
-	 */
-	@Override
-	public void setActivated(boolean b) 
-	{
-		activated = b;
 	}
 
 	/* (non-Javadoc)
@@ -105,6 +90,30 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	public Date getPasswordLastChangeDate() 
 	{
 		return passwordLastChangeDate;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

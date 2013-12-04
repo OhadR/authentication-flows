@@ -24,6 +24,7 @@ public interface AuthenticationAccountRepository
 	void deleteOAuthAccount(String email);
 
 	void setEnabled(String email);
+	void setDisabled(String email);
 	boolean isActivated(String email);
 
 	AccountState isAccountLocked(String email);

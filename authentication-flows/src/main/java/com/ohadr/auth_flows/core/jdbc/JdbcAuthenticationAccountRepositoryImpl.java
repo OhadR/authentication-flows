@@ -43,9 +43,14 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 	private static final String DEFAULT_USER_DELETE_STATEMENT = "delete from " + TABLE_NAME + " where USERNAME = ?";
 	
-	private static final String DEFAULT_UPDATE_PASSWORD_STATEMENT = "update " + TABLE_NAME + " set password = ? where USERNAME = ?";
+	//upon settign new password, set also the "last changed":
+	private static final String DEFAULT_UPDATE_PASSWORD_STATEMENT = "update " + TABLE_NAME + 
+			" set password = ? and LAST_PSWD_CHANGE_DATE = ? where USERNAME = ?";
 	
-	private static final String DEFAULT_UPDATE_ACTIVATED_STATEMENT = "update " + TABLE_NAME + " set enabled = ? where USERNAME = ?";
+	private static final String DEFAULT_UPDATE_ACTIVATED_STATEMENT = "update " + TABLE_NAME + 
+			" set enabled = ? where USERNAME = ?";
+
+	private static final String DEFAULT_UPDATE_ATTEMPTS_CNTR_STATEMENT = null;
 
 	
 	@Autowired
@@ -111,17 +116,15 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	@Override
 	public boolean changePassword(String username, String newEncodedPassword) 
 	{
-		AuthenticationUser user = getUser(username);
-		if(user != null)
+		int count = jdbcTemplate.update(DEFAULT_UPDATE_PASSWORD_STATEMENT, 
+				newEncodedPassword,
+				new Date( System.currentTimeMillis()),
+				username);
+		if (count != 1)
 		{
-			user.setPassword(newEncodedPassword);
-			user.setPasswordLastChangeDate(new Date( System.currentTimeMillis() ));
-			return true;
+			throw new NoSuchElementException("No user with email: " + username);
 		}
-		else
-		{
-			return false;
-		}
+		return true;
 	}
 
 	@Override
@@ -142,10 +145,12 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	{
 		public AuthenticationUser mapRow(ResultSet rs, int rowNum) throws SQLException 
 		{
-			AuthenticationUser user = new InMemoryAuthenticationUserImpl();
-			user.setEmail(rs.getString(1));
-			user.setPassword(rs.getString(2));
-			user.setActivated(rs.getBoolean(3));
+			AuthenticationUser user = new InMemoryAuthenticationUserImpl(
+					rs.getString(1),		//username / email
+					rs.getString(2),		//password
+					rs.getBoolean(3)		//activated?
+					);
+
 			user.setLoginAttemptsCounter(rs.getInt(4));
 			user.setPasswordLastChangeDate(rs.getDate(5));
 			
@@ -155,9 +160,38 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 
 	@Override
+	public boolean setPassword(String email, String newPassword) 
+	{
+		return changePassword(email, newPassword);
+	}
+
+	/******************************************************************/	
+	@Override
 	public void setEnabled(String email) 
 	{
-		int count = jdbcTemplate.update(DEFAULT_UPDATE_ACTIVATED_STATEMENT, true, email);
+		setEnabledFlag(email, true);
+	}
+
+	@Override
+	public void setDisabled(String email) 
+	{
+		setEnabledFlag(email, false);
+	}
+
+	@Override
+	protected void setEnabledFlag(String email, boolean flag) 
+	{
+		int count = jdbcTemplate.update(DEFAULT_UPDATE_ACTIVATED_STATEMENT, flag, email);
+		if (count != 1)
+		{
+			throw new NoSuchElementException("No user with email: " + email);
+		}
+	}
+
+	@Override
+	protected void updateLoginAttemptsCounter(String email, int attempts) 
+	{
+		int count = jdbcTemplate.update(DEFAULT_UPDATE_ATTEMPTS_CNTR_STATEMENT, attempts, email);
 		if (count != 1)
 		{
 			throw new NoSuchElementException("No user with email: " + email);

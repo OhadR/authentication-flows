@@ -10,6 +10,9 @@ import com.ohadr.auth_flows.types.AccountState;
 
 public abstract class AbstractAuthenticationAccountRepository implements AuthenticationAccountRepository
 {
+	protected abstract void setEnabledFlag(String email, boolean flag);
+	protected abstract void updateLoginAttemptsCounter(String email, int attempts); 
+	
 	public AbstractAuthenticationAccountRepository()
 	{
 		System.out.println(this.getClass().getName() + " created");
@@ -20,7 +23,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	public boolean isActivated(String email) 
 	{
 		AuthenticationUser user = getUser(email);
-		return user.isActivated();
+		return user.isEnabled();
 	}
 
 
@@ -39,12 +42,12 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 		if(++attempts >= maxPasswordEntryAttempts)
 		{
 			//lock the user:
-			user.setActivated(false);
+			setDisabled(email);
 			return true;
 		}
 		else
 		{
-			user.setLoginAttemptsCounter(attempts);
+			updateLoginAttemptsCounter(email, attempts);
 			return false;
 		}
 	}
@@ -77,7 +80,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 			return AccountState.NOT_EXIST;
 		}
 		
-		if(!user.isActivated())
+		if(!user.isEnabled())
 		{
 			if( user.getLoginAttemptsCounter() != 0 )
 			{
@@ -91,23 +94,6 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 
 		return AccountState.OK;
 	}
-
-	@Override
-	public boolean setPassword(String email, String newPassword)
-	{
-		AuthenticationUser user = getUser(email);
-		if(user != null)
-		{
-			user.setPassword(newPassword);
-			user.setPasswordLastChangeDate(new Date( System.currentTimeMillis() ));
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
 
 	@Override
 	public String getEncodedPassword(String email)
