@@ -22,7 +22,7 @@ import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 public class ActivateAccountEndpoint extends FlowsEndpointsCommon 
 {
 	@Autowired
-	private AuthenticationAccountRepository oAuthRepository;
+	private AuthenticationAccountRepository repository;
 
 	
 	@RequestMapping
@@ -42,10 +42,10 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 //			TransactionStatus oAuthTransaction = transactionManager.getTransaction(new DefaultTransactionAttribute());
 
 			// enable the account
-			oAuthRepository.setEnabled(extractedData.userEmail);
+			repository.setEnabled(extractedData.userEmail);
 			// reset the #attempts, since there is a flow of exceeding attempts number, so when clicking the link
 			// (in the email), we get here and enable the account and reset the attempts number
-			oAuthRepository.resetAttemptsCounter(extractedData.userEmail);
+			repository.resetAttemptsCounter(extractedData.userEmail);
 
 //TODO			transactionManager.commit(oAuthTransaction);
 

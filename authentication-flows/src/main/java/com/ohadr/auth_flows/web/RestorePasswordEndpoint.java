@@ -28,7 +28,7 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 	private static Logger log = Logger.getLogger(RestorePasswordEndpoint.class);
 
 	@Autowired
-	private AuthenticationAccountRepository oAuthRepository;
+	private AuthenticationAccountRepository repository;
 
 	
 	@RequestMapping
@@ -49,7 +49,7 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 			//we send also the signed-email, so no one can change the email and set-new-password for another user:
 			String encodedEmailAndTimestamp = FlowsUtil.getParamsUserAndTimestamp(request);
 
-			Date lastChange = oAuthRepository.getPasswordLastChangeDate(extractedData.userEmail);
+			Date lastChange = repository.getPasswordLastChangeDate(extractedData.userEmail);
 
 			Date emailCreationDate = extractedData.emailCreationDate;
 
