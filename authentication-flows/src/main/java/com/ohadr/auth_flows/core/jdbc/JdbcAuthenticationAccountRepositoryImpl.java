@@ -127,6 +127,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		return true;
 	}
 
+	//TODO: impl from DB
 	@Override
 	public AuthenticationPolicy getAuthenticationPolicy()
 	{

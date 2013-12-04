@@ -100,7 +100,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	public boolean setLoginSuccessForUser(String username) 
 	{
 		//via oAuthProcessor, since we want to UPDATE the DB:
-		oAuthRepository.setLoginSuccess(username);
+		oAuthRepository.resetAttemptsCounter(username);
 		
 		Date passwordLastChangeDate = oAuthRepository.getPasswordLastChangeDate(username);
 		

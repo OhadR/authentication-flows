@@ -30,7 +30,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 
 
 	@Override
-	public boolean setLoginFailure(String email, int maxPasswordEntryAttempts) 
+	public boolean incrementAttemptsCounter(String email, int maxPasswordEntryAttempts) 
 	{
 		AuthenticationUser user = getUser(email);
 		
@@ -54,8 +54,9 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 		}
 	}
 
+	//TODO: impl correct only for in-mem, not jdbc
 	@Override
-	public void setLoginSuccess(String email) 
+	public void resetAttemptsCounter(String email) 
 	{
 		AuthenticationUser user = getUser(email);
 		

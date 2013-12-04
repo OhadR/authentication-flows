@@ -45,7 +45,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			oAuthRepository.setEnabled(extractedData.userEmail);
 			// reset the #attempts, since there is a flow of exceeding attempts number, so when clicking the link
 			// (in the email), we get here and enable the account and reset the attempts number
-			oAuthRepository.setLoginSuccess(extractedData.userEmail);
+			oAuthRepository.resetAttemptsCounter(extractedData.userEmail);
 
 //TODO			transactionManager.commit(oAuthTransaction);
 
