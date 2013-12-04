@@ -104,7 +104,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	}
 
 	@Override
-	public void deleteOAuthAccount(String email)
+	public void deleteAccount(String email)
 	{
 		int count = jdbcTemplate.update(DEFAULT_USER_DELETE_STATEMENT, email);
 		if (count != 1)

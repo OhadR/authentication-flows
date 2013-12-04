@@ -52,10 +52,9 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	}
 
 	@Override
-	public void deleteOAuthAccount(String email) 
+	public void deleteAccount(String username) 
 	{
-		// TODO Auto-generated method stub
-		
+		users.remove(username);
 	}
 	
 	

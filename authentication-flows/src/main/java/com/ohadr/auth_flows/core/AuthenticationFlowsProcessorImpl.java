@@ -55,7 +55,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			//if user exist, but not activated - we allow re-registration:
 			if(oauthUser != null && !oauthUser.isEnabled())
 			{
-				oAuthRepository.deleteOAuthAccount( email );
+				oAuthRepository.deleteAccount( email );
 			}
 
 			AccountState accountState = oAuthRepository.createAccount(email, encodedPassword

@@ -21,7 +21,7 @@ public interface AuthenticationAccountRepository
 	 */
 	AuthenticationUser getUser(String email);
 	
-	void deleteOAuthAccount(String email);
+	void deleteAccount(String email);
 
 	void setEnabled(String email);
 	void setDisabled(String email);

@@ -3,6 +3,8 @@ package com.ohadr.auth_flows.core;
 
 import java.util.Date;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 import com.ohadr.auth_flows.types.AccountState;
@@ -22,7 +24,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	@Override
 	public boolean isActivated(String email) 
 	{
-		AuthenticationUser user = getUser(email);
+		UserDetails user = getUser(email);
 		return user.isEnabled();
 	}
 
@@ -98,7 +100,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	@Override
 	public String getEncodedPassword(String email)
 	{
-		AuthenticationUser user = getUser(email);
+		UserDetails user = getUser(email);
 		String retVal = null;
 		if(user != null)
 		{
