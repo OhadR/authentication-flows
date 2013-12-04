@@ -76,7 +76,7 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 			newUser.setPasswordLastChangeDate(new Date( System.currentTimeMillis() ));
 
 			//delete old user and set a new one, since iface does not support "setPassword()":
-			users.remove(username);
+			deleteAccount(username);
 			users.put(username, newUser);
 			return true;
 		}
@@ -121,7 +121,7 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 					username, storedUser.getPassword(), flag);
 
 			//delete old user and set a new one, since iface does not support "setPassword()":
-			users.remove(username);
+			deleteAccount(username);
 			users.put(username, newUser);
 		}
 	}
@@ -140,7 +140,7 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 			newUser.setLoginAttemptsCounter(attempts);
 			
 			//delete old user and set a new one, since iface does not support "setPassword()":
-			users.remove(username);
+			deleteAccount(username);
 			users.put(username, newUser);
 		}
 	}
