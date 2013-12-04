@@ -34,10 +34,8 @@ public interface AuthenticationAccountRepository
 	/**
 	 * 
 	 * @param email
-	 * @param maxPasswordEntryAttempts TODO
-	 * @return: true if account still open for next attempt. false if account is blocked (due to exceeded attempts number)
 	 */
-	boolean incrementAttemptsCounter(String email, int maxPasswordEntryAttempts); 
+	void incrementAttemptsCounter(String email); 
 	void resetAttemptsCounter(String email);
 
 	/**

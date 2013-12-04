@@ -22,10 +22,13 @@ import com.ohadr.crypto.service.CryptoService;
 @Component
 public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProcessor 
 {
+	//TODO: read from "policy" table:
+	private static final int maxPasswordEntryAttempts = 5;
+
 	private static Logger log = Logger.getLogger(AuthenticationFlowsProcessorImpl.class);
 	
 	@Autowired
-	private AuthenticationAccountRepository oAuthRepository;
+	private AuthenticationAccountRepository repository;
 	
 	@Autowired
 	private CryptoService	cryptoService;
@@ -50,15 +53,15 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 		try
 		{
-			AuthenticationUser oauthUser = oAuthRepository.getUser( email );
+			AuthenticationUser oauthUser = repository.getUser( email );
 			
 			//if user exist, but not activated - we allow re-registration:
 			if(oauthUser != null && !oauthUser.isEnabled())
 			{
-				oAuthRepository.deleteAccount( email );
+				repository.deleteAccount( email );
 			}
 
-			AccountState accountState = oAuthRepository.createAccount(email, encodedPassword
+			AccountState accountState = repository.createAccount(email, encodedPassword
 					//NOT IMPLEMENTED		secretQuestion, encodedAnswer
 					);
 			if(accountState == AccountState.ALREADY_EXIST)
@@ -100,9 +103,9 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	public boolean setLoginSuccessForUser(String username) 
 	{
 		//via oAuthProcessor, since we want to UPDATE the DB:
-		oAuthRepository.resetAttemptsCounter(username);
+		repository.resetAttemptsCounter(username);
 		
-		Date passwordLastChangeDate = oAuthRepository.getPasswordLastChangeDate(username);
+		Date passwordLastChangeDate = repository.getPasswordLastChangeDate(username);
 		
 		//in case of 'demo' user (when the oauth client invokes actions like create account), the user will not be found in the DB:
 		if(null == passwordLastChangeDate)
@@ -131,13 +134,13 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	@Override
 	public AuthenticationPolicy getAuthenticationSettings() 
 	{
-		return oAuthRepository.getAuthenticationPolicy();
+		return repository.getAuthenticationPolicy();
 	}
 
 	@Override
 	public AccountState getAccountState(String email) 
 	{
-		return oAuthRepository.isAccountLocked(email);
+		return repository.isAccountLocked(email);
 	}
 
 	@Override
@@ -162,11 +165,26 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		return null;
 	}
 
+	/**
+	 * the processor is a higher level than the repository. so when we increment, the proc should also check 
+	 * if we crossed the max-attempts, and if so - lock the account. the repo simply does one function at a time.
+	 */
 	@Override
-	public boolean setLoginFailureForUser(String email) 
+	public void setLoginFailureForUser(String email) 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		AuthenticationUser user = repository.getUser(email);
+		
+		int attempts = user.getLoginAttemptsCounter();
+		if(++attempts >= maxPasswordEntryAttempts)
+		{
+			//lock the user:
+			repository.setDisabled(email);
+		}
+		else
+		{
+			repository.incrementAttemptsCounter(email);
+		}
+
 	}
 
 	@Override
@@ -188,7 +206,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			String encodedCurrentPassword, String newEncodedPassword)
 	{
 		//validate current password:
-		String dbPassword = oAuthRepository.getEncodedPassword(username);
+		String dbPassword = repository.getEncodedPassword(username);
 		if(dbPassword == null)
 		{
 //			throw errorsHandler.createError(ApiErrors.USER_NOT_EXIST, username);
@@ -218,7 +236,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	private boolean changePassword(String username, String newEncodedPassword) 
 	{
 		//via oAuthProcessor, since we want to UPDATE the DB:
-		boolean changed = oAuthRepository.changePassword(username, newEncodedPassword);
+		boolean changed = repository.changePassword(username, newEncodedPassword);
 		if(changed)
 		{
 			log.info("changing password for user " + username);

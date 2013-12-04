@@ -47,7 +47,7 @@ public interface AuthenticationFlowsProcessor
 
 	public String getSecretAnswer(String email);
 
-	public boolean setLoginFailureForUser(String email);
+	public void setLoginFailureForUser(String email);
 
 	public void sendUnlockAccountMail(String email, 
 			String serverPath);

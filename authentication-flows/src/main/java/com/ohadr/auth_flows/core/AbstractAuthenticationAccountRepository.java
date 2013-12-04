@@ -30,29 +30,13 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 
 
 	@Override
-	public boolean incrementAttemptsCounter(String email, int maxPasswordEntryAttempts) 
+	public void incrementAttemptsCounter(String email) 
 	{
 		AuthenticationUser user = getUser(email);
-		
-		//user does not exist:
-		if(user == null)
-		{
-			return false;
-		}
-		
 		int attempts = user.getLoginAttemptsCounter();
-		if(++attempts >= maxPasswordEntryAttempts)
-		{
-			//lock the user:
-			setDisabled(email);
-			return true;
-		}
-		else
-		{
-			updateLoginAttemptsCounter(email, attempts);
-			return false;
-		}
+		updateLoginAttemptsCounter(email, ++attempts);
 	}
+	
 
 	//TODO: impl correct only for in-mem, not jdbc
 	@Override
