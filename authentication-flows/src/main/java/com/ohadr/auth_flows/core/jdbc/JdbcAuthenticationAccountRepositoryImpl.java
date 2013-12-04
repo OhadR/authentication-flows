@@ -29,9 +29,9 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 {
 	private static Logger log = Logger.getLogger(JdbcAuthenticationAccountRepositoryImpl.class);
 
-	private static final String TABLE_NAME = "auth_users";
+	private static final String TABLE_NAME = "users";
 
-	private static final String AUTHENTICATION_USER_FIELDS = "email, password, enabled, "
+	private static final String AUTHENTICATION_USER_FIELDS = "USERNAME, password, enabled, "
 			+ "LOGIN_ATTEMPTS_COUNTER,"
 			+ "LAST_PSWD_CHANGE_DATE";
 
@@ -39,13 +39,13 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 			+ ") values (?,?,?,?,?)";
 
 	private static final String DEFAULT_USER_SELECT_STATEMENT = "select " + AUTHENTICATION_USER_FIELDS
-			+ " from " + TABLE_NAME + " where EMAIL = ?";
+			+ " from " + TABLE_NAME + " where USERNAME = ?";
 
-	private static final String DEFAULT_USER_DELETE_STATEMENT = "delete from " + TABLE_NAME + " where EMAIL = ?";
+	private static final String DEFAULT_USER_DELETE_STATEMENT = "delete from " + TABLE_NAME + " where USERNAME = ?";
 	
-	private static final String DEFAULT_UPDATE_PASSWORD_STATEMENT = "update " + TABLE_NAME + " set password = ? where EMAIL = ?";
+	private static final String DEFAULT_UPDATE_PASSWORD_STATEMENT = "update " + TABLE_NAME + " set password = ? where USERNAME = ?";
 	
-	private static final String DEFAULT_UPDATE_ACTIVATED_STATEMENT = "update " + TABLE_NAME + " set enabled = ? where EMAIL = ?";
+	private static final String DEFAULT_UPDATE_ACTIVATED_STATEMENT = "update " + TABLE_NAME + " set enabled = ? where USERNAME = ?";
 
 	
 	@Autowired

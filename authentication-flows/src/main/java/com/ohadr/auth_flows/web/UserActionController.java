@@ -273,10 +273,10 @@ public class UserActionController
 	}
 
 
-	private String encodeString(String email, String stringToEncode) 
+	private String encodeString(String salt, String rawPass) 
 	{
 		//encoding the password:
-        String encodedPassword = passwordEncoder.encodePassword(stringToEncode, email);	//the email is the salt
+        String encodedPassword = passwordEncoder.encodePassword(rawPass, salt);	//the email is the salt
 		return encodedPassword;
 	}
 	
