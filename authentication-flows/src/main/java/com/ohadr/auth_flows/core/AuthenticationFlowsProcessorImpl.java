@@ -250,4 +250,11 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	{
 		mailSender.sendMail(email, mailSubject, mailBody);
 	}
+
+
+	@Override
+	public void setEnabled(String userEmail)
+	{
+		repository.setEnabled(userEmail);
+	}
 }

@@ -64,6 +64,8 @@ public interface AuthenticationFlowsProcessor
 	public Pair<String, String> changePassword(String email, String encodedCurrentPassword,
 			String newEncodedPassword);
 
+	public void setEnabled(String userEmail);
+
 	/**
 	 * NOT IMPLEMENTED:
 	 * @param email
