@@ -164,10 +164,9 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 					rs.getString(1),		//username / email
 					rs.getString(2),		//password
 					rs.getBoolean(3),		//activated?
-					rs.getInt(4)			//attempts left
+					rs.getInt(4),			//attempts left
+					rs.getDate(5)			//PasswordLastChangeDate
 					);
-
-			user.setPasswordLastChangeDate(rs.getDate(5));
 			
 			return user;
 		}

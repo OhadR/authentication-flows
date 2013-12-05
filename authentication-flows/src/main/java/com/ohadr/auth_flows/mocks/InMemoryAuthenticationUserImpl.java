@@ -21,12 +21,14 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 			String username,
 			String password,
 			boolean activated,
-			int	loginAttemptsLeft)
+			int	loginAttemptsLeft,
+			Date passwordLastChangeDate)
 	{
 		this.email = username;
 		this.password = password;
 		this.activated = activated;
 		this.loginAttemptsLeft = loginAttemptsLeft;
+		this.passwordLastChangeDate = passwordLastChangeDate;
 	}
 
 	/* (non-Javadoc)
@@ -64,15 +66,6 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	public int getLoginAttemptsLeft() 
 	{
 		return loginAttemptsLeft;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setPasswordLastChangeDate(java.util.Date)
-	 */
-	@Override
-	public void setPasswordLastChangeDate(Date date) 
-	{
-		passwordLastChangeDate = date;
 	}
 
 	/* (non-Javadoc)

@@ -16,7 +16,5 @@ public interface AuthenticationUser extends UserDetails
 	 */
 	public int getLoginAttemptsLeft();
 
-	public void setPasswordLastChangeDate(Date date);
-
 	public Date getPasswordLastChangeDate();
 }
