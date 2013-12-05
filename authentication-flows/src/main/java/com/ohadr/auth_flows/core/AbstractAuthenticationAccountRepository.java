@@ -24,32 +24,32 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	@Override
 	public boolean isActivated(String email) 
 	{
-		UserDetails user = getUser(email);
+		UserDetails user = loadUserByUsername(email);
 		return user.isEnabled();
 	}
 
 
 	@Override
-	public void incrementAttemptsCounter(String email) 
+	public void decrementAttemptsLeft(String email)
 	{
-		AuthenticationUser user = getUser(email);
-		int attempts = user.getLoginAttemptsCounter();
-		updateLoginAttemptsCounter(email, ++attempts);
+		AuthenticationUser user = (AuthenticationUser) loadUserByUsername(email);
+		int attempts = user.getLoginAttemptsLeft();
+		updateLoginAttemptsCounter(email, --attempts);
 	}
-	
 
 	//TODO: impl correct only for in-mem, not jdbc
 	@Override
-	public void resetAttemptsCounter(String email) 
+	public void setAttemptsLeft(String email, int numAttemptsAllowed)
 	{
-		AuthenticationUser user = getUser(email);
+		AuthenticationUser user = (AuthenticationUser) loadUserByUsername(email);
 		
 		//user might be null since we "login-success" once to the user account, and then to the client-application (oAuth mechanism)
 		//so if 'email' is the "client app", there will be no 'user' and it will be null:
 		if(user != null)
 		{
-			user.setLoginAttemptsCounter( 0 );
+			updateLoginAttemptsCounter( email, numAttemptsAllowed );
 		}	
+		
 	}
 
 	/**
@@ -59,7 +59,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	@Override
 	public AccountState isAccountLocked(String email) 
 	{
-		AuthenticationUser user = getUser(email);
+		AuthenticationUser user = (AuthenticationUser) loadUserByUsername(email);
 		
 		//user does not exist:
 		if(user == null)
@@ -69,7 +69,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 		
 		if(!user.isEnabled())
 		{
-			if( user.getLoginAttemptsCounter() != 0 )
+			if( user.getLoginAttemptsLeft() == 0 )
 			{
 				return AccountState.LOCKED;
 			}
@@ -85,7 +85,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	@Override
 	public String getEncodedPassword(String email)
 	{
-		UserDetails user = getUser(email);
+		UserDetails user = loadUserByUsername(email);
 		String retVal = null;
 		if(user != null)
 		{
@@ -97,7 +97,7 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	@Override
 	public Date getPasswordLastChangeDate(String email)
 	{
-		AuthenticationUser user = getUser(email);
+		AuthenticationUser user = (AuthenticationUser) loadUserByUsername(email);
 		Date retVal = null;
 		if(user != null)
 		{

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.ContextLoader;
 
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
+import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 
 @Controller
 @RequestMapping(value = "/aa")
@@ -23,6 +24,9 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 {
 	@Autowired
 	private AuthenticationAccountRepository repository;
+
+	@Autowired
+	private AuthenticationFlowsProcessor processor;
 
 	
 	@RequestMapping
@@ -36,18 +40,12 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 		
 		if (!extractedData.expired)
 		{
-//TODO			PlatformTransactionManager transactionManager = (PlatformTransactionManager) ContextLoader.getCurrentWebApplicationContext()
-//			                                                                                          .getBean("oAuthTransactionManager");
-//
-//			TransactionStatus oAuthTransaction = transactionManager.getTransaction(new DefaultTransactionAttribute());
-
 			// enable the account
 			repository.setEnabled(extractedData.userEmail);
+
 			// reset the #attempts, since there is a flow of exceeding attempts number, so when clicking the link
 			// (in the email), we get here and enable the account and reset the attempts number
-			repository.resetAttemptsCounter(extractedData.userEmail);
-
-//TODO			transactionManager.commit(oAuthTransaction);
+			processor.setLoginSuccessForUser(extractedData.userEmail);
 
 			request.getSession().invalidate();
 			request.getSession(true);

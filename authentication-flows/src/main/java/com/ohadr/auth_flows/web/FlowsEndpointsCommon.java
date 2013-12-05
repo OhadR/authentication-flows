@@ -7,14 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ohadr.auth_flows.config.OAuthServerProperties;
+import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.crypto.service.CryptoService;
 
 public abstract class FlowsEndpointsCommon
 {
 	@Autowired
-	private OAuthServerProperties oAuthServerProperties;
+	private AuthFlowsProperties oAuthServerProperties;
 
 	@Autowired
 	private CryptoService	cryptoService;

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OAuthServerProperties
+public class AuthFlowsProperties
 {
 	/**
 	 * the time in seconds of how long the links that the oauth-srv generates are valid. relevant for the "forgot password" flow, 
@@ -13,7 +13,9 @@ public class OAuthServerProperties
 	@Value("${com.ohadr.auth-flows.linksExpirationMinutes}")
 	private int linksExpirationMinutes;
 
-
+	@Value("${com.ohadr.auth-flows.maxAttempts}")
+	private int maxAttempts;
+	
 	
 	
 	public int getLinksExpirationMinutes()
@@ -24,6 +26,11 @@ public class OAuthServerProperties
 	public void setLinksExpirationMinutes(int linksExpirationMinutes)
 	{
 		this.linksExpirationMinutes = linksExpirationMinutes;
+	}
+	
+	public int getMaxAttempts()
+	{
+		return maxAttempts;
 	}
 
 }

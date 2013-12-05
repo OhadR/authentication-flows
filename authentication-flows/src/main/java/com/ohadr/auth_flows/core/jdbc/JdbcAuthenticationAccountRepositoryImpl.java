@@ -3,6 +3,8 @@ package com.ohadr.auth_flows.core.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
@@ -14,6 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.util.Assert;
 
 import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
@@ -23,7 +31,6 @@ import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
 
-//@Repository
 public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticationAccountRepository
 		implements InitializingBean
 {
@@ -50,7 +57,8 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	private static final String DEFAULT_UPDATE_ACTIVATED_STATEMENT = "update " + TABLE_NAME + 
 			" set enabled = ? where USERNAME = ?";
 
-	private static final String DEFAULT_UPDATE_ATTEMPTS_CNTR_STATEMENT = null;
+	private static final String DEFAULT_UPDATE_ATTEMPTS_CNTR_STATEMENT = "update " + TABLE_NAME +
+			" set LOGIN_ATTEMPTS_COUNTER = ? where USERNAME = ?";
 
 	
 	@Autowired
@@ -58,6 +66,8 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 	private JdbcTemplate jdbcTemplate;
 
+
+	
 	@Override
 	public void afterPropertiesSet() throws Exception 
 	{
@@ -66,25 +76,29 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	}
 
 	@Override
-	public AccountState createAccount(String email, String encodedPassword
+	public AccountState createAccount(String email, String encodedPassword,
 			//NOT IMPLEMENTED: String secretQuestion, String encodedAnswer
-			)
+			int numLoginAttemptsAllowed)
 	{
 		int rowsUpdated = jdbcTemplate.update(DEFAULT_USER_INSERT_STATEMENT,
-				new Object[] { email, encodedPassword, false, 0, new Date( System.currentTimeMillis()) },
+				new Object[] { email, encodedPassword, false, numLoginAttemptsAllowed, new Date( System.currentTimeMillis()) },
 				new int[] { Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.DATE });
 
 		if(rowsUpdated != 1)
 		{
 			throw new RuntimeException("could not insert new entry to DB");
 		}
+
+		Collection<? extends GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		
+		User user = new User("test " + email, encodedPassword, authorities);
+
 		return AccountState.OK;
 
 	}
 
 	@Override
-	public AuthenticationUser getUser(String email) 
+	public AuthenticationUser loadUserByUsername(String email) 
 	{
 		AuthenticationUser userFromDB = null;
 		try
@@ -114,7 +128,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	}
 
 	@Override
-	public boolean changePassword(String username, String newEncodedPassword) 
+	public void changePassword(String username, String newEncodedPassword) 
 	{
 		int count = jdbcTemplate.update(DEFAULT_UPDATE_PASSWORD_STATEMENT, 
 				newEncodedPassword,
@@ -124,7 +138,6 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		{
 			throw new NoSuchElementException("No user with email: " + username);
 		}
-		return true;
 	}
 
 	//TODO: impl from DB
@@ -136,6 +149,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		policy.setMaxPasswordEntryAttempts( 5 );
 		policy.setPasswordMaxLength( 8 );
 		policy.setRememberMeTokenValidityInDays( 30 );
+		policy.setPasswordLifeInDays(3);
 
 		return policy;
 	}
@@ -149,10 +163,10 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 			AuthenticationUser user = new InMemoryAuthenticationUserImpl(
 					rs.getString(1),		//username / email
 					rs.getString(2),		//password
-					rs.getBoolean(3)		//activated?
+					rs.getBoolean(3),		//activated?
+					rs.getInt(4)			//attempts left
 					);
 
-			user.setLoginAttemptsCounter(rs.getInt(4));
 			user.setPasswordLastChangeDate(rs.getDate(5));
 			
 			return user;
@@ -161,9 +175,9 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 
 	@Override
-	public boolean setPassword(String email, String newPassword) 
+	public void setPassword(String email, String newPassword) 
 	{
-		return changePassword(email, newPassword);
+		changePassword(email, newPassword);
 	}
 
 	/******************************************************************/	
@@ -197,6 +211,34 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		{
 			throw new NoSuchElementException("No user with email: " + email);
 		}
+	}
+
+	@Override
+	public void createUser(UserDetails user)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateUser(UserDetails user)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteUser(String username)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean userExists(String username)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

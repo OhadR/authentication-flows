@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
@@ -22,9 +23,6 @@ import com.ohadr.crypto.service.CryptoService;
 @Component
 public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProcessor 
 {
-	//TODO: read from "policy" table:
-	private static final int maxPasswordEntryAttempts = 5;
-
 	private static Logger log = Logger.getLogger(AuthenticationFlowsProcessorImpl.class);
 	
 	@Autowired
@@ -35,6 +33,10 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	
 	@Autowired
 	private MailSender		mailSender;
+
+	@Autowired
+	private AuthFlowsProperties properties;
+
 
 
 	
@@ -53,7 +55,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 		try
 		{
-			AuthenticationUser oauthUser = repository.getUser( email );
+			AuthenticationUser oauthUser = (AuthenticationUser) repository.loadUserByUsername( email );
 			
 			//if user exist, but not activated - we allow re-registration:
 			if(oauthUser != null && !oauthUser.isEnabled())
@@ -61,7 +63,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 				repository.deleteAccount( email );
 			}
 
-			AccountState accountState = repository.createAccount(email, encodedPassword
+			AccountState accountState = repository.createAccount(email, encodedPassword,
+					properties.getMaxAttempts()
 					//NOT IMPLEMENTED		secretQuestion, encodedAnswer
 					);
 			if(accountState == AccountState.ALREADY_EXIST)
@@ -102,9 +105,14 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	@Override
 	public boolean setLoginSuccessForUser(String username) 
 	{
-		//via oAuthProcessor, since we want to UPDATE the DB:
-		repository.resetAttemptsCounter(username);
+		repository.setAttemptsLeft(username, properties.getMaxAttempts());
 		
+		return isPasswordChangeRequired(username);		
+	}
+
+
+	private boolean isPasswordChangeRequired(String username)
+	{
 		Date passwordLastChangeDate = repository.getPasswordLastChangeDate(username);
 		
 		//in case of 'demo' user (when the oauth client invokes actions like create account), the user will not be found in the DB:
@@ -126,7 +134,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			log.info("password expired for user " + username);
 		}
 
-		return passChangeRequired;		
+		return passChangeRequired;
 	}
 
 
@@ -172,17 +180,16 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	@Override
 	public void setLoginFailureForUser(String email) 
 	{
-		AuthenticationUser user = repository.getUser(email);
+		AuthenticationUser user = (AuthenticationUser) repository.loadUserByUsername(email);
 		
-		int attempts = user.getLoginAttemptsCounter();
-		if(++attempts >= maxPasswordEntryAttempts)
+		if( 0 == user.getLoginAttemptsLeft() )
 		{
 			//lock the user:
 			repository.setDisabled(email);
 		}
 		else
 		{
-			repository.incrementAttemptsCounter(email);
+			repository.decrementAttemptsLeft(email);
 		}
 
 	}
@@ -223,29 +230,16 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		}
 		
 		
-		if( changePassword(username, newEncodedPassword) )
-		{
-			return Pair.of(FlowsConstatns.OK, "");
-		}
-		else
-		{
-			return Pair.of(FlowsConstatns.ERROR, "CHANGE PASSWORD FAILED - DB");
-		}
+		changePassword(username, newEncodedPassword);
+
+		return Pair.of(FlowsConstatns.OK, "");
 	}
 
-	private boolean changePassword(String username, String newEncodedPassword) 
+	private void changePassword(String username, String newEncodedPassword) 
 	{
+		log.info("changing password for user " + username);
 		//via oAuthProcessor, since we want to UPDATE the DB:
-		boolean changed = repository.changePassword(username, newEncodedPassword);
-		if(changed)
-		{
-			log.info("changing password for user " + username);
-		}
-		else
-		{
-			log.error("could not change password to user " + username);
-		}
-		return changed;
+		repository.changePassword(username, newEncodedPassword);
 	}
 
 

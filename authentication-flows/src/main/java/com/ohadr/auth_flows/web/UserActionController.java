@@ -28,7 +28,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
-import com.ohadr.auth_flows.config.OAuthServerProperties;
+import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.AccountState;
@@ -69,7 +69,7 @@ public class UserActionController
 	private static Logger log = Logger.getLogger(UserActionController.class);
 	
 	@Autowired
-	private OAuthServerProperties oAuthServerProperties;
+	private AuthFlowsProperties properties;
 
 	@Autowired
 	private CryptoService cryptoService;
@@ -403,7 +403,7 @@ public class UserActionController
 		}
 		
 		//check expiration:
-		boolean expired = (System.currentTimeMillis() - stringAndDate.getLeft().getTime()) > (oAuthServerProperties.getLinksExpirationMinutes() * 1000 * 60L);
+		boolean expired = (System.currentTimeMillis() - stringAndDate.getLeft().getTime()) > (properties.getLinksExpirationMinutes() * 1000 * 60L);
 		if(expired)
 		{
 			log.error("link has expired");

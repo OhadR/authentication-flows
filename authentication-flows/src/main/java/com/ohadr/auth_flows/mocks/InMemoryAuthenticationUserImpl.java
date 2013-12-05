@@ -14,17 +14,19 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	private String 		password;
 	private boolean 	activated;
 	private Date 		passwordLastChangeDate;
-	private int 		loginAttemptsCounter;
-	
+	private int 		loginAttemptsLeft;
+
 	
 	public InMemoryAuthenticationUserImpl(
 			String username,
 			String password,
-			boolean activated)
+			boolean activated,
+			int	loginAttemptsLeft)
 	{
 		this.email = username;
 		this.password = password;
 		this.activated = activated;
+		this.loginAttemptsLeft = loginAttemptsLeft;
 	}
 
 	/* (non-Javadoc)
@@ -59,20 +61,10 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getLoginAttemptsCounter()
 	 */
 	@Override
-	public int getLoginAttemptsCounter() 
+	public int getLoginAttemptsLeft() 
 	{
-		return loginAttemptsCounter;
+		return loginAttemptsLeft;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setLoginAttemptsCounter(int)
-	 */
-	@Override
-	public void setLoginAttemptsCounter(int attempts) 
-	{
-		loginAttemptsCounter = attempts;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#setPasswordLastChangeDate(java.util.Date)
@@ -99,21 +91,31 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	}
 
 	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isAccountNonLocked() 
+	{
+		return !isAccountLocked();
+	}
+
+	/**
+	 * account is "locked" if it is disabled, and the num attempts exceeds the max-Attempts.
+	 * @return
+	 */
+	public boolean isAccountLocked() 
+	{
+		return !isEnabled() && (loginAttemptsLeft <= 0);
 	}
 
 	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isCredentialsNonExpired() 
+	{
+		//TODO calc the passwordLastChangeDate with the time from policy (account-axpiry)
+		return true;
 	}
 
 	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isAccountNonExpired()
+	{
+		return true;
 	}
 
 

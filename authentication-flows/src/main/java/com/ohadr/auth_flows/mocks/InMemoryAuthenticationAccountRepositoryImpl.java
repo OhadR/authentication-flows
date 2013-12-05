@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 import com.ohadr.auth_flows.types.AccountState;
@@ -18,15 +21,30 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	
 	public InMemoryAuthenticationAccountRepositoryImpl()
 	{
-		createAccount("ohad@ohadr.com", "aaaa");		
+		createAccount("ohad@ohadr.com", "aaaa", 22);		
 	}
+
 	
+
+	/**
+	 * implementations for {@link org.springframework.security.core.userdetails.UserDetailsService}, 
+	 * with its <code>loadUserByUsername(String username)</code>
+	 */
+	@Override
+	public AuthenticationUser loadUserByUsername(String username)
+			throws UsernameNotFoundException 
+	{
+		AuthenticationUser user = users.get(username);
+		return user;
+	}
+
 	
 	
 	@Override
-	public AccountState createAccount(String email, String encodedPassword)
+	public AccountState createAccount(String email, String encodedPassword,
+			int numLoginAttemptsAllowed)
 	{
-		if( getUser(email) != null )
+		if( loadUserByUsername(email) != null )
 		{
 			return AccountState.ALREADY_EXIST;
 		}
@@ -34,7 +52,8 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 		{
 			AuthenticationUser user = new InMemoryAuthenticationUserImpl(email,
 					encodedPassword,
-					false);
+					false,
+					numLoginAttemptsAllowed);
 
 			user.setPasswordLastChangeDate( new Date(System.currentTimeMillis()) );
 			
@@ -45,13 +64,6 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	}
 
 	@Override
-	public AuthenticationUser getUser(String email) 
-	{
-		AuthenticationUser user = users.get(email);
-		return user;
-	}
-
-	@Override
 	public void deleteAccount(String username) 
 	{
 		users.remove(username);
@@ -59,30 +71,25 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	
 	
 	@Override
-	public boolean setPassword(String email, String newPassword)
+	public void setPassword(String email, String newPassword)
 	{
-		return changePassword(email, newPassword);
+		changePassword(email, newPassword);
 	}
 
 
 	@Override
-	public boolean changePassword(String username, String newEncodedPassword) 
+	public void changePassword(String username, String newEncodedPassword) 
 	{
-		AuthenticationUser storedUser = getUser(username);
+		AuthenticationUser storedUser = loadUserByUsername(username);
 		if(storedUser != null)
 		{
 			AuthenticationUser newUser = new InMemoryAuthenticationUserImpl(
-					username, newEncodedPassword, true);
+					username, newEncodedPassword, true, storedUser.getLoginAttemptsLeft());
 			newUser.setPasswordLastChangeDate(new Date( System.currentTimeMillis() ));
 
 			//delete old user and set a new one, since iface does not support "setPassword()":
 			deleteAccount(username);
 			users.put(username, newUser);
-			return true;
-		}
-		else
-		{
-			return false;
 		}
 	}
 
@@ -114,11 +121,14 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	@Override
 	protected void setEnabledFlag(String username, boolean flag) 
 	{
-		AuthenticationUser storedUser = getUser(username);
+		AuthenticationUser storedUser =  loadUserByUsername(username);
 		if(storedUser != null)
 		{
 			AuthenticationUser newUser = new InMemoryAuthenticationUserImpl(
-					username, storedUser.getPassword(), flag);
+					username, 
+					storedUser.getPassword(), 
+					flag,
+					storedUser.getLoginAttemptsLeft());
 
 			//delete old user and set a new one, since iface does not support "setPassword()":
 			deleteAccount(username);
@@ -131,18 +141,55 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	@Override
 	protected void updateLoginAttemptsCounter(String username, int attempts) 
 	{
-		AuthenticationUser storedUser = getUser(username);
+		AuthenticationUser storedUser =  loadUserByUsername(username);
 		if(storedUser != null)
 		{
 			AuthenticationUser newUser = new InMemoryAuthenticationUserImpl(
-					username, storedUser.getPassword(),
-					storedUser.isEnabled());
-			newUser.setLoginAttemptsCounter(attempts);
+					username, 
+					storedUser.getPassword(),
+					storedUser.isEnabled(),
+					storedUser.getLoginAttemptsLeft());
 			
 			//delete old user and set a new one, since iface does not support "setPassword()":
 			deleteAccount(username);
 			users.put(username, newUser);
 		}
+	}
+
+
+
+	@Override
+	public void createUser(UserDetails user)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void updateUser(UserDetails user)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void deleteUser(String username)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public boolean userExists(String username)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
