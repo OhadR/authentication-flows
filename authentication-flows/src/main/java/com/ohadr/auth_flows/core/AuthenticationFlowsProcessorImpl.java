@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.acls.model.AlreadyExistsException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -16,6 +17,7 @@ import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
+import com.ohadr.auth_flows.mocks.InMemoryAuthenticationUserImpl;
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.FlowsConstatns;
@@ -64,7 +66,15 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 				repository.deleteUser( email );
 			}
 
-			AccountState accountState = repository.createAccount(email, encodedPassword,
+			AuthenticationUser user = new InMemoryAuthenticationUserImpl(
+					email, encodedPassword, 
+					false,									//start as de-activated
+					properties.getMaxAttempts(),
+					null);		//set by the repo-impl	
+
+			repository.createUser(user);
+					
+/*			AccountState accountState = repository.createAccount(email, encodedPassword,
 					properties.getMaxAttempts()
 					//NOT IMPLEMENTED		secretQuestion, encodedAnswer
 					);
@@ -73,7 +83,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 				log.error( "Account ALREADY_EXIST for user " + email );
 				return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
 			}
-		}
+*/		}
 		catch(DataIntegrityViolationException e)
 		{
 			//get the cause-exception, since it has a better message:
@@ -82,6 +92,12 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			Assert.isTrue(msg.contains("Duplicate entry"));
 			
 
+			log.error( msg );
+			return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
+		}
+		catch(AlreadyExistsException aee)
+		{
+			String msg = aee.getMessage();
 			log.error( msg );
 			return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
 		}
@@ -204,15 +220,19 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	}
 
 	@Override
-	public void setPassword(String email, String encodedPassword) {
-		// TODO Auto-generated method stub
-
+	public void setPassword(String username, String newEncodedPassword) 
+	{
+		log.info("setting password for user " + username);
+		repository.changePassword(username, newEncodedPassword);
 	}
+	
 
 	@Override
 	public Pair<String, String> changePassword(String username,
 			String encodedCurrentPassword, String newEncodedPassword)
 	{
+		log.info("changing password for user " + username);
+		
 		//validate current password:
 		String dbPassword = repository.getEncodedPassword(username);
 		if(dbPassword == null)
@@ -223,6 +243,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		if( !dbPassword.equals(encodedCurrentPassword) )
 		{
 			//password mismatch: error; update the counter and throw an error
+			log.error("passwords given by user and the one in the DB mismatch");
+			
 //			String isLocked = onLoginFailure(username);
 //			boolean retVal = Boolean.valueOf(isLocked);
 
@@ -231,18 +253,10 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		}
 		
 		
-		changePassword(username, newEncodedPassword);
+		setPassword(username, newEncodedPassword);
 
 		return Pair.of(FlowsConstatns.OK, "");
 	}
-
-	private void changePassword(String username, String newEncodedPassword) 
-	{
-		log.info("changing password for user " + username);
-		//via oAuthProcessor, since we want to UPDATE the DB:
-		repository.changePassword(username, newEncodedPassword);
-	}
-
 
 
 	private void sendMail(String email, 

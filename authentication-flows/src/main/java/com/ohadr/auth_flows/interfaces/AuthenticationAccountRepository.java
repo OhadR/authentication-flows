@@ -11,12 +11,6 @@ import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
 public interface AuthenticationAccountRepository extends UserDetailsManager
 {
-    AccountState createAccount(String email, 
-			String encodedPassword,
-//			String secretQuestion, 		NOT IMPLEMENTED
-//			String encodedAnswer		NOT IMPLEMENTED
-			int numLoginAttemptsAllowed);
-
 	void setEnabled(String email);
 	void setDisabled(String email);
 	boolean isActivated(String email);
@@ -62,13 +56,26 @@ public interface AuthenticationAccountRepository extends UserDetailsManager
 	AuthenticationUser getUser(String email);
 	*/
 
+
+    /**
+	 * this method is not needed anymore since we extend 
+	 * {@link org.springframework.security.core.userdetails.UserDetailsService} 
+	 * with its <code>createUser(UserDetails user)</code>
+     * 
+	AccountState createAccount(String email, 
+			String encodedPassword,
+//			String secretQuestion, 		NOT IMPLEMENTED
+//			String encodedAnswer		NOT IMPLEMENTED
+			int numLoginAttemptsAllowed);
+     */
+
+
+	
 	/**
 	 * this method is not needed anymore since we extend 
 	 * {@link org.springframework.security.core.userdetails.UserDetailsManager} 
 	 * with its <code>deleteUser(String username)</code>
 	 *  
-	 * @param email
-	 * 
 	void deleteAccount(String email);
 	*/
 

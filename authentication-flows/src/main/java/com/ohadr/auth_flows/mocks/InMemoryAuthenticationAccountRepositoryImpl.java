@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.security.acls.model.AlreadyExistsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -19,13 +20,6 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	private Map<String, UserDetails> users = new HashMap<String, UserDetails>();
 
 	
-	public InMemoryAuthenticationAccountRepositoryImpl()
-	{
-		createAccount("ohad@ohadr.com", "aaaa", 22);		
-	}
-
-	
-
 	/**
 	 * implementations for {@link org.springframework.security.core.userdetails.UserDetailsService}, 
 	 * with its <code>loadUserByUsername(String username)</code>
@@ -41,31 +35,23 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	
 	
 	@Override
-	public AccountState createAccount(String username, String encodedPassword,
-			int numLoginAttemptsAllowed)
-	{
-		UserDetails user = new InMemoryAuthenticationUserImpl(username,
-				encodedPassword,
-				false,
-				numLoginAttemptsAllowed,
-				new Date(System.currentTimeMillis()));
-		
-		if( loadUserByUsername(username) != null )
-		{
-			return AccountState.ALREADY_EXIST;
-		}
-		else
-		{
-			createUser(user);
-			
-			return AccountState.OK;
-		}		
-	}
-
-	@Override
 	public void createUser(UserDetails user)
 	{
-		users.put(user.getUsername(), user);
+		AuthenticationUser authUser = (AuthenticationUser) user;
+
+		UserDetails newUser = new InMemoryAuthenticationUserImpl(authUser.getUsername(),
+				authUser.getPassword(),
+				false,
+				authUser.getLoginAttemptsLeft(),
+				new Date(System.currentTimeMillis()));
+		
+		if( loadUserByUsername( newUser.getUsername() ) != null )
+		{
+			//ALREADY_EXIST:
+			throw new AlreadyExistsException("user laready exists");
+		}
+
+		users.put(newUser.getUsername(), newUser);
 	}
 
 	@Override

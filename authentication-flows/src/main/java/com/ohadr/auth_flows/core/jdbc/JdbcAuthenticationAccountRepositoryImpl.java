@@ -75,24 +75,26 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
+
 	@Override
-	public AccountState createAccount(String email, String encodedPassword,
-			//NOT IMPLEMENTED: String secretQuestion, String encodedAnswer
-			int numLoginAttemptsAllowed)
+	public void createUser(UserDetails user)
 	{
+		AuthenticationUser authUser = (AuthenticationUser) user;
 		int rowsUpdated = jdbcTemplate.update(DEFAULT_USER_INSERT_STATEMENT,
-				new Object[] { email, encodedPassword, false, numLoginAttemptsAllowed, new Date( System.currentTimeMillis()) },
+				new Object[] { authUser.getUsername(),
+					authUser.getPassword(),
+					false,
+					authUser.getLoginAttemptsLeft(), 
+					new Date( System.currentTimeMillis()) },
 				new int[] { Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.DATE });
 
 		if(rowsUpdated != 1)
 		{
 			throw new RuntimeException("could not insert new entry to DB");
 		}
-
-		return AccountState.OK;
-
 	}
 
+	
 	@Override
 	public AuthenticationUser loadUserByUsername(String email) 
 	{
@@ -208,12 +210,6 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		}
 	}
 
-	@Override
-	public void createUser(UserDetails user)
-	{
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void updateUser(UserDetails user)
