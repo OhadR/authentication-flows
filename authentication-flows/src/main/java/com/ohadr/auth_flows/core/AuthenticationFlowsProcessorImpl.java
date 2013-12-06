@@ -7,6 +7,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -14,7 +16,6 @@ import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
-import com.ohadr.auth_flows.interfaces.MailSender;
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.FlowsConstatns;
@@ -60,7 +61,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			//if user exist, but not activated - we allow re-registration:
 			if(oauthUser != null && !oauthUser.isEnabled())
 			{
-				repository.deleteAccount( email );
+				repository.deleteUser( email );
 			}
 
 			AccountState accountState = repository.createAccount(email, encodedPassword,
@@ -248,7 +249,11 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			String mailSubject,
 			String mailBody)
 	{
-		mailSender.sendMail(email, mailSubject, mailBody);
+		SimpleMailMessage msg = new SimpleMailMessage();
+		msg.setTo(email);
+		msg.setSubject(mailSubject);
+		msg.setText(mailBody);
+		mailSender.send(msg);
 	}
 
 

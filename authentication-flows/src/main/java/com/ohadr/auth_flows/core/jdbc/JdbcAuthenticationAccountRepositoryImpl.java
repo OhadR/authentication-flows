@@ -89,10 +89,6 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 			throw new RuntimeException("could not insert new entry to DB");
 		}
 
-		Collection<? extends GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		
-		User user = new User("test " + email, encodedPassword, authorities);
-
 		return AccountState.OK;
 
 	}
@@ -118,7 +114,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	}
 
 	@Override
-	public void deleteAccount(String email)
+	public void deleteUser(String email)
 	{
 		int count = jdbcTemplate.update(DEFAULT_USER_DELETE_STATEMENT, email);
 		if (count != 1)
@@ -221,13 +217,6 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 	@Override
 	public void updateUser(UserDetails user)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteUser(String username)
 	{
 		// TODO Auto-generated method stub
 		

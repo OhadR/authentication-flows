@@ -17,8 +17,6 @@ public interface AuthenticationAccountRepository extends UserDetailsManager
 //			String encodedAnswer		NOT IMPLEMENTED
 			int numLoginAttemptsAllowed);
 
-	void deleteAccount(String email);
-
 	void setEnabled(String email);
 	void setDisabled(String email);
 	boolean isActivated(String email);
@@ -60,8 +58,19 @@ public interface AuthenticationAccountRepository extends UserDetailsManager
 	 *  
 	 * @param email
 	 * @return null if username was not found
-	 * /
+	 * 
 	AuthenticationUser getUser(String email);
 	*/
+
+	/**
+	 * this method is not needed anymore since we extend 
+	 * {@link org.springframework.security.core.userdetails.UserDetailsManager} 
+	 * with its <code>deleteUser(String username)</code>
+	 *  
+	 * @param email
+	 * 
+	void deleteAccount(String email);
+	*/
+
 
 }

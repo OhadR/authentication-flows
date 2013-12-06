@@ -16,7 +16,7 @@ import com.ohadr.auth_flows.types.AuthenticationPolicy;
 //@Component
 public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthenticationAccountRepository 
 {
-	private Map<String, AuthenticationUser> users = new HashMap<String, AuthenticationUser>();
+	private Map<String, UserDetails> users = new HashMap<String, UserDetails>();
 
 	
 	public InMemoryAuthenticationAccountRepositoryImpl()
@@ -34,40 +34,46 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	public AuthenticationUser loadUserByUsername(String username)
 			throws UsernameNotFoundException 
 	{
-		AuthenticationUser user = users.get(username);
+		AuthenticationUser user = (AuthenticationUser) users.get(username);
 		return user;
 	}
 
 	
 	
 	@Override
-	public AccountState createAccount(String email, String encodedPassword,
+	public AccountState createAccount(String username, String encodedPassword,
 			int numLoginAttemptsAllowed)
 	{
-		if( loadUserByUsername(email) != null )
+		UserDetails user = new InMemoryAuthenticationUserImpl(username,
+				encodedPassword,
+				false,
+				numLoginAttemptsAllowed,
+				new Date(System.currentTimeMillis()));
+		
+		if( loadUserByUsername(username) != null )
 		{
 			return AccountState.ALREADY_EXIST;
 		}
 		else
 		{
-			AuthenticationUser user = new InMemoryAuthenticationUserImpl(email,
-					encodedPassword,
-					false,
-					numLoginAttemptsAllowed,
-					new Date(System.currentTimeMillis()));
-
-			users.put(email, user);
+			createUser(user);
 			
 			return AccountState.OK;
 		}		
 	}
 
 	@Override
-	public void deleteAccount(String username) 
+	public void createUser(UserDetails user)
+	{
+		users.put(user.getUsername(), user);
+	}
+
+	@Override
+	public void deleteUser(String username)
 	{
 		users.remove(username);
 	}
-	
+
 	
 	@Override
 	public void setPassword(String email, String newPassword)
@@ -87,7 +93,7 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 					new Date(System.currentTimeMillis()) );
 
 			//delete old user and set a new one, since iface does not support "setPassword()":
-			deleteAccount(username);
+			deleteUser(username);
 			users.put(username, newUser);
 		}
 	}
@@ -131,7 +137,7 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 					storedUser.getPasswordLastChangeDate());
 
 			//delete old user and set a new one, since iface does not support "setPassword()":
-			deleteAccount(username);
+			deleteUser(username);
 			users.put(username, newUser);
 		}
 	}
@@ -152,18 +158,9 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 					storedUser.getPasswordLastChangeDate());
 			
 			//delete old user and set a new one, since iface does not support "setPassword()":
-			deleteAccount(username);
+			deleteUser(username);
 			users.put(username, newUser);
 		}
-	}
-
-
-
-	@Override
-	public void createUser(UserDetails user)
-	{
-		// TODO Auto-generated method stub
-		
 	}
 
 
@@ -174,16 +171,6 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 		// TODO Auto-generated method stub
 		
 	}
-
-
-
-	@Override
-	public void deleteUser(String username)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
 
 
 	@Override
