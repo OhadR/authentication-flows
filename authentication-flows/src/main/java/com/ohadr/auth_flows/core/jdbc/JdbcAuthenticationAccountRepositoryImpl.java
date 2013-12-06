@@ -52,7 +52,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	
 	//upon settign new password, set also the "last changed":
 	private static final String DEFAULT_UPDATE_PASSWORD_STATEMENT = "update " + TABLE_NAME + 
-			" set password = ? and LAST_PSWD_CHANGE_DATE = ? where USERNAME = ?";
+			" set password = ?, LAST_PSWD_CHANGE_DATE = ? where USERNAME = ?";
 	
 	private static final String DEFAULT_UPDATE_ACTIVATED_STATEMENT = "update " + TABLE_NAME + 
 			" set enabled = ? where USERNAME = ?";

@@ -335,8 +335,7 @@ public class UserActionController
 	@RequestMapping("/forgotPasswordPage")
 	protected View forgotPasswordPage(	
 			@RequestParam(EMAIL_PARAM_NAME) String email,
-			HttpServletRequest request,
-			HttpServletResponse response) throws Exception
+			HttpServletRequest request) throws Exception
 	{
 		RedirectView rv = new RedirectView();
 
