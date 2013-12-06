@@ -7,7 +7,7 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public class MailSenderMock implements MailSender
 {
 	private static Logger log = Logger.getLogger(MailSenderMock.class);

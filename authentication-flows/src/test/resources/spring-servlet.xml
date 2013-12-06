@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+
+    <context:property-placeholder location="classpath:/client.properties" />
+
+    <!-- 
+    <context:component-scan base-package="com.ohadr.security.oauth.examples" />
+    <context:component-scan base-package="com.ohadr.auth_flows.*" />
+    <context:component-scan base-package="com.ohadr.crypto.*" />
+
+    <context:annotation-config />
+
+    <mvc:default-servlet-handler />
+
+    <mvc:annotation-driven/>
+ 	-->
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/pages/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+
+    <sec:http pattern="/login/**" security="none" />
+    <sec:http pattern="/forgotPasswordPage" security="none" />
+    <sec:http pattern="/forgotPassword" security="none" />
+    <sec:http pattern="/createAccountPage" security="none" />
+    <sec:http pattern="/createAccount" security="none" />
+
+
+	<sec:http authentication-manager-ref="authenticationManager">
+		<sec:intercept-url pattern="/secure/**" access="ROLE_USER" />
+		<sec:anonymous/>
+
+        <!-- sec:form-login/-->
+        
+		<sec:form-login 
+			login-page="/login/login.htm" 
+			authentication-failure-url="/login/login.htm?login_error=1" />
+
+        
+	</sec:http>
+
+	<!-- bean name="loginUrlAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<property name="loginFormUrl" value="/oauth/commence" />
+		<property name="useForward" value="false" />
+	</bean-->
+
+
+    <!-- bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAuthenticationEntryPoint">
+        <property name="realmName" value="butkec" />
+    </bean>
+
+    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.MediaTypeAwareAccessDeniedHandler" /-->
+ 
+
+
+    <sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider user-service-ref="userDetailsService"/>
+	</sec:authentication-manager>
+	
+	<sec:user-service id="userDetailsService">
+		<sec:user name="admin"  password="admin"  authorities="ROLE_USER,ROLE_ADMIN" />
+	</sec:user-service>
+	
+
+
+
+	<bean id="passwordEncoder" 	class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<constructor-arg value="256"/>
+	</bean>
+	
+	
+	
+    <!-- decide how you wanna work: in-mem repo, or jdbc impl: -->
+    <bean class="com.ohadr.auth_flows.mocks.InMemoryAuthenticationAccountRepositoryImpl" />
+
+
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="sender@email.com" />
+		<property name="password" value="password" />
+
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	
+</beans>

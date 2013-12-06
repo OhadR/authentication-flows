@@ -1,4 +1,4 @@
-package com.ohadr.auth_flows.core;
+package com.ohadr.auth_flows.archive;
 
 
 import java.util.Properties;
@@ -14,17 +14,21 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.stereotype.Service;
 
 
-//TODO: consider using Spring' JavaMailSenderImpl
-//@Service
-public class MailSenderImpl implements MailSender 
+/**
+ * this implementation uses pure javax.mail to send mail.
+ * Deprecated because newer version uses Spring @link:JavaMailSenderImpl
+ * @author OhadR
+ *
+ */
+@Deprecated
+public class OldMailSenderImpl implements MailSender 
 {
 	private Session session;
+	
 
-
-	public MailSenderImpl()
+	public OldMailSenderImpl()
 	{
 		final String username = "bmc.incubator@gmail.com";
 		final String password = "theheatison";
@@ -47,27 +51,6 @@ public class MailSenderImpl implements MailSender
 
 	}
 
-	public void sendMail(
-			String adressee,
-			String subject,
-			String mailBody)
-	{
-		try 
-		{
-			Message message = new MimeMessage(session);
-			//            message.setFrom(new InternetAddress("your_user_name@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO, 
-					InternetAddress.parse( adressee ));
-			message.setSubject( subject );
-			message.setText( mailBody );
-
-			Transport.send(message);
-		} 
-		catch (MessagingException e) 
-		{
-			throw new RuntimeException(e);
-		}    	
-	}
 
 	@Override
 	public void send(SimpleMailMessage msg) throws MailException
