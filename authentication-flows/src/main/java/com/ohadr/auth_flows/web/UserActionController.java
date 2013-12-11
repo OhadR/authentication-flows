@@ -23,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.ohadr.crypto.exception.CryptoException;
@@ -76,7 +75,7 @@ public class UserActionController
 	@Autowired
 	private CryptoService cryptoService;
 	
-//TODO	@Autowired
+	@Autowired
 	private AbstractRememberMeServices rememberMeService;
 
 	@Autowired
@@ -127,19 +126,20 @@ public class UserActionController
 		attributes.put(EMAIL_PARAM_NAME,  email);		
 
 		
-//		InternalResourceView irv = new InternalResourceView();
-
-		PrintWriter writer = null;
-
 		//validate the input:
 		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
 		
 		String passwordValidityMsg = validatePassword(password, settings);
 		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
 		{
-			//redirect back to createAccount page, with error message:
-			writer.println(ERR_MSG + DELIMITER + 
-					unescapeJaveAndEscapeHtml( ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + passwordValidityMsg ) );
+			log.error(ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE);
+
+			attributes.put(ERR_MSG,  ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
+					 + passwordValidityMsg);		
+			attributes.put(ERR_HEADER,  ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE);
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl("login/error.jsp");
 			return rv;
 		}
 
@@ -170,7 +170,7 @@ public class UserActionController
         int rememberMeTokenValidityInDays = settings.getRememberMeTokenValidityInDays();
 
         //get the "remem-me" bean and update its validity:
-//TODO		rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
+		rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
                 
 
 		//adding attributes to the redirect return value:
@@ -537,14 +537,6 @@ public class UserActionController
 	/**********************************************************************************************************/
 
 	
-	@RequestMapping("/createAccountSuccessfully")
-	protected View createAccountSuccessfully(HttpServletRequest request) throws Exception
-	{
-		return new InternalResourceView("/login/successfullyAuth.html");
-	}
-	
-
-	@RequestMapping("/isAccountLocked")
 	protected void isAccountLocked(@RequestParam(EMAIL_PARAM_NAME) String email, 
 			HttpServletResponse response) throws Exception
 	{
