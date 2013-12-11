@@ -38,6 +38,8 @@ import com.ohadr.auth_flows.types.FlowsConstatns;
 public class UserActionController
 {
 
+	private static final String LINK_HAS_EXPIRED = "link has expired";
+	private static final String LINK_IS_INVALID = "link is invalid";
 	private static final String ACCOUNT_CREATION_FAILED = "Account Creation Failed";
 	public static final String PASSWORD_IS_INCORRECT = "password is incorrect";
 	public static final String USER_DOES_NOT_EXIST = "user does not exist";
@@ -355,7 +357,7 @@ public class UserActionController
 			attributes.put(ERR_HEADER,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/error.jsp");		//TODO make "account creation failed" more generic error page
+			rv.setUrl("login/error.jsp");
 			return rv;
 		}
 
@@ -380,12 +382,12 @@ public class UserActionController
 	 * @throws Exception
 	 */
 	@RequestMapping("/setNewPassword")
-	protected void setNewPassword( 
+	protected View setNewPassword( 
 			@RequestParam(FlowsConstatns.HASH_PARAM_NAME) String encUserAndTimestamp,
-			@RequestParam("password") String password,
-			HttpServletResponse response) throws Exception
+			@RequestParam("password") String password) throws Exception
 	{
-		PrintWriter writer = response.getWriter();
+		RedirectView rv = new RedirectView();
+		Map<String, String> attributes = new HashMap<String, String>();
 
 		//validations: (using Fiddlr, hacker can hack this URL *AFTER* changing password to himself, and 
 		//renaming the user to someone else.
@@ -397,17 +399,26 @@ public class UserActionController
 		catch(CryptoException cryptoEx)
 		{
 			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
-			writer.println(ERR_MSG + DELIMITER + "link is invalid; exception message: " + cryptoEx.getMessage());
-			return;
+
+			attributes.put(ERR_MSG,  LINK_IS_INVALID + " exception message: " + cryptoEx.getMessage());		
+			attributes.put(ERR_HEADER,  LINK_IS_INVALID);
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl("login/error.jsp");
+			return rv;
 		}
 		
 		//check expiration:
 		boolean expired = (System.currentTimeMillis() - stringAndDate.getLeft().getTime()) > (properties.getLinksExpirationMinutes() * 1000 * 60L);
 		if(expired)
 		{
-			log.error("link has expired");
-			writer.println(ERR_MSG + DELIMITER + "link has expired");
-			return;
+			log.error(LINK_HAS_EXPIRED);
+			attributes.put(ERR_MSG,  LINK_HAS_EXPIRED );		
+			attributes.put(ERR_HEADER,  LINK_HAS_EXPIRED);
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl("login/error.jsp");
+			return rv;
 		}
 
 
@@ -423,15 +434,25 @@ public class UserActionController
 		String passwordValidityMsg = validatePassword(password, settings);
 		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
 		{
-			writer.println(ERR_MSG + DELIMITER + 
-					unescapeJaveAndEscapeHtml( SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + passwordValidityMsg ));
-			return;
+			log.error(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE);
+
+			attributes.put(ERR_MSG,  SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
+					 + passwordValidityMsg);		
+			attributes.put(ERR_HEADER,  SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE);
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl("login/error.jsp");
+			return rv;
 		}
 
 		//use API to go to the DB and update the password, and activate the account:
 		flowsProcessor.setPassword(email, encodedPassword);
 
-		writer.println(FlowsConstatns.OK);
+		attributes.put(EMAIL_PARAM_NAME,  email);		
+		//adding attributes to the redirect return value:
+		rv.setAttributesMap(attributes);
+		rv.setUrl("login/passwordSetSuccess.jsp");
+		return rv;
 	}
 	/**********************************************************************************************************/
 
