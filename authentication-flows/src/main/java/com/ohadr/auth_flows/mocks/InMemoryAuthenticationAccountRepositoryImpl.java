@@ -85,17 +85,6 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	}
 
 	@Override
-	public AuthenticationPolicy getAuthenticationPolicy() 
-	{
-		AuthenticationPolicy policy = new AuthenticationPolicy();
-		policy.setMaxPasswordEntryAttempts( 5 );
-		policy.setPasswordMaxLength( 8 );
-		policy.setRememberMeTokenValidityInDays( 30 );
-
-		return policy;
-	}
-	
-	@Override
 	public void setEnabled(String username) 
 	{
 		setEnabledFlag(username, true);

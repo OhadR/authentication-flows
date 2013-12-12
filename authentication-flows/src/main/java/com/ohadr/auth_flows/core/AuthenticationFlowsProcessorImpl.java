@@ -16,6 +16,7 @@ import org.springframework.util.Assert;
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
+import com.ohadr.auth_flows.interfaces.AuthenticationPolicyRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 import com.ohadr.auth_flows.mocks.InMemoryAuthenticationUserImpl;
 import com.ohadr.auth_flows.types.AccountState;
@@ -30,6 +31,9 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	
 	@Autowired
 	private AuthenticationAccountRepository repository;
+	
+	@Autowired
+	private AuthenticationPolicyRepository policyRepo;
 	
 	@Autowired
 	private CryptoService	cryptoService;
@@ -159,7 +163,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	@Override
 	public AuthenticationPolicy getAuthenticationSettings() 
 	{
-		return repository.getAuthenticationPolicy();
+		return policyRepo.getAuthenticationPolicy();
 	}
 
 	@Override

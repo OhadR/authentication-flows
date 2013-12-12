@@ -59,7 +59,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 	private static final String DEFAULT_UPDATE_ATTEMPTS_CNTR_STATEMENT = "update " + TABLE_NAME +
 			" set LOGIN_ATTEMPTS_COUNTER = ? where USERNAME = ?";
-
+	
 	
 	@Autowired
 	private DataSource dataSource;
@@ -138,21 +138,6 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		}
 	}
 
-	//TODO: impl from DB
-	@Override
-	public AuthenticationPolicy getAuthenticationPolicy()
-	{
-		// TODO read from DB!!!
-		AuthenticationPolicy policy = new AuthenticationPolicy();
-		policy.setMaxPasswordEntryAttempts( 5 );
-		policy.setPasswordMaxLength( 8 );
-		policy.setRememberMeTokenValidityInDays( 30 );
-		policy.setPasswordLifeInDays(3);
-
-		return policy;
-	}
-
-	
 	
 	private static class AuthenticationUserRowMapper implements RowMapper<AuthenticationUser>
 	{

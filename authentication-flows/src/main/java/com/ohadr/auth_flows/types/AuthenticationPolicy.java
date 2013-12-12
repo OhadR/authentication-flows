@@ -1,42 +1,49 @@
 package com.ohadr.auth_flows.types;
 
+import java.sql.Date;
 import java.util.*;
 
 public class AuthenticationPolicy
 {
-	private int passwordMinSpecialSymbols;
-
-	private List<String> passwordBlackList;
-
-	private int passwordLifeInDays;
-
 	private int passwordMinLength;
-
-	private int passwordMinLoCaseLetters;
-
-	private int rememberMeTokenValidityInDays;
-
-	private int passwordMinUpCaseLetters;
 
 	private int passwordMaxLength;
 
-	private int passwordMinNumbers;
+	private int passwordMinUpCaseChars;
 
+	private int passwordMinLoCaseChars;
+
+	private int passwordMinNumbericDigits;
+
+	private int passwordMinSpecialSymbols;
+	
+	private List<String> passwordBlackList;
+	
 	private int maxPasswordEntryAttempts;
 
-	/**
-	 * List of secret questions for user authentication
-	 */
-	private List<String> secretQuestions;
+	private int passwordLifeInDays;
+
+	private int rememberMeTokenValidityInDays;
+
+
+
+	public AuthenticationPolicy(int passwordMinLength,
+			int passwordMaxLength,
+			int passwordMinUpCaseChars,
+			int passwordMinLoCaseChars, 
+			int passwordMinNumbericDigits,
+			int passwordMinSpecialSymbols,
+			String passwordBlackList,
+			int maxPasswordEntryAttempts,
+			int passwordLifeInDays,
+			int rememberMeTokenValidityInDays)
+	{
+		// TODO set values
+	}
 
 	public int getPasswordMinSpecialSymbols()
 	{
 		return passwordMinSpecialSymbols;
-	}
-
-	public void setPasswordMinSpecialSymbols(int passwordMinSpecialSymbols)
-	{
-		this.passwordMinSpecialSymbols = passwordMinSpecialSymbols;
 	}
 
 	public List<String> getPasswordBlackList()
@@ -44,19 +51,9 @@ public class AuthenticationPolicy
 		return passwordBlackList;
 	}
 
-	public void setPasswordBlackList(List<String> passwordBlackList)
-	{
-		this.passwordBlackList = passwordBlackList;
-	}
-
 	public int getPasswordLifeInDays()
 	{
 		return passwordLifeInDays;
-	}
-
-	public void setPasswordLifeInDays(int passwordLifeInDays)
-	{
-		this.passwordLifeInDays = passwordLifeInDays;
 	}
 
 	public int getPasswordMinLength()
@@ -64,19 +61,9 @@ public class AuthenticationPolicy
 		return passwordMinLength;
 	}
 
-	public void setPasswordMinLength(int passwordMinLength)
+	public int getPasswordMinLoCaseChars()
 	{
-		this.passwordMinLength = passwordMinLength;
-	}
-
-	public int getPasswordMinLoCaseLetters()
-	{
-		return passwordMinLoCaseLetters;
-	}
-
-	public void setPasswordMinLoCaseLetters(int passwordMinLoCaseLetters)
-	{
-		this.passwordMinLoCaseLetters = passwordMinLoCaseLetters;
+		return passwordMinLoCaseChars;
 	}
 
 	public int getRememberMeTokenValidityInDays()
@@ -84,19 +71,9 @@ public class AuthenticationPolicy
 		return rememberMeTokenValidityInDays;
 	}
 
-	public void setRememberMeTokenValidityInDays(int rememberMeTokenValidityInDays)
+	public int getPasswordMinUpCaseChars()
 	{
-		this.rememberMeTokenValidityInDays = rememberMeTokenValidityInDays;
-	}
-
-	public int getPasswordMinUpCaseLetters()
-	{
-		return passwordMinUpCaseLetters;
-	}
-
-	public void setPasswordMinUpCaseLetters(int passwordMinUpCaseLetters)
-	{
-		this.passwordMinUpCaseLetters = passwordMinUpCaseLetters;
+		return passwordMinUpCaseChars;
 	}
 
 	public int getPasswordMaxLength()
@@ -104,39 +81,14 @@ public class AuthenticationPolicy
 		return passwordMaxLength;
 	}
 
-	public void setPasswordMaxLength(int passwordMaxLength)
+	public int getPasswordMinNumbericDigits()
 	{
-		this.passwordMaxLength = passwordMaxLength;
-	}
-
-	public int getPasswordMinNumbers()
-	{
-		return passwordMinNumbers;
-	}
-
-	public void setPasswordMinNumbers(int passwordMinNumbers)
-	{
-		this.passwordMinNumbers = passwordMinNumbers;
+		return passwordMinNumbericDigits;
 	}
 
 	public int getMaxPasswordEntryAttempts()
 	{
 		return maxPasswordEntryAttempts;
-	}
-
-	public void setMaxPasswordEntryAttempts(int maxPasswordEntryAttempts)
-	{
-		this.maxPasswordEntryAttempts = maxPasswordEntryAttempts;
-	}
-
-	public List<String> getSecretQuestions()
-	{
-		return secretQuestions;
-	}
-
-	public void setSecretQuestions(List<String> secretQuestions)
-	{
-		this.secretQuestions = secretQuestions;
 	}
 
 }

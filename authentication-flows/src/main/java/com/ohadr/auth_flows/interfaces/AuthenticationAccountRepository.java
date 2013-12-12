@@ -36,8 +36,6 @@ public interface AuthenticationAccountRepository extends UserDetailsManager
 	String getEncodedPassword(String username);
 	Date getPasswordLastChangeDate(String email);
 
-	AuthenticationPolicy getAuthenticationPolicy();
-
 	/**
 	 * NOT IMPLEMENTED
 	 * 

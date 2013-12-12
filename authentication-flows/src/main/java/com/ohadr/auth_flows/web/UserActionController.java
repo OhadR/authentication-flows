@@ -75,8 +75,8 @@ public class UserActionController
 	@Autowired
 	private CryptoService cryptoService;
 	
-	@Autowired
-	private AbstractRememberMeServices rememberMeService;
+//	@Autowired
+//	private AbstractRememberMeServices rememberMeService;
 
 	@Autowired
 	private AuthenticationFlowsProcessor flowsProcessor;
@@ -170,7 +170,7 @@ public class UserActionController
         int rememberMeTokenValidityInDays = settings.getRememberMeTokenValidityInDays();
 
         //get the "remem-me" bean and update its validity:
-		rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
+//TODO		rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
                 
 
 		//adding attributes to the redirect return value:
@@ -252,17 +252,17 @@ public class UserActionController
 
 		String retVal = FlowsConstatns.OK;
 		
-		if(uppersCounter < settings.getPasswordMinUpCaseLetters())
+		if(uppersCounter < settings.getPasswordMinUpCaseChars())
 		{
-			retVal = formatter.format(PASSWORD_TOO_FEW_UPPERS, settings.getPasswordMinUpCaseLetters()).toString() ;
+			retVal = formatter.format(PASSWORD_TOO_FEW_UPPERS, settings.getPasswordMinUpCaseChars()).toString() ;
 		}
-		if(lowersCounter < settings.getPasswordMinLoCaseLetters())
+		if(lowersCounter < settings.getPasswordMinLoCaseChars())
 		{
-			retVal =  formatter.format(PASSWORD_TOO_FEW_LOWERS, settings.getPasswordMinLoCaseLetters()).toString();
+			retVal =  formatter.format(PASSWORD_TOO_FEW_LOWERS, settings.getPasswordMinLoCaseChars()).toString();
 		}
-		if(numericCounter < settings.getPasswordMinNumbers())
+		if(numericCounter < settings.getPasswordMinNumbericDigits())
 		{
-			retVal =  formatter.format(PASSWORD_TOO_FEW_NUMERICS, settings.getPasswordMinNumbers()).toString();
+			retVal =  formatter.format(PASSWORD_TOO_FEW_NUMERICS, settings.getPasswordMinNumbericDigits()).toString();
 		}
 		if(specialSymbolCounter < settings.getPasswordMinSpecialSymbols())
 		{
@@ -309,10 +309,10 @@ public class UserActionController
 		String passwordConstraints = 
 				"PasswordMaxLength="+ settings.getPasswordMaxLength()+ DELIMITER +
 				"PasswordMinLength="+settings.getPasswordMinLength()+ DELIMITER +
-				"PasswordMinLoCaseLetters="+settings.getPasswordMinLoCaseLetters()+ DELIMITER +
-				"PasswordMinNumbers="+settings.getPasswordMinNumbers()+ DELIMITER +
+				"PasswordMinLoCaseLetters="+settings.getPasswordMinLoCaseChars()+ DELIMITER +
+				"PasswordMinNumbers="+settings.getPasswordMinNumbericDigits()+ DELIMITER +
 				"PasswordMinSpecialSymbols="+settings.getPasswordMinSpecialSymbols()+ DELIMITER +
-				"PasswordMinUpCaseLetters="+settings.getPasswordMinUpCaseLetters()
+				"PasswordMinUpCaseLetters="+settings.getPasswordMinUpCaseChars()
 				;
 
 
