@@ -38,7 +38,16 @@ public class AuthenticationPolicy
 			int passwordLifeInDays,
 			int rememberMeTokenValidityInDays)
 	{
-		// TODO set values
+		this.passwordMinLength = passwordMinLength;
+		this.passwordMaxLength = passwordMaxLength;
+		this.passwordMinUpCaseChars = passwordMinUpCaseChars;
+		this.passwordMinLoCaseChars = passwordMinLoCaseChars;
+		this.passwordMinNumbericDigits = passwordMinNumbericDigits;
+		this.passwordMinSpecialSymbols = passwordMinSpecialSymbols;
+//TODO		this.passwordBlackList = passwordBlackList;
+		this.maxPasswordEntryAttempts = maxPasswordEntryAttempts;
+		this.passwordLifeInDays = passwordLifeInDays;
+		this.rememberMeTokenValidityInDays = rememberMeTokenValidityInDays;
 	}
 
 	public int getPasswordMinSpecialSymbols()

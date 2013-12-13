@@ -11,7 +11,13 @@ public class MockAuthenticationPolicyRepositoryImpl implements
 	private static final int setRememberMeTokenValidityInDays = 30;
 
 	@Override
-	public AuthenticationPolicy getAuthenticationPolicy() 
+	public AuthenticationPolicy getDefaultAuthenticationPolicy() 
+	{
+		return getAuthenticationPolicy( 0 );
+	}
+
+	@Override
+	public AuthenticationPolicy getAuthenticationPolicy(int settingsId)
 	{
 		AuthenticationPolicy policy = new AuthenticationPolicy(
 				MaxPasswordEntryAttempts,

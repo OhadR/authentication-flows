@@ -4,6 +4,7 @@ import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
 public interface AuthenticationPolicyRepository
 {
-	AuthenticationPolicy getAuthenticationPolicy();
+	AuthenticationPolicy getDefaultAuthenticationPolicy();
 
+	AuthenticationPolicy getAuthenticationPolicy(int settingsId);
 }

@@ -2,6 +2,7 @@ package com.ohadr.auth_flows.core.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 
 import javax.sql.DataSource;
 
@@ -64,29 +65,36 @@ public class JdbcAuthenticationPolicyRepositoryImpl implements
 
 	
 	@Override
-	public AuthenticationPolicy getAuthenticationPolicy()
+	public AuthenticationPolicy getDefaultAuthenticationPolicy()
 	{
 		int settings = 1;
+		
+		return getAuthenticationPolicy( settings );
+	}
+	
+
+	@Override
+	public AuthenticationPolicy getAuthenticationPolicy(int settingsId)
+	{
 		AuthenticationPolicy policy = null;
 
 		try
 		{
-			log.info("query: " + DEFAULT_USER_SELECT_STATEMENT + " " + settings);
+			log.info("query: " + DEFAULT_USER_SELECT_STATEMENT + " " + settingsId);
 			policy = jdbcTemplate.queryForObject(DEFAULT_USER_SELECT_STATEMENT, 
-					new AuthenticationPolicyRowMapper(), settings);
+					new AuthenticationPolicyRowMapper(), settingsId);
 		}
 		catch (EmptyResultDataAccessException e) 
 		{
-			log.info("no record was found for settings=" + settings);
-//			throw new NoSuchElementException("No user with email: " + email);
+			log.info("no record was found for settings=" + settingsId);
+			throw new NoSuchElementException("No policy with id: " + settingsId);
 		}
 
 
 		return policy;
-		
 	}
-	
-	
+
+
 	
 	private static class AuthenticationPolicyRowMapper implements RowMapper<AuthenticationPolicy>
 	{
@@ -108,8 +116,5 @@ public class JdbcAuthenticationPolicyRepositoryImpl implements
 			return user;
 		}
 	}
-
-
-	
 
 }

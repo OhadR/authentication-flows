@@ -163,7 +163,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	@Override
 	public AuthenticationPolicy getAuthenticationSettings() 
 	{
-		return policyRepo.getAuthenticationPolicy();
+		return policyRepo.getDefaultAuthenticationPolicy();
 	}
 
 	@Override
