@@ -1,10 +1,13 @@
 package com.ohadr.auth_flows.types;
 
-import java.sql.Date;
 import java.util.*;
+
+import org.springframework.util.CollectionUtils;
 
 public class AuthenticationPolicy
 {
+	private static final String DB_ITEMS_DELIMITER = ";";
+
 	private int passwordMinLength;
 
 	private int passwordMaxLength;
@@ -27,6 +30,7 @@ public class AuthenticationPolicy
 
 
 
+	@SuppressWarnings("unchecked")
 	public AuthenticationPolicy(int passwordMinLength,
 			int passwordMaxLength,
 			int passwordMinUpCaseChars,
@@ -44,10 +48,12 @@ public class AuthenticationPolicy
 		this.passwordMinLoCaseChars = passwordMinLoCaseChars;
 		this.passwordMinNumbericDigits = passwordMinNumbericDigits;
 		this.passwordMinSpecialSymbols = passwordMinSpecialSymbols;
-//TODO		this.passwordBlackList = passwordBlackList;
 		this.maxPasswordEntryAttempts = maxPasswordEntryAttempts;
 		this.passwordLifeInDays = passwordLifeInDays;
 		this.rememberMeTokenValidityInDays = rememberMeTokenValidityInDays;
+		
+		this.passwordBlackList = CollectionUtils.arrayToList( passwordBlackList.split(DB_ITEMS_DELIMITER)); 
+
 	}
 
 	public int getPasswordMinSpecialSymbols()
