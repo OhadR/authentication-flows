@@ -132,14 +132,13 @@ public class UserActionController
 		String passwordValidityMsg = validatePassword(password, settings);
 		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
 		{
-			log.error(ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE);
+			log.error(ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + passwordValidityMsg);
 
 			attributes.put(ERR_MSG,  ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
 					 + passwordValidityMsg);		
-			attributes.put(ERR_HEADER,  ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE);
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/error.jsp");
+			rv.setUrl("login/createAccount.jsp");
 			return rv;
 		}
 
@@ -156,12 +155,11 @@ public class UserActionController
 
 			log.error(errorText);
 
-			attributes.put(ERR_MSG,  errorText);
-			attributes.put(ERR_HEADER,  ACCOUNT_CREATION_FAILED);
+			attributes.put(ERR_MSG,  ACCOUNT_CREATION_FAILED + "; " + errorText);
 			
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/error.jsp");
+			rv.setUrl("login/createAccount.jsp");
 			return rv;
     	}
         
