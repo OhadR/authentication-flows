@@ -82,7 +82,7 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 			//if "secret question" is implemented, here you get the secret Q and show the user the screen to answer it. then
 			//check the answer, etc.  
 
-			redirectUri = request.getContextPath() + "/login/setNewPassword.htm"
+			redirectUri = request.getContextPath() + "/login/setNewPassword.jsp"
 					+ "?"
 					+ FlowsConstatns.HASH_PARAM_NAME 
 					+ "=" + encodedEmailAndTimestamp;

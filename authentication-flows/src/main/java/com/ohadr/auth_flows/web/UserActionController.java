@@ -399,10 +399,9 @@ public class UserActionController
 			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
 
 			attributes.put(ERR_MSG,  LINK_IS_INVALID + " exception message: " + cryptoEx.getMessage());		
-			attributes.put(ERR_HEADER,  LINK_IS_INVALID);
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/error.jsp");
+			rv.setUrl("login/setNewPassword.jsp");
 			return rv;
 		}
 		
@@ -412,10 +411,9 @@ public class UserActionController
 		{
 			log.error(LINK_HAS_EXPIRED);
 			attributes.put(ERR_MSG,  LINK_HAS_EXPIRED );		
-			attributes.put(ERR_HEADER,  LINK_HAS_EXPIRED);
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/error.jsp");
+			rv.setUrl("login/setNewPassword.jsp");
 			return rv;
 		}
 
@@ -436,10 +434,9 @@ public class UserActionController
 
 			attributes.put(ERR_MSG,  SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
 					 + passwordValidityMsg);		
-			attributes.put(ERR_HEADER,  SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE);
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/error.jsp");
+			rv.setUrl("login/setNewPassword.jsp");
 			return rv;
 		}
 
