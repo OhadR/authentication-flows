@@ -61,9 +61,7 @@ public class UserActionController
 	
 	private static final String EMAIL_PARAM_NAME = "email";
 //	private static final String LOGIN_ERROR_ATTRIB = "error";
-	private static final String ERR_MSG = "err_msg";
 	private static final String DELIMITER = "|";
-	private static final String ERR_HEADER = "err_header";
 
 
 
@@ -134,7 +132,7 @@ public class UserActionController
 		{
 			log.error(ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + passwordValidityMsg);
 
-			attributes.put(ERR_MSG,  ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
+			attributes.put(FlowsConstatns.ERR_MSG,  ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
 					 + passwordValidityMsg);		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
@@ -155,7 +153,7 @@ public class UserActionController
 
 			log.error(errorText);
 
-			attributes.put(ERR_MSG,  ACCOUNT_CREATION_FAILED + "; " + errorText);
+			attributes.put(FlowsConstatns.ERR_MSG,  ACCOUNT_CREATION_FAILED + "; " + errorText);
 			
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
@@ -351,8 +349,8 @@ public class UserActionController
 			//account has been locked/does not exist: notify user:
 			log.error(ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
 
-			attributes.put(ERR_MSG,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);		
-			attributes.put(ERR_HEADER,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
+			attributes.put(FlowsConstatns.ERR_MSG,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);		
+			attributes.put(FlowsConstatns.ERR_HEADER,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl("login/error.jsp");
@@ -398,7 +396,7 @@ public class UserActionController
 		{
 			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
 
-			attributes.put(ERR_MSG,  LINK_IS_INVALID + " exception message: " + cryptoEx.getMessage());		
+			attributes.put(FlowsConstatns.ERR_MSG,  LINK_IS_INVALID + " exception message: " + cryptoEx.getMessage());		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl("login/setNewPassword.jsp");
@@ -410,7 +408,7 @@ public class UserActionController
 		if(expired)
 		{
 			log.error(LINK_HAS_EXPIRED);
-			attributes.put(ERR_MSG,  LINK_HAS_EXPIRED );		
+			attributes.put(FlowsConstatns.ERR_MSG,  LINK_HAS_EXPIRED );		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl("login/setNewPassword.jsp");
@@ -432,7 +430,7 @@ public class UserActionController
 		{
 			log.error(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE);
 
-			attributes.put(ERR_MSG,  SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
+			attributes.put(FlowsConstatns.ERR_MSG,  SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
 					 + passwordValidityMsg);		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
@@ -480,7 +478,7 @@ public class UserActionController
 		if( accountState != AccountState.OK )
 		{
 			//account has been locked: do not check the user's answer, but notify user:
-			writer.println(ERR_MSG + DELIMITER + ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
+			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
 			return;
 		}
 
@@ -492,7 +490,7 @@ public class UserActionController
 		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
 		{
 			//UI will redirect back to createAccount page, with error message:
-			writer.println(ERR_MSG + DELIMITER + 
+			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + 
 					unescapeJaveAndEscapeHtml( CHANGE_PASSWORD_FAILED_NEW_PASSWORD_NOT_COMPLIANT_WITH_POLICY + 
 					" Error message: " + passwordValidityMsg) );
 			return;
@@ -501,7 +499,7 @@ public class UserActionController
 		
 		if(currentPassword.equals(newPassword))
 		{
-			writer.println(ERR_MSG + DELIMITER + 
+			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + 
 					unescapeJaveAndEscapeHtml( CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD ));
 			return;
 			
@@ -519,7 +517,7 @@ public class UserActionController
 			log.error(errorText);
 			
 			//error - old password is incorrect; redirect back to same page (with the email as param):
-			writer.println(ERR_MSG + DELIMITER + unescapeJaveAndEscapeHtml( PASSWORD_IS_INCORRECT ));
+			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + unescapeJaveAndEscapeHtml( PASSWORD_IS_INCORRECT ));
 
 			return;
 			

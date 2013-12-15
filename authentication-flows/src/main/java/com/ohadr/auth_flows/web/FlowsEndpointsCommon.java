@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.core.FlowsUtil;
+import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
 
 public abstract class FlowsEndpointsCommon
@@ -20,15 +21,17 @@ public abstract class FlowsEndpointsCommon
 	private CryptoService	cryptoService;
 
 	
-	protected EmailExtractedData extractEmailData(HttpServletRequest request) 
+	protected EmailExtractedData extractEmailData(HttpServletRequest request) throws CryptoException 
 	{
 //		String encRedirectUri = FlowsUtil.getParamRedirectUri(request);
 		String encUserAndTimestamp = FlowsUtil.getParamsUserAndTimestamp(request);
 		
 		
 		EmailExtractedData extractedData = new EmailExtractedData();
-		ImmutablePair<Date, String> stringAndDate = cryptoService.extractStringAndDate(encUserAndTimestamp);
+		ImmutablePair<Date, String> stringAndDate;
 		
+		//issue #9: exception on console, if restore-pass link was tampered with. handle here the exception
+		stringAndDate = cryptoService.extractStringAndDate(encUserAndTimestamp);
 		
 		extractedData.userEmail = stringAndDate.getRight();
 		extractedData.emailCreationDate = stringAndDate.getLeft();

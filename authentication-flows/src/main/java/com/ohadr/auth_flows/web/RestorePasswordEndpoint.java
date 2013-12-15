@@ -2,6 +2,8 @@ package com.ohadr.auth_flows.web;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,10 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.auth_flows.types.FlowsConstatns;
+import com.ohadr.crypto.exception.CryptoException;
 
 /**
  * user clicks on the link in the "forgot password" email, and gets here.
@@ -32,17 +37,39 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 
 	
 	@RequestMapping
-	public void restorePassword(HttpServletRequest request, HttpServletResponse response) throws IOException 
+	public View restorePassword(HttpServletRequest request, HttpServletResponse response) throws IOException 
 	{
-		EmailExtractedData extractedData = extractEmailData(request);
+		RedirectView rv = new RedirectView();
+		Map<String, String> attributes = new HashMap<String, String>();
+
+		EmailExtractedData extractedData= null;
+		try
+		{
+			extractedData = extractEmailData(request);
+		}
+		catch (CryptoException cryptoEx)
+		{
+			log.error("Could not extract data from URL", cryptoEx);
+			cryptoEx.printStackTrace();
+			
+			attributes.put(FlowsConstatns.ERR_HEADER,  "URL IS INVALID");		
+			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS INVALID" + " exception message: " + cryptoEx.getMessage());		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl("login/error.jsp");
+			return rv;
+		}
 
 		if(extractedData.expired)
 		{
 			log.error("user " + extractedData.userEmail + " tried to use an expired link");
-			String redirectUri = request.getContextPath() + "/login/index.htm";		//psns=password not changed
-			response.sendRedirect( redirectUri );
-			return;
 
+			attributes.put(FlowsConstatns.ERR_HEADER,  "URL IS EXPIRED");		
+			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS Expired");		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl("login/error.jsp");
+			return rv;
 		}
 		else
 		{
@@ -69,7 +96,7 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 //TODO
 				redirectUri = request.getContextPath() + "/login/index.htm"; 		//psns=password not changed 
 				response.sendRedirect( redirectUri );
-				return;
+				return null;
 			}
 
 
@@ -82,12 +109,16 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 			//if "secret question" is implemented, here you get the secret Q and show the user the screen to answer it. then
 			//check the answer, etc.  
 
-			redirectUri = request.getContextPath() + "/login/setNewPassword.jsp"
+//			attributes.put(FlowsConstatns.ERR_HEADER,  "URL IS EXPIRED");		
+//			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS Expired");		
+			//adding attributes to the redirect return value:
+//			rv.setAttributesMap(attributes);
+			rv.setUrl("login/setNewPassword.jsp"
 					+ "?"
 					+ FlowsConstatns.HASH_PARAM_NAME 
-					+ "=" + encodedEmailAndTimestamp;
-
-			response.sendRedirect( redirectUri );
+					+ "=" + encodedEmailAndTimestamp
+					);
 		}
+		return rv;
 	}
 }
