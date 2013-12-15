@@ -37,7 +37,7 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 
 	
 	@RequestMapping
-	public View restorePassword(HttpServletRequest request, HttpServletResponse response) throws IOException 
+	public View restorePassword(HttpServletRequest request) throws IOException 
 	{
 		RedirectView rv = new RedirectView();
 		Map<String, String> attributes = new HashMap<String, String>();
@@ -93,10 +93,13 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 			if(lastChange.after(emailCreationDate))
 			{
 				log.error("user " + extractedData.userEmail + " tried to use an expired link: password was already changed AFTER the timestamp of the link");
-//TODO
-				redirectUri = request.getContextPath() + "/login/index.htm"; 		//psns=password not changed 
-				response.sendRedirect( redirectUri );
-				return null;
+
+				attributes.put(FlowsConstatns.ERR_HEADER,  "Cannot set new password");		
+				attributes.put(FlowsConstatns.ERR_MSG,  "Cannot set new password, because it was set AFTER the link was created.");		
+				//adding attributes to the redirect return value:
+				rv.setAttributesMap(attributes);
+				rv.setUrl("login/error.jsp");
+				return rv;
 			}
 
 

@@ -28,7 +28,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 
 	
 	@RequestMapping
-    public View activateAccount(HttpServletRequest request, HttpServletResponse response) throws IOException 
+    public View activateAccount(HttpServletRequest request) throws IOException 
     {
 		RedirectView rv = new RedirectView();
 		Map<String, String> attributes = new HashMap<String, String>();
