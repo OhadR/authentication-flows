@@ -166,7 +166,7 @@ public class UserActionController
         int rememberMeTokenValidityInDays = settings.getRememberMeTokenValidityInDays();
 
         //get the "remem-me" bean and update its validity:
-//TODO		rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
+//        rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
                 
 
 		//adding attributes to the redirect return value:
