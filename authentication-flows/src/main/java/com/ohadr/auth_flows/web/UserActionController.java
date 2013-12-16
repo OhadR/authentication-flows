@@ -370,7 +370,8 @@ public class UserActionController
 	/**********************************************************************************************************/
 
 	/**
-	 *  (3)
+	 *  (3) 
+	 *  called upon form submission
 	 *  
 	 * @param encUserAndTimestamp
 	 * @param password

@@ -31,9 +31,6 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 		this.passwordLastChangeDate = passwordLastChangeDate;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getEmail()
-	 */
 	@Override
 	public String getUsername() 
 	{
@@ -41,18 +38,12 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	}
 
 
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getPassword()
-	 */
 	@Override
 	public String getPassword()
 	{
 		return password;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#isActivated()
-	 */
 	@Override
 	public boolean isEnabled() 
 	{
@@ -60,7 +51,7 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	}
 
 	/* (non-Javadoc)
-	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getLoginAttemptsCounter()
+	 * @see com.ohadr.auth_flows.interfaces.AuthenticationUser#getLoginAttemptsLeft()
 	 */
 	@Override
 	public int getLoginAttemptsLeft() 
@@ -102,6 +93,7 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	public boolean isCredentialsNonExpired() 
 	{
 		//TODO calc the passwordLastChangeDate with the time from policy (account-axpiry)
+//		passwordLastChangeDate;
 		return true;
 	}
 
