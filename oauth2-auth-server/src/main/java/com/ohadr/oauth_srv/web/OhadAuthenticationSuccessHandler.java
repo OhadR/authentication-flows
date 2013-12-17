@@ -14,13 +14,15 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.stereotype.Service;
 
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
-import com.ohadr.authentication.utils.oAuthConstants;
+import com.ohadr.auth_flows.types.FlowsConstatns;
 import com.ohadr.crypto.service.CryptoService;
 
 @Service("authenticationSuccessHandler")
 public class OhadAuthenticationSuccessHandler extends
 		SavedRequestAwareAuthenticationSuccessHandler
 {
+	private static final String OAUTH_WEB_APP_NAME = "oauth-srv";
+
 	@Autowired
 	private CryptoService cryptoService;
 	
@@ -50,8 +52,8 @@ public class OhadAuthenticationSuccessHandler extends
 			String encUser = cryptoService.generateEncodedString(username);
 			
 			//redirect to "change password" page:
-			response.sendRedirect("/" + oAuthConstants.OAUTH_WEB_APP_NAME + "/login/index.htm?username=" + username + 
-					"&" + oAuthConstants.ENCRYPTED_USERNAME_PARAM_NAME + "=" + encUser + "&dt=cp");
+			response.sendRedirect("/" + OAUTH_WEB_APP_NAME + "/login/index.htm?username=" + username + 
+					"&" + FlowsConstatns.ENCRYPTED_USERNAME_PARAM_NAME + "=" + encUser + "&dt=cp");
 			
 			return;
 

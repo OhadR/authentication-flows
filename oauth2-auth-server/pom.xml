@@ -3,12 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ohadr.oauth2</groupId>
 	<artifactId>oauth2-auth-server</artifactId>
 	<packaging>war</packaging>
 	<name>Sample oAuth 2.0 Authorization Server</name>
 
 	<parent>
-		<groupId>com.ohadr.oauth2</groupId>
+		<groupId>com.ohadr</groupId>
 		<artifactId>auth-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../auth-parent</relativePath>
@@ -34,7 +35,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.ohadr.oauth2</groupId>
+			<groupId>com.ohadr</groupId>
 			<artifactId>authentication-flows</artifactId>
 			<version>${project.version}</version>
 		</dependency>
