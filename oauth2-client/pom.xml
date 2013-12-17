@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>com.ohadr</groupId>
 		<artifactId>auth-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0.RELEASE</version>
 		<relativePath>../auth-parent</relativePath>
 	</parent>
 
