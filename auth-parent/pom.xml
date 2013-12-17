@@ -30,7 +30,7 @@
 	<scm>
 		<connection>scm:git:git@github.com:OhadR/oAuth2-sample.git</connection>
 		<developerConnection>scm:git:git@github.com:OhadR/oAuth2-sample.git</developerConnection>
-		<url>http://github.com/OhadR/oAuth2-sample</url>
+		<url>git@github.com:OhadR/oAuth2-sample.git</url>
 	</scm>
 
     <properties>
