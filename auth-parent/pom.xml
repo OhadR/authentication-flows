@@ -28,9 +28,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:git:https://github.com/OhadR/oAuth2-sample</connection>
-		<developerConnection>scm:git:https://github.com/OhadR/oAuth2-sample</developerConnection>
-		<url>https://github.com/OhadR/oAuth2-sample</url>
+		<connection>scm:git:git@github.com/OhadR/oAuth2-sample.git</connection>
+		<developerConnection>scm:git:git@github.com/OhadR/oAuth2-sample.git</developerConnection>
+		<url>http://github.com/OhadR/oAuth2-sample</url>
 	</scm>
 
     <properties>
