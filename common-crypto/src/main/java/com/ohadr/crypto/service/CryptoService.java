@@ -110,7 +110,7 @@ public class CryptoService
 	 * Encode Integers, Strings and byte into encrypted based-64 string
 	 * 
 	 * @param params
-	 * @return
+	 * @return encoded content (Base64)
 	 */
 	public String createEncodedContent(Object... params)
 	{
