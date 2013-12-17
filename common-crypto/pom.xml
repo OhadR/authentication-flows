@@ -12,6 +12,27 @@
         <relativePath>../auth-parent</relativePath>
     </parent>
 
+    <description>Cryptography utilities for authentication projects</description>
+	<url>https://github.com/OhadR/oAuth2-sample</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>ohadr</id>
+			<name>Ohad Redlich</name>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git://github.com/OhadR/oAuth2-sample</connection>
+		<developerConnection>scm:git:git://github.com/OhadR/oAuth2-sample</developerConnection>
+		<url>https://github.com/OhadR/oAuth2-sample</url>
+	</scm>
+    
 	<dependencies>
 		
 		<dependency>
