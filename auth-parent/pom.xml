@@ -28,8 +28,8 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:git:git@github.com/OhadR/oAuth2-sample.git</connection>
-		<developerConnection>scm:git:git@github.com/OhadR/oAuth2-sample.git</developerConnection>
+		<connection>scm:git:git@github.com:OhadR/oAuth2-sample.git</connection>
+		<developerConnection>scm:git:git@github.com:OhadR/oAuth2-sample.git</developerConnection>
 		<url>http://github.com/OhadR/oAuth2-sample</url>
 	</scm>
 
