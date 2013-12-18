@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>com.ohadr</groupId>
 		<artifactId>auth-parent</artifactId>
-		<version>1.1.2-SNAPSHOT</version>
+		<version>1.1.3-SNAPSHOT</version>
 	</parent>
 
 	<properties>
