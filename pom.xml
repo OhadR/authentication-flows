@@ -36,6 +36,7 @@
 	<modules>
 		<module>auth-common</module>
 		<module>common-crypto</module>
+		<module>authentication-flows</module>
 	</modules>
 
     <properties>

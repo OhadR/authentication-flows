@@ -27,6 +27,26 @@ in future releases it will read from a DB.
 Then the client should access the resource server using the access-token, and print a message.
 
 
+common-crypto
+=============
+oAuth identity-provider and the authentication-flows JAR use cryptography in order to encrypt the data:
+- oAuth encrypts the access-token (and the user's password)
+- authentication-flows encrypts the user's password, and the links that are sent to the user's email, upon 
+user's registration and "forget password" flows.
+There is a utility JAR, called "common-crypto" that makes life easier. You can find it also in this project,
+and also it is available in Maven repository:
+
+```xml
+<dependency>
+  <groupId>com.ohadr</groupId>
+  <artifactId>common-crypto</artifactId>
+  <version>1.1.3</version>
+</dependency>
+```
+
+Note the version - make sure you use the latest.
+
+
 KeyStore things to know:
 ========================
 1. a keystore shall be created, both for SSL and for signing the tokens.
