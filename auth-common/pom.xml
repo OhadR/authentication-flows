@@ -8,7 +8,7 @@
     <parent>
 		<groupId>com.ohadr</groupId>
         <artifactId>auth-parent</artifactId>
-        <version>1.1.4</version>
+        <version>1.1.5-SNAPSHOT</version>
     </parent>
 
 
