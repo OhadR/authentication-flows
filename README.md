@@ -46,6 +46,20 @@ and also it is available in Maven repository:
 
 Note the version - make sure you use the latest.
 
+auth-common
+=============
+common code for authentication.  You can find it also in this project,
+and also it is available in Maven repository:
+
+```xml
+<dependency>
+  <groupId>com.ohadr</groupId>
+  <artifactId>auth-common</artifactId>
+  <version>1.1.3</version>
+</dependency>
+```
+
+Note the version - make sure you use the latest.
 
 KeyStore things to know:
 ========================
