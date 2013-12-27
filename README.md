@@ -96,7 +96,7 @@ The logic of "Secret Question" escapes me. Since the dawn of computer security w
 Indeed, security questions make it even easier for the hacker than if you just chose a bad password to begin with. At least if you just used a piece of personal information for your password, a hacker wouldn't necessarily know what piece of personal information you used. Did you use the name of your dog? Your birth date? Your favorite ice cream flavor? He'd have to try all of them. But with security questions, we tell the hacker exactly what piece of personal information you used as a password!
 
 Instead of using security questions, why don't we just say, "In case you forget your password, it is displayed on the bottom of the screen. If you're trying to hack in to someone else's account, you are absolutely forbidden from scrolling down." It would be only slightly less secure.
-[{source]](http://stackoverflow.com/questions/2734367/implement-password-recovery-best-practice)
+[source](http://stackoverflow.com/questions/2734367/implement-password-recovery-best-practice)
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/OhadR/oauth2-sample/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
