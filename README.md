@@ -88,5 +88,15 @@ http://docs.oracle.com/javase/7/docs/api/javax/crypto/Cipher.html#init(int, java
 HTML forms:
 onSubmit vs action
 
+
+Why "Secret Question" mechanism is a Bad Thing
+-------------------------
+The logic of "Secret Question" escapes me. Since the dawn of computer security we have been telling people, "DON'T make a password that is information about yourself that a hacker could discover or guess, like the name of your high school, or your favorite color. A hacker might be able to look up the name of your high school, or even if they don't know you or know anything about you, if you still live near where you went to school they might get it by tryinging local schools until they hit it. There are a small number of likely favorite colors so a hacker could guess that. Etc. Instead, a password should be a meaningless combination of letters, digits, and punctuation." But now we also tell them, "But! If you have a difficult time remembering that meaningless combination of letters, digits, and punctuation, no problem! Take some information about yourself that you can easily remember -- like the name of your high school, or your favorite color -- and you can use that as the answer to a 'security question', that is, as an alternative password."
+
+Indeed, security questions make it even easier for the hacker than if you just chose a bad password to begin with. At least if you just used a piece of personal information for your password, a hacker wouldn't necessarily know what piece of personal information you used. Did you use the name of your dog? Your birth date? Your favorite ice cream flavor? He'd have to try all of them. But with security questions, we tell the hacker exactly what piece of personal information you used as a password!
+
+Instead of using security questions, why don't we just say, "In case you forget your password, it is displayed on the bottom of the screen. If you're trying to hack in to someone else's account, you are absolutely forbidden from scrolling down." It would be only slightly less secure.
+[{source]](http://stackoverflow.com/questions/2734367/implement-password-recovery-best-practice)
+
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/OhadR/oauth2-sample/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
