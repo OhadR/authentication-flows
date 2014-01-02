@@ -1,40 +1,41 @@
 oAuth2-sample
 =============
 
-oAuth2 sample: auth-server, resource server and client.
+Mainly, this project is a oAuth2 POC, consists of all 3 oAuth parties: the authentication server, a resource server, and a client app.
+Each party is represented by its own WAR.
 
-Here you can see 3 WARs: the authentication server, a resource server, and a client app.
+Works over spring-security-oauth 1.0.5.RELEASE.
 
-Works over spring-security-oauth version M6 (milestone-6).
-later on i will upgrade to a release-candidate.
+Make it work
+------------
+* Deploy all 3 WARs on a servlet container, e.g. tomcat.
+* Browse http://localhost:8080/oauth2-client/hello. The client needs a login by itsealf: admin/admin (Spring Security expects your client web-app to have its own credentials).
+* client app tries to call the resource-server url http://localhost:8080/oauth2-resource-server/welcome
+* This will redirect to oauth2.0 authentication server. Login to authentication-server, currently it is from mem: demo@ohadr.com/demo. it can be configured to read from a DB.
+* client should access the resource server using the access-token, and print a message.
 
+Authentication-Flows
+==================
+The Authentication-Flows JAR implements all authentication flows: 
+* create account, 
+* forgot password, 
+* change password by user request, 
+* force change password if password is expired,
+* locks the accont after pre-configured login failures.
 
-
-Deploy all 3 WARs on a servlet container, e.g. tomcat.
-
-Browse http://localhost:8080/oauth2-client/hello
-
-The client needs a login by itsealf : admin/admin (future release will avoid this thing).
-
-Then it will try to call the resource-server url http://localhost:8080/oauth2-resource-server/welcome
-
-This will redirect to oauth2.0 authentication server.
-
-Login to authentication-server, 
-- currently it is from mem: demo@watchdox.com/demo
-in future releases it will read from a DB.
-
-Then the client should access the resource server using the access-token, and print a message.
-
+To make it serious, authentication-flows JAR uses cryptography in order to encrypt the data in the links that are sent to the user's email, 
+upon user's registration and "forget password" flows.
 
 common-crypto
 =============
-oAuth identity-provider and the authentication-flows JAR use cryptography in order to encrypt the data:
-- oAuth encrypts the access-token (and the user's password)
-- authentication-flows encrypts the user's password, and the links that are sent to the user's email, upon 
-user's registration and "forget password" flows.
-There is a utility JAR, called "common-crypto" that makes life easier. You can find it also in this project,
-and also it is available in Maven repository:
+Both oAuth identity-provider and the authentication-flows JAR use cryptography in order to encrypt the data:
+- oAuth encrypts the access-token 
+- authentication-flows encrypts the user's password,
+- authentication-flows encrypts the links that are sent to the user's email, upon user's registration and "forget password" flows.
+
+The utility JAR, called "common-crypto", makes life easier. You can find it in this project,
+and it is available in [Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Ccommon-crypto) as well.
+Add this dependency to your POM.xml::
 
 ```xml
 <dependency>
