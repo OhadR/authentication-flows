@@ -14,8 +14,10 @@ Make it work
 * This will redirect to oauth2.0 authentication server. Login to authentication-server, currently it is from mem: demo@ohadr.com/demo. it can be configured to read from a DB.
 * client should access the resource server using the access-token, and print a message.
 
-Authentication-Flows
+Project Components
 ==================
+JAR: Authentication-Flows
+--------------------
 The Authentication-Flows JAR implements all authentication flows: 
 * create account, 
 * forgot password, 
@@ -26,8 +28,8 @@ The Authentication-Flows JAR implements all authentication flows:
 To make it serious, authentication-flows JAR uses cryptography in order to encrypt the data in the links that are sent to the user's email, 
 upon user's registration and "forget password" flows.
 
-common-crypto
-=============
+JAR: common-crypto
+-------------
 Both oAuth identity-provider and the authentication-flows JAR use cryptography in order to encrypt the data:
 - oAuth encrypts the access-token 
 - authentication-flows encrypts the user's password,
@@ -47,8 +49,8 @@ Add this dependency to your POM.xml::
 
 Note the version - make sure you use the latest.
 
-auth-common
-=============
+JAR: auth-common
+------------
 common code for authentication.  You can find it also in this project,
 and also it is available in Maven repository:
 
