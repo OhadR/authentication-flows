@@ -37,24 +37,39 @@ way it wants - forms, REST, etc.
 As Spring requires, the login form should include j_username and j_password:
 ```xml
 POST /j_spring_security_check HTTP/1.1
-	j_username=<email>, j_password=<password>
+	j_username=<email>, 
+	j_password=<password>
 ```
 
 **create Account**
 
 ```xml
 POST /createAccount HTTP/1.1
-	email=<email>, password=<password>, confirm_password=<confirm_password>
+	email=<email>, 
+	password=<password>,
+	confirm_password=<confirm_password>
 ```
 
 **forgot Password**
+```xml
+POST /forgotPasswordPage HTTP/1.1
+	email=<email>
+```
 
-**setNew Password**
+**set new Password**
+```xml
+POST /setNewPassword HTTP/1.1
+	password=<password>,
+	confirm_password=<confirm_password>
+```
 
 **change Password** 
-
-TBD
-
+```xml
+POST /setNewPassword HTTP/1.1
+	current_password=<current_password>,
+	new_password=<password>,
+	confirm_password=<confirm_password>
+```
 
 JAR: common-crypto
 -------------
