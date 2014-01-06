@@ -34,11 +34,14 @@ way it wants - forms, REST, etc.
 
 **login**
 
-As Spring requires, the login form should include j_username and j_password. 
+As Spring requires, the login form should include j_username and j_password:
+POST /j_spring_security_check HTTP/1.1
+	j_username=<email>, j_password=<password>
 
 **create Account**
 
-TBD
+POST /createAccount HTTP/1.1
+	email=<email>, password=<password>, confirm_password=<confirm_password>
 
 **forgot Password**
 
