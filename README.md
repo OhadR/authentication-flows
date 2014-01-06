@@ -28,7 +28,7 @@ The Authentication-Flows JAR implements all authentication flows:
 To make it serious, authentication-flows JAR uses cryptography in order to encrypt the data in the links that are sent to the user's email, 
 upon user's registration and "forget password" flows.
 
-[Authentication-Flows APIs](Authentication-Flows/README.md)
+[Authentication-Flows APIs](authentication-flows/AuthenticationFlowsREADME.md)
 
 JAR: common-crypto
 -------------

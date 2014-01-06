@@ -11,7 +11,8 @@ The Authentication-Flows JAR implements all authentication flows:
 To make it serious, authentication-flows JAR uses cryptography in order to encrypt the data in the links that are sent to the user's email, 
 upon user's registration and "forget password" flows.
 
-**API**
+API
+---------
 
 The Authentication-Flows JAR is as generic as it can be, yet it is coupled with UI, because it gets its inputs from UI forms, and sends data
 to UI pages. Here is a description of the interface of the module. The client application (that implements the UI) can send the data in any
@@ -58,4 +59,4 @@ POST /setNewPassword HTTP/1.1
 
 JAR: common-crypto
 -------------
-authentication-flows JAR uses cryptography in order to encrypt the data. Read about it in the main README.
+authentication-flows JAR uses cryptography in order to encrypt the data. Read about it in the [main README](/).
