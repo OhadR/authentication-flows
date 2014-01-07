@@ -25,8 +25,8 @@ The Authentication-Flows JAR implements all authentication flows:
 * force change password if password is expired,
 * locks the accont after pre-configured login failures.
 
-To make it serious, authentication-flows JAR uses cryptography in order to encrypt the data in the links that are sent to the user's email, 
-upon user's registration and "forget password" flows.
+The authentication-flows JAR *uses cryptography* in order to encrypt the data in the links that are sent to the user's email, 
+upon user's registration and "forget password" flows. Read more about the encryption module [here](#jar-common-crypto).
 
 [Authentication-Flows APIs](authentication-flows/AuthenticationFlowsREADME.md)
 
