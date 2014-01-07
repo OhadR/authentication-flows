@@ -112,6 +112,7 @@ public class UserActionController
 	protected View createAccount(
 			@RequestParam(EMAIL_PARAM_NAME) String email,
 			@RequestParam("password") String password,
+			@RequestParam("confirm_password") String retypedPassword,
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
 //			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,			NOT IMPLEMENTED
 //			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED

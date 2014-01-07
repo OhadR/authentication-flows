@@ -57,6 +57,9 @@ POST /setNewPassword HTTP/1.1
 	confirm_password=<confirm_password>
 ```
 
+
+**accountCreatedSuccess.jsp**
+
 JAR: common-crypto
 -------------
 authentication-flows JAR uses cryptography in order to encrypt the data. Read about it in the [main README](/).
