@@ -50,7 +50,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS INVALID" + " exception message: " + cryptoEx.getMessage());		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/error.jsp");
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp");
 			return rv;
 		}
 		
@@ -63,7 +63,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS Expired");		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/error.jsp");
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp");
 		}
 		else		
 		{
@@ -79,7 +79,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			SecurityContextHolder.getContext().setAuthentication(null);
 
 
-			rv.setUrl("login/AccountActivated.htm");
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "AccountActivated.htm");
 		}
 		return rv;
 	}

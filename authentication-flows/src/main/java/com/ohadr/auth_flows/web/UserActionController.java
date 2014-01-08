@@ -137,7 +137,7 @@ public class UserActionController
 					 + passwordValidityMsg);		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/createAccount.jsp");
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "createAccount.jsp");
 			return rv;
 		}
 
@@ -158,7 +158,7 @@ public class UserActionController
 			
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/createAccount.jsp");
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "createAccount.jsp");
 			return rv;
     	}
         
@@ -172,7 +172,7 @@ public class UserActionController
 
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
-		rv.setUrl("login/accountCreatedSuccess.jsp");
+		rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "accountCreatedSuccess.jsp");
 		return rv;
 
 	}
@@ -354,7 +354,7 @@ public class UserActionController
 			attributes.put(FlowsConstatns.ERR_HEADER,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/error.jsp");
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp");
 			return rv;
 		}
 
@@ -364,7 +364,7 @@ public class UserActionController
 
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
-		rv.setUrl("login/passwordRestoreEmailSent.jsp");
+		rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "passwordRestoreEmailSent.jsp");
 		return rv;
 	}
 
@@ -401,7 +401,7 @@ public class UserActionController
 			attributes.put(FlowsConstatns.ERR_MSG,  LINK_IS_INVALID + " exception message: " + cryptoEx.getMessage());		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/setNewPassword.jsp");
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
 			return rv;
 		}
 		
@@ -413,7 +413,7 @@ public class UserActionController
 			attributes.put(FlowsConstatns.ERR_MSG,  LINK_HAS_EXPIRED );		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/setNewPassword.jsp");
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
 			return rv;
 		}
 
@@ -436,7 +436,7 @@ public class UserActionController
 					 + passwordValidityMsg);		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl("login/setNewPassword.jsp");
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
 			return rv;
 		}
 
@@ -446,7 +446,7 @@ public class UserActionController
 		attributes.put(EMAIL_PARAM_NAME,  email);		
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
-		rv.setUrl("login/passwordSetSuccess.jsp");
+		rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "passwordSetSuccess.jsp");
 		return rv;
 	}
 	/**********************************************************************************************************/

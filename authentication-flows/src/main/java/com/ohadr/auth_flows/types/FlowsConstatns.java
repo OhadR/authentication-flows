@@ -11,6 +11,9 @@ public abstract class FlowsConstatns
 	public static final String HASH_PARAM_NAME = "enc";
 	public static final String REDIRECT_URI_PARAM_NAME = "redirect_uri";
 	public static final int DAY_IN_MILLI = 24 * 60 * 60 * 1000;
+	
+	public static final String LOGIN_FORMS_DIR = "login";
+
 
 	
 	public static final String ERR_MSG = "err_msg";
