@@ -45,6 +45,7 @@ POST /forgotPasswordPage HTTP/1.1
 **set new Password**
 
 Default file name: setNewPassword.jsp
+
 This JSP contains a form, that upon submission generates the following:
 
 ```xml
@@ -63,8 +64,11 @@ POST /setNewPassword HTTP/1.1
 
 
 **accountCreatedSuccess.jsp**
+
 **AccountActivated.htm**
+
 **passwordRestoreEmailSent.jsp**
+
 **passwordSetSuccess.jsp**
 
 JAR: common-crypto
