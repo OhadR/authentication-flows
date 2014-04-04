@@ -16,6 +16,9 @@ public class CryptoProperties
 	@Value("${com.ohadr.crypto.keyAlias}")
 	private String keyAlias;
 
+	@Value("${com.ohadr.crypto.createKeystoreFileIfNotExist}")
+	private String createKeystoreFileIfNotExist;
+
 	public String getSimpleKeystore()
 	{
 		return simpleKeystore;
@@ -39,5 +42,10 @@ public class CryptoProperties
 	public String getKeyAlias() 
 	{
 		return keyAlias;
+	}
+
+	public boolean getCreateKeystoreFileIfNotExist()
+	{
+		return Boolean.parseBoolean( createKeystoreFileIfNotExist );
 	}
 }

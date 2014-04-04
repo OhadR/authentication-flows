@@ -57,8 +57,10 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 			throw new CryptoException("No AES provider is installed on your system ?!", e);
 		}
 
-		activeProvider = new DefaultCryptoProvider(cryptoProperties.getSimpleKeystore(),
-			    cryptoProperties.getSimplePassword());
+		activeProvider = new DefaultCryptoProvider(
+				cryptoProperties.getSimpleKeystore(),
+			    cryptoProperties.getSimplePassword(),
+			    cryptoProperties.getCreateKeystoreFileIfNotExist());
 
 	}
 

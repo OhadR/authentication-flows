@@ -28,6 +28,17 @@ import com.ohadr.crypto.interfaces.CryptoProvider;
 import com.ohadr.crypto.interfaces.KeyHive;
 
 
+/**
+ * this class tries to load key-store file, and load the keys from it. if file does not exist, it creates it,
+ * creates the keys and stores it. if file exists but one or more keys are missing - it creates the keys and 
+ * stores to the file. 
+ * 
+ * if this jar is deplyed on GAE, for example, where files cannot be stored - we have a flag for these cases,
+ * so this class will not try to store the key-store file, but will work in-mem.
+ * 
+ * @author OhadR
+ *
+ */
 public class DefaultCryptoProvider implements CryptoProvider
 {
 	private static final Logger logger = Logger.getLogger(DefaultCryptoProvider.class);
@@ -50,29 +61,18 @@ public class DefaultCryptoProvider implements CryptoProvider
 	private PrivateKey privateKey;
 	private Certificate certificate;
 
-	public DefaultCryptoProvider(String keystoreFile, String keystorePassword)
+	public DefaultCryptoProvider(
+			String keystoreFile, 
+			String keystorePassword, 
+			boolean createFileIfNotExist)
 	{
 		try
 		{
-/*			Security.addProvider(new BouncyCastleProvider());
-
-			// Wait intil bouncy castle provider is loaded - to preven exceptions later on
-			for (int i=0; i<10; i++){
-				try {
-					Cipher.getInstance("RSA/None/OAEPWithSHA1AndMGF1Padding", BouncyCastleProvider.PROVIDER_NAME);
-					break;
-				} catch(NoSuchAlgorithmException e){
-					logger.info("Waiting for Bouncy Castel to load...");
-					Thread.sleep(5000);
-					continue;
-				}
-			}
-*/			
 			keys = new HashMap<KeyHive, Key>();
 
 			keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
 			logger.info("Using keystore " + keystoreFile);
-			loadMasterKeys(keystoreFile, keystorePassword);
+			loadMasterKeys(keystoreFile, keystorePassword, createFileIfNotExist);
 		}
 		catch (Exception e)
 		{
@@ -82,11 +82,26 @@ public class DefaultCryptoProvider implements CryptoProvider
 
 	
 
-	private void loadMasterKeys(String fileName, String password) throws NoSuchAlgorithmException,
-	                                                             KeyStoreException,
-	                                                             CertificateException,
-	                                                             FileNotFoundException,
-	                                                             IOException
+	/**
+	 * loads the keys from file. if file does not exist, it creates it, 
+	 * creates the keys and stores it. if file exists but one or more keys are missing - it creates the keys and
+	 * stores to the file.
+	 * @param fileName
+	 * @param password
+	 * @param createFileIfNotExist 
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyStoreException
+	 * @throws CertificateException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private void loadMasterKeys(String fileName, String password,
+			boolean createFileIfNotExist) 
+					throws NoSuchAlgorithmException,
+					KeyStoreException,
+		            CertificateException,
+		            FileNotFoundException,
+		            IOException
 	{
 		boolean keystoreModified = false;
 		KeyGenerator keyGen = null;
@@ -159,7 +174,7 @@ public class DefaultCryptoProvider implements CryptoProvider
 			logger.info("Loaded asymmetric key-pair: " + ASYMMETRIC_KEY_NAME);
 		}
 
-		if (keystoreModified)
+		if (keystoreModified && createFileIfNotExist)
 		{
 			// We loaded some keys, we need to update the keystore
 			keyStore.store(new FileOutputStream(fileName), password.toCharArray());
