@@ -31,7 +31,7 @@ public class OldMailSenderImpl implements MailSender
 	public OldMailSenderImpl()
 	{
 		final String username = "bmc.incubator@gmail.com";
-		final String password = "theheatison";
+		final String password = "**thepassword**";
 
 		Properties props = new Properties();
 		props.put("mail.smtp.starttls.enable", "true");
