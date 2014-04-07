@@ -95,6 +95,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	}
 
 	
+	//	 TODO: be Spring-compatible, and use UsernameNotFoundException
 	@Override
 	public AuthenticationUser loadUserByUsername(String email) 
 	{
