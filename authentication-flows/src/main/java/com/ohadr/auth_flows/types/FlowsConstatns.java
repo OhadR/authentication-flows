@@ -26,10 +26,15 @@ public abstract class FlowsConstatns
 	public class MailMessage
 	{
 		public static final String AUTHENTICATION_MAIL_SUBJECT = "OhadR Authentication Service: Account Created Successfully";
-		public static final String AUTHENTICATION_MAIL_BODY = "Account Created Successfully. bla bla bla... please click on this link to activate your account:";
+		public static final String AUTHENTICATION_MAIL_BODY = "Account Created Successfully. \n\nplease click on this link to activate your account:\n";
 
 		public static final String RESTORE_PASSWORD_MAIL_SUBJECT = "OhadR Authentication Service: Password Restore Request";
-		public static final String RESTORE_PASSWORD_MAIL_BODY = "you forgot your password and bla bla bla... please click on this link:";
+		public static final String RESTORE_PASSWORD_MAIL_BODY = "you forgot your password and bla bla bla... \n"
+				+ "please click on this link in order to set a new password:\n";
+
+		public static final String UNLOCK_MAIL_SUBJECT = "OhadR Authentication Service: Account has been Locked";
+		public static final String UNLOCK_MAIL_BODY = "Due to exceeding the allowed number of login attempts, your account has been Locked."
+				+ " \n\nplease click on the link below to unlock your account:\n";
 	}
 
 }

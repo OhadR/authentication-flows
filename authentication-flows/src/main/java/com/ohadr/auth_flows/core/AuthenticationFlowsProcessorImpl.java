@@ -126,6 +126,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	@Override
 	public boolean setLoginSuccessForUser(String username) 
 	{
+		log.debug("setting login success for user " + username);
 		repository.setAttemptsLeft(username, properties.getMaxAttempts());
 		
 		return isPasswordChangeRequired(username);		
@@ -219,8 +220,15 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	public void sendUnlockAccountMail(String email, 
 			String serverPath)
 	{
-		// TODO Auto-generated method stub
-
+		log.info("Manager: sending Unlock-Account email to " + email + "...");
+		
+		String activationUrl = serverPath + FlowsConstatns.ACTIVATE_ACCOUNT_ENDPOINT +
+			"?" + 
+			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
+		
+		sendMail(email,
+				FlowsConstatns.MailMessage.UNLOCK_MAIL_SUBJECT, 
+				FlowsConstatns.MailMessage.UNLOCK_MAIL_BODY + activationUrl);
 	}
 
 	@Override
