@@ -2,6 +2,8 @@ package com.ohadr.auth_flows.core;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 public class FlowsUtil 
 {
 
@@ -39,5 +41,16 @@ public class FlowsUtil
 	{
 		return getParamX(request, "uts");
 	}
+	
+	public static void logStackTrace(Logger log) 
+	{
+		StringBuffer sb = new StringBuffer();
+		for (StackTraceElement ste : Thread.currentThread().getStackTrace()) 
+		{
+			sb.append(ste).append("\n");
+		}
+		log.debug(sb);
+	}
+
 
 }
