@@ -2,6 +2,7 @@ package com.ohadr.auth_flows.core;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 public class FlowsUtil 
@@ -52,5 +53,18 @@ public class FlowsUtil
 		log.debug(sb);
 	}
 
+
+	public static String getServerPath(HttpServletRequest request)
+	{
+		String path = null;
+		String contextPath = request.getServletPath();					//e.g. /createAccount
+		String requestURL = request.getRequestURL().toString();			//e.g. https://ohadr.com:8443/client/createAccount
+		int indexOf = StringUtils.indexOf(requestURL, contextPath);
+		if(indexOf != -1)
+		{
+			path = StringUtils.substring(requestURL, 0, indexOf);
+		}
+		return path;
+	}
 
 }

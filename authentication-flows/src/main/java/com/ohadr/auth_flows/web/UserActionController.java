@@ -28,6 +28,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
+import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.AccountState;
@@ -145,7 +146,7 @@ public class UserActionController
 		String encodedPassword = encodeString(email, password);
 
 
-		String path = getServerPath(request);
+		String path = FlowsUtil.getServerPath(request);
 		
 		Pair<String, String> retVal = flowsProcessor.createAccount(email, encodedPassword, path);
     	if( ! retVal.getLeft().equals(FlowsConstatns.OK))
@@ -175,20 +176,6 @@ public class UserActionController
 		rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "accountCreatedSuccess.jsp");
 		return rv;
 
-	}
-
-
-	private String getServerPath(HttpServletRequest request)
-	{
-		String path = null;
-		String contextPath = request.getServletPath();					//e.g. /createAccount
-		String requestURL = request.getRequestURL().toString();			//e.g. https://ohadr.com:8443/client/createAccount
-		int indexOf = StringUtils.indexOf(requestURL, contextPath);
-		if(indexOf != -1)
-		{
-			path = StringUtils.substring(requestURL, 0, indexOf);
-		}
-		return path;
 	}
 
 
@@ -358,7 +345,7 @@ public class UserActionController
 			return rv;
 		}
 
-		String path = getServerPath(request);
+		String path = FlowsUtil.getServerPath(request);
 
 		flowsProcessor.sendPasswordRestoreMail(email, path);
 

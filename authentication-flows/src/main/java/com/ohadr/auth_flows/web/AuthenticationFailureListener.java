@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.AccountState;
 
-@Component
+//@Component
 public class AuthenticationFailureListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> 
 {
 	@Autowired
