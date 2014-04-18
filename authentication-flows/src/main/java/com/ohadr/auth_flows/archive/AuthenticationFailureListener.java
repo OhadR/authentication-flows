@@ -1,4 +1,4 @@
-package com.ohadr.auth_flows.web;
+package com.ohadr.auth_flows.archive;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
