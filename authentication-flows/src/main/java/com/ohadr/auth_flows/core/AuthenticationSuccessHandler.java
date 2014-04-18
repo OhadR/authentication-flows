@@ -40,8 +40,6 @@ public class AuthenticationSuccessHandler extends
 	    String username = authentication.getName();
 	    log.info("login success for user: " + username);
 
-	    //TODO: there is another way for this mechanism:
-	    //notify the API-client, that notifies the API (that updates the DB):
 	    boolean passChangeRequired = processor.setLoginSuccessForUser(username);
 		if(passChangeRequired)
 		{

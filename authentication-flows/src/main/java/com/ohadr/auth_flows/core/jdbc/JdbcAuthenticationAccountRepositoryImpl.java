@@ -20,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.util.Assert;
@@ -95,9 +96,8 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	}
 
 	
-	//	 TODO: be Spring-compatible, and use UsernameNotFoundException
 	@Override
-	public AuthenticationUser loadUserByUsername(String email) 
+	public AuthenticationUser loadUserByUsername(String email) throws UsernameNotFoundException
 	{
 		AuthenticationUser userFromDB = null;
 		try
@@ -110,6 +110,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		{
 			log.info("no record was found for email=" + email);
 //			throw new NoSuchElementException("No user with email: " + email);
+			throw new UsernameNotFoundException( email );
 		}
 
 

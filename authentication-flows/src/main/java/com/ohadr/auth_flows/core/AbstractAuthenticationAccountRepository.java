@@ -2,8 +2,10 @@ package com.ohadr.auth_flows.core;
 
 
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
@@ -12,7 +14,7 @@ import com.ohadr.auth_flows.types.AccountState;
 
 public abstract class AbstractAuthenticationAccountRepository implements AuthenticationAccountRepository
 {
-	protected abstract void setEnabledFlag(String email, boolean flag);
+	protected abstract void setEnabledFlag(String email, boolean flag); 
 	protected abstract void updateLoginAttemptsCounter(String email, int attempts); 
 	
 	public AbstractAuthenticationAccountRepository()
@@ -59,11 +61,14 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	@Override
 	public AccountState isAccountLocked(String email) 
 	{
-		AuthenticationUser user = (AuthenticationUser) loadUserByUsername(email);
-		
-		//user does not exist:
-		if(user == null)
+		AuthenticationUser user = null;
+		try
 		{
+			user = (AuthenticationUser) loadUserByUsername(email);
+		}
+		catch(UsernameNotFoundException unfe)
+		{
+			//user does not exist:
 			return AccountState.NOT_EXIST;
 		}
 		

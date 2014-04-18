@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.acls.model.AlreadyExistsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -62,7 +63,15 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 		try
 		{
-			AuthenticationUser oauthUser = (AuthenticationUser) repository.loadUserByUsername( email );
+			AuthenticationUser oauthUser = null;
+			try
+			{
+				oauthUser = (AuthenticationUser) repository.loadUserByUsername( email );
+			}
+			catch(UsernameNotFoundException unfe)
+			{
+				//basically do nothing - we expect user not to be found.
+			}
 			
 			//if user exist, but not activated - we allow re-registration:
 			if(oauthUser != null && !oauthUser.isEnabled())
@@ -202,7 +211,15 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	@Override
 	public void setLoginFailureForUser(String email) 
 	{
-		AuthenticationUser user = (AuthenticationUser) repository.loadUserByUsername(email);
+		AuthenticationUser user = null;
+		try
+		{
+			user = (AuthenticationUser) repository.loadUserByUsername(email);
+		}
+		catch(UsernameNotFoundException unfe)
+		{
+			return;
+		}
 		
 		if( 0 == user.getLoginAttemptsLeft() )
 		{

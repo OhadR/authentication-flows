@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.AccountState;
+import com.ohadr.auth_flows.types.FlowsConstatns;
 
 // nice and intersting reference: 
 // https://code.google.com/p/springas-train-example/source/browse/trunk/serverIntegration/server/common/src/main/java/cn/com/oceansoft/flex4/server/common/interceptor/CustomAuthenticationFailureHandler.java?r=73&spec=svn73
@@ -27,7 +28,7 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
 
 
 	public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";
-	public static final String DEFAULT_ACCOUNT_LOCKED_PAGE = "/login/accountLocked.htm";
+	public static final String DEFAULT_ACCOUNT_LOCKED_PAGE = FlowsConstatns.LOGIN_FORMS_DIR +"/" + "accountLocked.htm";
 	
     private static Logger log = Logger.getLogger(AuthenticationFailureHandler.class);
 	
