@@ -22,6 +22,7 @@ public abstract class FlowsConstatns
 	
 	public static final String ACTIVATE_ACCOUNT_ENDPOINT = "/aa";
 	public static final String RESTORE_PASSWORD_ENDPOINT = "/rp";
+	public static final String CHANGE_PASSWORD_ENDPOINT = "/cp";
 	
 	public class MailMessage
 	{

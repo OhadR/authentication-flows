@@ -47,8 +47,8 @@ public class AuthenticationSuccessHandler extends
 			log.info("password expired for user " + username);
 			String encUser = cryptoService.generateEncodedString(username);
 			//redirect to a set new password page:
-			response.sendRedirect("/login/changePassword.htm?username=" + username + 
-					"&" + FlowsConstatns.HASH_PARAM_NAME + "=" + encUser + "&dt=cp");
+			response.sendRedirect( FlowsConstatns.LOGIN_FORMS_DIR + "/changePassword.jsp?username=" + username + 
+					"&" + FlowsConstatns.HASH_PARAM_NAME + "=" + encUser);
 			
 			return;
 
