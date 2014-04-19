@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,14 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
 			HttpServletResponse response, AuthenticationException exception)
 			throws IOException, ServletException
 	{
-		String username = 
+	    //if account is already locked, we do not need to re-send the email and re-lock. so just delegate to parent
+	    if( exception instanceof LockedException )
+	    {
+	    	super.onAuthenticationFailure(request, response, exception);
+	    	return;
+	    }
+
+	    String username = 
 //			exception.getAuthentication().getName();		//deprecated!
 			obtainUsername(request);
 	    log.info("login failed for user: " + username);
