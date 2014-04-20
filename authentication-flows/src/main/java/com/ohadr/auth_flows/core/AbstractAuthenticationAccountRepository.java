@@ -14,8 +14,8 @@ import com.ohadr.auth_flows.types.AccountState;
 
 public abstract class AbstractAuthenticationAccountRepository implements AuthenticationAccountRepository
 {
-	protected abstract void setEnabledFlag(String email, boolean flag); 
-	protected abstract void updateLoginAttemptsCounter(String email, int attempts); 
+	protected abstract void setEnabledFlag(String email, boolean flag) throws NoSuchElementException; 
+	protected abstract void updateLoginAttemptsCounter(String email, int attempts) throws NoSuchElementException; 
 	
 	public AbstractAuthenticationAccountRepository()
 	{
