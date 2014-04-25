@@ -91,23 +91,14 @@ public abstract class AbstractAuthenticationAccountRepository implements Authent
 	public String getEncodedPassword(String email)
 	{
 		UserDetails user = loadUserByUsername(email);
-		String retVal = null;
-		if(user != null)
-		{
-			retVal = user.getPassword();
-		}
-		return retVal;
+		return user.getPassword();
 	}
 
 	@Override
 	public Date getPasswordLastChangeDate(String email)
 	{
 		AuthenticationUser user = (AuthenticationUser) loadUserByUsername(email);
-		Date retVal = null;
-		if(user != null)
-		{
-			retVal = user.getPasswordLastChangeDate();
-		}
+		Date retVal = user.getPasswordLastChangeDate();
 		return retVal;
 	}
 }
