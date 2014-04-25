@@ -3,8 +3,11 @@ package com.ohadr.auth_flows.mocks;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 
@@ -69,9 +72,12 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	}
 
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<? extends GrantedAuthority> getAuthorities() 
+	{
+		Set<GrantedAuthority> set = new HashSet<GrantedAuthority>();
+		GrantedAuthority auth = new SimpleGrantedAuthority("ROLE_USER");
+		set.add(auth);
+		return set;		
 	}
 
 	@Override
@@ -89,6 +95,9 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 		return !isEnabled() && (loginAttemptsLeft <= 0);
 	}
 
+	//NOTE and TODO: if i implement this method correctly, then when creds expired the login will fail (bcoz Spring
+	//calls this method and then throws CredsExpiredEception). in my flows (not sure it is the right thing), the login
+	//is successful and in the successHandler I check if password has expired.
 	@Override
 	public boolean isCredentialsNonExpired() 
 	{
