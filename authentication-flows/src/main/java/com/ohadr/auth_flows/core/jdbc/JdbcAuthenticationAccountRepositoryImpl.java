@@ -6,7 +6,10 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -17,6 +20,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,10 +45,11 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 	private static final String AUTHENTICATION_USER_FIELDS = "USERNAME, password, enabled, "
 			+ "LOGIN_ATTEMPTS_COUNTER,"
-			+ "LAST_PSWD_CHANGE_DATE";
+			+ "LAST_PSWD_CHANGE_DATE,"
+			+ "authorities";
 
 	private static final String DEFAULT_USER_INSERT_STATEMENT = "insert into " + TABLE_NAME + "(" + AUTHENTICATION_USER_FIELDS
-			+ ") values (?,?,?,?,?)";
+			+ ") values (?,?,?,?,?,?)";
 
 	private static final String DEFAULT_USER_SELECT_STATEMENT = "select " + AUTHENTICATION_USER_FIELDS
 			+ " from " + TABLE_NAME + " where USERNAME = ?";
@@ -86,8 +91,9 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 					authUser.getPassword(),
 					false,
 					authUser.getLoginAttemptsLeft(), 
-					new Date( System.currentTimeMillis()) },
-				new int[] { Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.DATE });
+					new Date( System.currentTimeMillis()),
+					user.getAuthorities()},
+				new int[] { Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.DATE, Types.VARCHAR });
 
 		if(rowsUpdated != 1)
 		{
@@ -140,17 +146,23 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 		}
 	}
 
-	
+    
 	private static class AuthenticationUserRowMapper implements RowMapper<AuthenticationUser>
 	{
 		public AuthenticationUser mapRow(ResultSet rs, int rowNum) throws SQLException 
 		{
+			String roleName = rs.getString(6);			//column 6 : authorities
+			GrantedAuthority userAuth = new SimpleGrantedAuthority(roleName);
+			Set<GrantedAuthority> authSet = new HashSet<GrantedAuthority>();
+			authSet.add(userAuth);
+			
 			AuthenticationUser user = new InMemoryAuthenticationUserImpl(
 					rs.getString(1),		//username / email
 					rs.getString(2),		//password
 					rs.getBoolean(3),		//activated?
 					rs.getInt(4),			//attempts left
-					rs.getDate(5)			//PasswordLastChangeDate
+					rs.getDate(5),			//PasswordLastChangeDate
+					authSet					//authorities
 					);
 			
 			return user;

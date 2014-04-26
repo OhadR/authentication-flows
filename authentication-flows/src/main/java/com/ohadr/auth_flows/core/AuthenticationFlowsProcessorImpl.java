@@ -1,6 +1,9 @@
 package com.ohadr.auth_flows.core;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -10,6 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.acls.model.AlreadyExistsException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -79,11 +84,13 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 				repository.deleteUser( email );
 			}
 
+			Collection<? extends GrantedAuthority> authorities = setAuthorities();		//set authorities
 			AuthenticationUser user = new InMemoryAuthenticationUserImpl(
 					email, encodedPassword, 
 					false,									//start as de-activated
 					properties.getMaxAttempts(),
-					null);		//set by the repo-impl	
+					null,					//set by the repo-impl
+					authorities);			
 
 			repository.createUser(user);
 					
@@ -131,6 +138,14 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		return ImmutablePair.of(FlowsConstatns.OK, "");
 	}
 	
+
+	private Collection<? extends GrantedAuthority> setAuthorities() 
+	{
+		Set<GrantedAuthority> set = new HashSet<GrantedAuthority>();
+		GrantedAuthority auth = new SimpleGrantedAuthority("ROLE_USER");
+		set.add(auth);
+		return set;		
+	}
 
 	@Override
 	public boolean setLoginSuccessForUser(String username) 
