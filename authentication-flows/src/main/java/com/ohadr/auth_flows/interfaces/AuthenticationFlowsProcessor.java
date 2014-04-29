@@ -1,5 +1,7 @@
 package com.ohadr.auth_flows.interfaces;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.ohadr.auth_flows.types.AccountState;
@@ -53,6 +55,9 @@ public interface AuthenticationFlowsProcessor
 			String serverPath);
 
 	public void setPassword(String email, String encodedPassword);
+	
+	Date getPasswordLastChangeDate(String email);
+
 
 	/**
 	 * 

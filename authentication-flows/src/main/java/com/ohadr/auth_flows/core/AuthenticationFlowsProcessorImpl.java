@@ -320,4 +320,11 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	{
 		repository.setEnabled(userEmail);
 	}
+
+
+	@Override
+	public Date getPasswordLastChangeDate(String email)
+	{
+		return repository.getPasswordLastChangeDate(email);
+	}
 }

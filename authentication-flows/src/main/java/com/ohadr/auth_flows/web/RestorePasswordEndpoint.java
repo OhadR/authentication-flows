@@ -32,10 +32,6 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 {
 	private static Logger log = Logger.getLogger(RestorePasswordEndpoint.class);
 
-	//TODO: use processor to delegate to repo
-	@Autowired
-	private AuthenticationAccountRepository repository;
-
 	
 	@RequestMapping
 	public View restorePassword(HttpServletRequest request) throws IOException 
@@ -77,7 +73,7 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 			//we send also the signed-email, so no one can change the email and set-new-password for another user:
 			String encodedEmailAndTimestamp = FlowsUtil.getParamsUserAndTimestamp(request);
 
-			Date lastChange = repository.getPasswordLastChangeDate(extractedData.userEmail);
+			Date lastChange = processor.getPasswordLastChangeDate(extractedData.userEmail);
 
 			Date emailCreationDate = extractedData.emailCreationDate;
 
