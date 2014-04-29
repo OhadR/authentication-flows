@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.core.FlowsUtil;
+import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
 
@@ -19,6 +20,11 @@ public abstract class FlowsEndpointsCommon
 
 	@Autowired
 	private CryptoService	cryptoService;
+
+	@Autowired
+	protected AuthenticationFlowsProcessor processor;
+
+	
 
 	
 	protected EmailExtractedData extractEmailData(HttpServletRequest request) throws CryptoException 

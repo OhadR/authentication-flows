@@ -23,9 +23,6 @@ import com.ohadr.crypto.exception.CryptoException;
 @RequestMapping(value = "/aa")
 public class ActivateAccountEndpoint extends FlowsEndpointsCommon 
 {
-	@Autowired
-	private AuthenticationFlowsProcessor processor;
-
 	
 	@RequestMapping
     public View activateAccount(HttpServletRequest request) throws IOException 

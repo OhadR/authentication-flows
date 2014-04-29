@@ -32,6 +32,7 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 {
 	private static Logger log = Logger.getLogger(RestorePasswordEndpoint.class);
 
+	//TODO: use processor to delegate to repo
 	@Autowired
 	private AuthenticationAccountRepository repository;
 
