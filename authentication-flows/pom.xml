@@ -15,6 +15,7 @@
 		<warFileName>oauth2-auth-server-${project.version}</warFileName>
 		<publishDirectory>${env.PUBLISH_FOLDER}/</publishDirectory>
 		<m2eclipse.wtp.contextRoot>/oauth2-auth-server</m2eclipse.wtp.contextRoot>
+		<appengine.target.version>1.9.3</appengine.target.version>
 	</properties>
 
 	<dependencies>
@@ -24,6 +25,13 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<!-- to support Google AppEngine capabilities: -->
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-1.0-sdk</artifactId>
+			<version>${appengine.target.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
