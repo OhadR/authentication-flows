@@ -64,7 +64,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			String serverPath
 			)
 	{
-		log.info("Manager: createAccount() for user " + email);
+		email = email.toLowerCase();		// issue #23 : username is case-sensitive (https://github.com/OhadR/oAuth2-sample/issues/23)
+		log.info("createAccount() for user " + email);
 
 		try
 		{
