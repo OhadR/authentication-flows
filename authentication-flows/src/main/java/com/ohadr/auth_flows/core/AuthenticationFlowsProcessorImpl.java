@@ -79,9 +79,18 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			}
 			
 			//if user exist, but not activated - we allow re-registration:
-			if(oauthUser != null && !oauthUser.isEnabled())
+			if(oauthUser != null)
 			{
-				repository.deleteUser( email );
+				if( !oauthUser.isEnabled())
+				{
+					repository.deleteUser( email );
+				}
+				else
+				{
+					//error - user already exists and active
+					log.error( "cannot create account - user " + email + " already exist." );
+					return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
+				}
 			}
 
 			Collection<? extends GrantedAuthority> authorities = setAuthorities();		//set authorities
@@ -93,17 +102,9 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 					authorities);			
 
 			repository.createUser(user);
-					
-/*			AccountState accountState = repository.createAccount(email, encodedPassword,
-					properties.getMaxAttempts()
-					//NOT IMPLEMENTED		secretQuestion, encodedAnswer
-					);
-			if(accountState == AccountState.ALREADY_EXIST)
-			{
-				log.error( "Account ALREADY_EXIST for user " + email );
-				return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
-			}
-*/		}
+		}
+		//we should not get to these exceptions since we check earlier if account already exist (so repo's do not 
+		// have to check it)
 		catch(DataIntegrityViolationException e)
 		{
 			//get the cause-exception, since it has a better message:
@@ -112,12 +113,6 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			Assert.isTrue(msg.contains("Duplicate entry"));
 			
 
-			log.error( msg );
-			return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
-		}
-		catch(AlreadyExistsException aee)
-		{
-			String msg = aee.getMessage();
 			log.error( msg );
 			return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
 		}

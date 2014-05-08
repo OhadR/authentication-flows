@@ -49,7 +49,7 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 		if( loadUserByUsername( newUser.getUsername() ) != null )
 		{
 			//ALREADY_EXIST:
-			throw new AlreadyExistsException("user laready exists");
+			throw new AlreadyExistsException("user already exists");
 		}
 
 		users.put(newUser.getUsername(), newUser);
