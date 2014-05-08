@@ -43,7 +43,8 @@ public class UserActionController
 	private static final String ACCOUNT_CREATION_FAILED = "Account Creation Failed";
 	public static final String PASSWORD_IS_INCORRECT = "password is incorrect";
 	public static final String USER_DOES_NOT_EXIST = "user does not exist";
-	public static final String BAD_EMAIL_PARAM = "Bad email param";
+//	public static final String BAD_EMAIL_PARAM = "Bad email param";
+	public static final String EMAIL_NOT_VALID = "The e-mail you have entered is not valid.";
 	public static final String PASSWORD_CANNOT_BE_USED = "Your password is not acceptable by the organizational password policy.";
 	public static final String PASSWORD_IS_TOO_LONG = "Password is too long";
 	public static final String PASSWORD_IS_TOO_SHORT = "Password is too short";
@@ -132,9 +133,9 @@ public class UserActionController
 		String emailValidityMsg = validateEmail(email);
 		if(!emailValidityMsg.equals(FlowsConstatns.OK))
 		{
-			log.error(BAD_EMAIL_PARAM + emailValidityMsg);
+			log.error(emailValidityMsg + ": " + email);
 
-			attributes.put(FlowsConstatns.ERR_MSG,  BAD_EMAIL_PARAM + emailValidityMsg);		
+			attributes.put(FlowsConstatns.ERR_MSG,  emailValidityMsg);		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "createAccount.jsp");
@@ -195,7 +196,7 @@ public class UserActionController
 	{
 		if( ! email.contains("@") )
 		{
-			return BAD_EMAIL_PARAM;
+			return EMAIL_NOT_VALID;
 		}
 		return FlowsConstatns.OK;
 	}
