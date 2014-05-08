@@ -129,6 +129,18 @@ public class UserActionController
 		//validate the input:
 		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
 		
+		String emailValidityMsg = validateEmail(email);
+		if(!emailValidityMsg.equals(FlowsConstatns.OK))
+		{
+			log.error(BAD_EMAIL_PARAM + emailValidityMsg);
+
+			attributes.put(FlowsConstatns.ERR_MSG,  BAD_EMAIL_PARAM + emailValidityMsg);		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "createAccount.jsp");
+			return rv;
+		}
+		
 		String passwordValidityMsg = validatePassword(password, settings);
 		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
 		{
@@ -176,6 +188,16 @@ public class UserActionController
 		rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "accountCreatedSuccess.jsp");
 		return rv;
 
+	}
+
+
+	private String validateEmail(String email)
+	{
+		if( ! email.contains("@") )
+		{
+			return BAD_EMAIL_PARAM;
+		}
+		return FlowsConstatns.OK;
 	}
 
 
