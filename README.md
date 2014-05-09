@@ -103,5 +103,9 @@ Indeed, security questions make it even easier for the hacker than if you just c
 Instead of using security questions, why don't we just say, "In case you forget your password, it is displayed on the bottom of the screen. If you're trying to hack in to someone else's account, you are absolutely forbidden from scrolling down." It would be only slightly less secure.
 [source](http://stackoverflow.com/questions/2734367/implement-password-recovery-best-practice)
 
+Why should we NEVER use CAPTCHA
+-------------------------
+Well, [here is why](http://webdesignledger.com/tips/why-you-should-stop-using-captchas).
+
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/OhadR/oauth2-sample/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
