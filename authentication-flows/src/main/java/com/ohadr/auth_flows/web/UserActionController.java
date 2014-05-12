@@ -52,9 +52,12 @@ public class UserActionController
 	public static final String PASSWORD_TOO_FEW_UPPERS = "Password needs to contains at least %d upper-case characters";
 	public static final String PASSWORD_TOO_FEW_NUMERICS = "Password needs to contains at least %d numeric characters";
 	public static final String PASSWORD_TOO_FEW_SPECIAL_SYMBOLS = "Password needs to contains at least %d special symbols";
+	private static final String ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH = 
+			"Account creation has failed. These passwords don't match";
 	public static final String CHANGE_PASSWORD_FAILED_NEW_PASSWORD_NOT_COMPLIANT_WITH_POLICY = "Changing password has failed. Please note the password policy and try again.";
 	public static final String CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD = "CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD";
-	public static final String ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE = "Account creation has failed. Please note the password policy and try again. Error message: ";
+	public static final String ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE = 
+			"Account creation has failed. Please note the password policy and try again. Error message: ";
 	public static final String SECRET_ANSWER_CANNOT_CONTAIN_THE_PASSWORD_AND_VICE_VERSA = "Secret Answer cannot contain the password, and vice versa.";
 	public static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "Account is locked or does not exist";
 	public static final String SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE = "Setting a new password has failed. Please note the password policy and try again. Error message: ";
@@ -136,6 +139,17 @@ public class UserActionController
 			log.error(emailValidityMsg + ": " + email);
 
 			attributes.put(FlowsConstatns.ERR_MSG,  emailValidityMsg);		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "createAccount.jsp");
+			return rv;
+		}
+		
+		if( !password.equals(retypedPassword) )
+		{
+			log.error(ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH);
+
+			attributes.put(FlowsConstatns.ERR_MSG,  ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH);		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "createAccount.jsp");
