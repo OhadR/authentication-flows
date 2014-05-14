@@ -65,6 +65,7 @@ public class UserActionController
 
 	
 	private static final String EMAIL_PARAM_NAME = "email";
+	private static final String CONFIRM_PASSWORD_PARAM_NAME = "confirm_password";
 //	private static final String LOGIN_ERROR_ATTRIB = "error";
 	private static final String DELIMITER = "|";
 
@@ -117,7 +118,7 @@ public class UserActionController
 	protected View createAccount(
 			@RequestParam(EMAIL_PARAM_NAME) String email,
 			@RequestParam("password") String password,
-			@RequestParam("confirm_password") String retypedPassword,
+			@RequestParam(CONFIRM_PASSWORD_PARAM_NAME) String retypedPassword,
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
 //			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,			NOT IMPLEMENTED
 //			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED
@@ -156,13 +157,16 @@ public class UserActionController
 			return rv;
 		}
 		
-		String passwordValidityMsg = validatePassword(password, settings);
-		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
+		
+		try
 		{
-			log.error(ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + passwordValidityMsg);
+			validatePassword(password, settings);
+		}
+		catch(AuthenticationFlowsException afe)
+		{
+			log.error( afe.getMessage() );
 
-			attributes.put(FlowsConstatns.ERR_MSG,  ACCOUNT_CREATION_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
-					 + passwordValidityMsg);		
+			attributes.put(FlowsConstatns.ERR_MSG,  afe.getMessage());		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "createAccount.jsp");
@@ -215,85 +219,6 @@ public class UserActionController
 		return FlowsConstatns.OK;
 	}
 
-
-	private String validatePassword(String password,
-			AuthenticationPolicy settings) 
-	{
-		List<String> blackList = settings.getPasswordBlackList();
-		if(blackList != null)
-		{
-			for(String forbidenPswd : blackList)
-			{
-				if(password.equalsIgnoreCase(forbidenPswd))
-				{
-					return PASSWORD_CANNOT_BE_USED;
-				}
-			}
-		}
-
-		
-		if(password.length() > settings.getPasswordMaxLength())
-		{
-			return PASSWORD_IS_TOO_LONG;
-		}
-
-		if(password.length() < settings.getPasswordMinLength())
-		{
-			return PASSWORD_IS_TOO_SHORT;
-		}
-		
-		int uppersCounter = 0;
-		int lowersCounter = 0;
-		int numericCounter = 0;
-		int specialSymbolCounter = 0;
-		char[] dst = new char[password.length()];
-		password.getChars(0, password.length(), dst, 0);
-		for(int i=0; i<password.length(); ++i)
-		{
-			if(Character.isUpperCase(dst[i]))
-			{
-				++uppersCounter;
-			}
-			else if(Character.isLowerCase(dst[i]))
-			{
-				++lowersCounter;
-			}
-			else if(Character.isDigit(dst[i]))
-			{
-				++numericCounter;
-			}
-			else
-			{
-				//not digit and not a letter - consider it as a 'special symbol':
-				++specialSymbolCounter;
-			}
-		}
-		
-		Formatter formatter = new Formatter();
-
-		String retVal = FlowsConstatns.OK;
-		
-		if(uppersCounter < settings.getPasswordMinUpCaseChars())
-		{
-			retVal = formatter.format(PASSWORD_TOO_FEW_UPPERS, settings.getPasswordMinUpCaseChars()).toString() ;
-		}
-		if(lowersCounter < settings.getPasswordMinLoCaseChars())
-		{
-			retVal =  formatter.format(PASSWORD_TOO_FEW_LOWERS, settings.getPasswordMinLoCaseChars()).toString();
-		}
-		if(numericCounter < settings.getPasswordMinNumbericDigits())
-		{
-			retVal =  formatter.format(PASSWORD_TOO_FEW_NUMERICS, settings.getPasswordMinNumbericDigits()).toString();
-		}
-		if(specialSymbolCounter < settings.getPasswordMinSpecialSymbols())
-		{
-			retVal =  formatter.format(PASSWORD_TOO_FEW_SPECIAL_SYMBOLS, settings.getPasswordMinSpecialSymbols()).toString();
-		}
-		
-		formatter.close();
-				
-		return retVal;
-	}
 
 
 	private String encodeString(String salt, String rawPass) 
@@ -406,63 +331,56 @@ public class UserActionController
 	@RequestMapping("/setNewPassword")
 	protected View setNewPassword( 
 			@RequestParam(FlowsConstatns.HASH_PARAM_NAME) String encUserAndTimestamp,
-			@RequestParam("password") String password) throws Exception
+			@RequestParam("password") String password,
+			@RequestParam(CONFIRM_PASSWORD_PARAM_NAME) String retypedPassword) throws Exception
 	{
 		RedirectView rv = new RedirectView();
 		Map<String, String> attributes = new HashMap<String, String>();
 
-		//validations: (using Fiddlr, hacker can hack this URL *AFTER* changing password to himself, and 
-		//renaming the user to someone else.
-		ImmutablePair<Date, String> stringAndDate = null;
+		String email;
 		try
 		{
+			validateRetypedPassword(password, retypedPassword);
+
+			//validations: (using Fiddlr, hacker can hack this URL *AFTER* changing password to himself, and 
+			//renaming the user to someone else.
+			ImmutablePair<Date, String> stringAndDate = null;
 			stringAndDate = cryptoService.extractStringAndDate(encUserAndTimestamp);
+			
+			validateExpiration(stringAndDate.getLeft());
+
+			email = stringAndDate.getRight();
+
+			//after validations, make the work: validate password constraints, and update DB:
+
+			//validate the input:
+			AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
+
+			validatePassword(password, settings);
+		}
+		catch(AuthenticationFlowsException afe)
+		{		
+			log.error( afe.getMessage() );
+
+			attributes.put(FlowsConstatns.ERR_MSG,  afe.getMessage());		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
+			return rv;
 		}
 		catch(CryptoException cryptoEx)
 		{
-			log.error("link is invalid; exception message: " + cryptoEx.getMessage());
+			log.error( LINK_IS_INVALID + "; exception message: " + cryptoEx.getMessage() );
 
-			attributes.put(FlowsConstatns.ERR_MSG,  LINK_IS_INVALID + " exception message: " + cryptoEx.getMessage());		
+			attributes.put(FlowsConstatns.ERR_MSG,  LINK_IS_INVALID + "; exception message: " + cryptoEx.getMessage() );		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
 			return rv;
 		}
 		
-		//check expiration:
-		boolean expired = (System.currentTimeMillis() - stringAndDate.getLeft().getTime()) > (properties.getLinksExpirationMinutes() * 1000 * 60L);
-		if(expired)
-		{
-			log.error(LINK_HAS_EXPIRED);
-			attributes.put(FlowsConstatns.ERR_MSG,  LINK_HAS_EXPIRED );		
-			//adding attributes to the redirect return value:
-			rv.setAttributesMap(attributes);
-			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
-			return rv;
-		}
-
-
-		String email = stringAndDate.getRight();
-
-		//after validations, make the work: validate password constraints, and update DB:
 
 		String encodedPassword = encodeString(email, password);
-
-		//validate the input:
-		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
-
-		String passwordValidityMsg = validatePassword(password, settings);
-		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
-		{
-			log.error(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE);
-
-			attributes.put(FlowsConstatns.ERR_MSG,  SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE 
-					 + passwordValidityMsg);		
-			//adding attributes to the redirect return value:
-			rv.setAttributesMap(attributes);
-			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
-			return rv;
-		}
 
 		//use API to go to the DB and update the password, and activate the account:
 		flowsProcessor.setPassword(email, encodedPassword);
@@ -490,11 +408,26 @@ public class UserActionController
 	protected void changePassword( 
 								@RequestParam("currentPassword") String currentPassword,
 								@RequestParam("newPassword") String newPassword,
+								@RequestParam(CONFIRM_PASSWORD_PARAM_NAME) String retypedPassword,
 								@RequestParam(FlowsConstatns.ENCRYPTED_USERNAME_PARAM_NAME) String encUser,
 								HttpServletResponse response) throws Exception
 	{
 		PrintWriter writer = response.getWriter();
 		
+
+		if( !newPassword.equals(retypedPassword) )
+		{
+			log.error(ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH);
+
+//			attributes.put(FlowsConstatns.ERR_MSG,  ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH);		
+			//adding attributes to the redirect return value:
+//			rv.setAttributesMap(attributes);
+//			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
+//			return rv;
+			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH);
+			return;
+		}
+
 		String email = cryptoService.extractString(encUser);
 		
 
@@ -511,17 +444,21 @@ public class UserActionController
 		//validate the input:
 		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
 
-		String passwordValidityMsg = validatePassword(newPassword, settings);
-		
-		if( !passwordValidityMsg.equals(FlowsConstatns.OK) )
+		try
 		{
+			validatePassword(newPassword, settings);
+		}
+		catch(AuthenticationFlowsException afe)
+		{
+			log.error( afe.getMessage() );
+
 			//UI will redirect back to createAccount page, with error message:
 			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + 
 					unescapeJaveAndEscapeHtml( CHANGE_PASSWORD_FAILED_NEW_PASSWORD_NOT_COMPLIANT_WITH_POLICY + 
-					" Error message: " + passwordValidityMsg) );
+					" Error message: " + afe.getMessage()) );
 			return;
 		}
-
+		
 		
 		if(currentPassword.equals(newPassword))
 		{
@@ -578,5 +515,103 @@ public class UserActionController
 		String tmp = StringEscapeUtils.unescapeJava( input );
 		return StringEscapeUtils.escapeHtml( tmp );
 	}
+
+	private void validateRetypedPassword(String password, String retypedPassword) throws AuthenticationFlowsException
+	{
+		if(!password.equals(retypedPassword))
+		{
+			throw new AuthenticationFlowsException(ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH);
+		}
+	}
 	
+	private void validateExpiration(Date linkCreationDate) throws AuthenticationFlowsException
+	{
+		boolean expired = (System.currentTimeMillis() - linkCreationDate.getTime()) > (properties.getLinksExpirationMinutes() * 1000 * 60L);
+		if( expired )
+		{
+			throw new AuthenticationFlowsException(LINK_HAS_EXPIRED);
+		}
+	}
+
+	private void validatePassword(String password,
+			AuthenticationPolicy settings) throws AuthenticationFlowsException 
+	{
+		List<String> blackList = settings.getPasswordBlackList();
+		if(blackList != null)
+		{
+			for(String forbidenPswd : blackList)
+			{
+				if(password.equalsIgnoreCase(forbidenPswd))
+				{
+					throw new AuthenticationFlowsException(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + "; " + PASSWORD_CANNOT_BE_USED);
+				}
+			}
+		}
+
+		
+		if(password.length() > settings.getPasswordMaxLength())
+		{
+			throw new AuthenticationFlowsException(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + "; " + PASSWORD_IS_TOO_LONG);
+		}
+
+		if(password.length() < settings.getPasswordMinLength())
+		{
+			throw new AuthenticationFlowsException(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + "; " + PASSWORD_IS_TOO_SHORT);
+		}
+		
+		int uppersCounter = 0;
+		int lowersCounter = 0;
+		int numericCounter = 0;
+		int specialSymbolCounter = 0;
+		char[] dst = new char[password.length()];
+		password.getChars(0, password.length(), dst, 0);
+		for(int i=0; i<password.length(); ++i)
+		{
+			if(Character.isUpperCase(dst[i]))
+			{
+				++uppersCounter;
+			}
+			else if(Character.isLowerCase(dst[i]))
+			{
+				++lowersCounter;
+			}
+			else if(Character.isDigit(dst[i]))
+			{
+				++numericCounter;
+			}
+			else
+			{
+				//not digit and not a letter - consider it as a 'special symbol':
+				++specialSymbolCounter;
+			}
+		}
+		
+		Formatter formatter = new Formatter();
+
+		String retVal = "";
+		
+		if(uppersCounter < settings.getPasswordMinUpCaseChars())
+		{
+			retVal = formatter.format(PASSWORD_TOO_FEW_UPPERS, settings.getPasswordMinUpCaseChars()).toString() ;
+		}
+		if(lowersCounter < settings.getPasswordMinLoCaseChars())
+		{
+			retVal =  formatter.format(PASSWORD_TOO_FEW_LOWERS, settings.getPasswordMinLoCaseChars()).toString();
+		}
+		if(numericCounter < settings.getPasswordMinNumbericDigits())
+		{
+			retVal =  formatter.format(PASSWORD_TOO_FEW_NUMERICS, settings.getPasswordMinNumbericDigits()).toString();
+		}
+		if(specialSymbolCounter < settings.getPasswordMinSpecialSymbols())
+		{
+			retVal =  formatter.format(PASSWORD_TOO_FEW_SPECIAL_SYMBOLS, settings.getPasswordMinSpecialSymbols()).toString();
+		}
+		
+		formatter.close();
+		
+		if(!retVal.isEmpty())
+		{
+			throw new AuthenticationFlowsException(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + "; " + retVal);
+		}
+	}
 }
