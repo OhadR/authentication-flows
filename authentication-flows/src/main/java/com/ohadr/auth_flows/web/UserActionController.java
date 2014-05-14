@@ -122,7 +122,7 @@ public class UserActionController
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
 //			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,			NOT IMPLEMENTED
 //			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED
-			HttpServletRequest request) throws Exception
+			HttpServletRequest request)
 	{
 		RedirectView rv = new RedirectView();
 
@@ -156,7 +156,6 @@ public class UserActionController
 			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "createAccount.jsp");
 			return rv;
 		}
-		
 		
 		try
 		{
@@ -332,7 +331,7 @@ public class UserActionController
 	protected View setNewPassword( 
 			@RequestParam(FlowsConstatns.HASH_PARAM_NAME) String encUserAndTimestamp,
 			@RequestParam("password") String password,
-			@RequestParam(CONFIRM_PASSWORD_PARAM_NAME) String retypedPassword) throws Exception
+			@RequestParam(CONFIRM_PASSWORD_PARAM_NAME) String retypedPassword)
 	{
 		RedirectView rv = new RedirectView();
 		Map<String, String> attributes = new HashMap<String, String>();
