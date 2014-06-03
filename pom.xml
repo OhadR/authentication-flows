@@ -315,6 +315,13 @@
 		</dependency>
             
 
+		<!-- velocity (template email msg) -->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
 
 
         </dependencies>

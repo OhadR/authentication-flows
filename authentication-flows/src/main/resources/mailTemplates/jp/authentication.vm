@@ -1,0 +1,25 @@
+﻿#parse( "mailTemplates/jp/header.vm" )
+
+<div style="font-size: 13px; padding-top: 10px;">
+	<p>$name 様、</p>
+	
+	<p>
+		WatchDox では、電子メール認証プロセスによって、お客様の電子メール ID とこのマシンとが関連付けられます。 
+	</p>
+	
+	<p>
+		このコンピューターの WatchDox 認定ユーザーとして登録するには、以下のリンクをクリックしてください。 
+	</p>
+	
+	<p>
+		<a id="authLink" href="$url">$url</a>
+	</p>
+	
+	<p>
+		認証されると、WatchDox を使用してドキュメントを送受信することが可能になります。
+	</p>
+	
+
+</div>
+
+#parse( "mailTemplates/jp/footer.vm" )

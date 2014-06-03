@@ -2,21 +2,25 @@ package com.ohadr.auth_flows.core;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.acls.model.AlreadyExistsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.util.Assert;
 
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
@@ -45,7 +49,11 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	private CryptoService	cryptoService;
 	
 	@Autowired
-	private MailSender		mailSender;
+	private MailSender			mailSender;
+	
+	@Autowired
+    private VelocityEngine 		velocityEngine;
+
 
 	@Autowired
 	private AuthFlowsProperties properties;
@@ -127,9 +135,11 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 //			"a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + "&" + 
 			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
 		
+		        
 		sendMail(email,
-				FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_SUBJECT, 
-				FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_BODY + activationUrl);
+				FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_SUBJECT,
+				"authentication.vm",
+				activationUrl );
 		
 		return ImmutablePair.of(FlowsConstatns.OK, "");
 	}
@@ -203,9 +213,9 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 				"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
 
 		sendMail(email,
-				FlowsConstatns.MailMessage.RESTORE_PASSWORD_MAIL_SUBJECT, 
-				FlowsConstatns.MailMessage.RESTORE_PASSWORD_MAIL_BODY + passwordRestoreUrl);
-
+				FlowsConstatns.MailMessage.RESTORE_PASSWORD_MAIL_SUBJECT,
+				"restorePassword.vm",
+				passwordRestoreUrl );
 	}
 
 	@Override
@@ -255,8 +265,10 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
 		
 		sendMail(email,
-				FlowsConstatns.MailMessage.UNLOCK_MAIL_SUBJECT, 
-				FlowsConstatns.MailMessage.UNLOCK_MAIL_BODY + activationUrl);
+				FlowsConstatns.MailMessage.UNLOCK_MAIL_SUBJECT,
+				"accountLocked.vm",
+				activationUrl );
+		
 	}
 
 	@Override
@@ -301,13 +313,21 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 	private void sendMail(String email, 
 			String mailSubject,
-			String mailBody)
+			String msgTextFileName,
+			String urlInMessage)
 	{
-		SimpleMailMessage msg = new SimpleMailMessage();
+		Map<String, Object> model = new HashMap<String, Object>();
+        model.put("username", email);
+        model.put("url", urlInMessage);
+        String mailBody = VelocityEngineUtils.mergeTemplateIntoString(
+                velocityEngine, getResourcePath( msgTextFileName ), model);
+
+        SimpleMailMessage msg = new SimpleMailMessage();
 		msg.setTo(email);
 		msg.setSubject(mailSubject);
 		msg.setText(mailBody);
-		mailSender.send(msg);
+		
+		mailSender.send( msg );
 	}
 
 
@@ -322,5 +342,10 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	public Date getPasswordLastChangeDate(String email)
 	{
 		return repository.getPasswordLastChangeDate(email);
+	}
+	
+	private static String getResourcePath(String name)
+	{
+		return "mailTemplates/" + Locale.getDefault().getLanguage() + "/" + name;
 	}
 }

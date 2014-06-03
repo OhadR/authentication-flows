@@ -1,0 +1,14 @@
+Hi $username.
+
+You, or someone else, have exceeded the number of permitted attempts of either logging-in or answering your secret question. 
+Therefore, for your protection, your account has been locked. To unlock your account, please click the link below.
+If you cannot remember your password, please contact your support.
+
+However, if you did not try to log-in or answer the question, do NOT click on the link below. Contact your support
+because someone may be trying to take over your account. 
+
+To unlock your WatchDox account, click on the following link:
+
+$url
+
+Once your account is unlocked, you can log into your account with your password.

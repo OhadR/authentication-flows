@@ -1,0 +1,15 @@
+Hello $username,
+
+You, or someone pretending to be you has asked to create account for email address:
+
+  $username
+
+To activate your account, if you did indeed request it, you need to surf over to:
+
+  $url
+
+If you did not request this, please accept our apologies and kindly ignore this email.
+
+Thanks,
+
+Authentication-Flows Support.

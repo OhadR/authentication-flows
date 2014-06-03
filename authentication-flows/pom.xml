@@ -145,6 +145,13 @@
 			<artifactId>mail</artifactId>
 		</dependency>
 		
+		
+		<!-- velocity (template email msg) -->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+		</dependency>
+		
 		<!-- dont need javax.persistency since I wrok with Spring objects, and parse them with jackson -->
 		<!-- dependency>
 			<groupId>org.hibernate</groupId>
