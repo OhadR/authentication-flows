@@ -6,6 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 public class TestMailSender
 {
@@ -23,7 +24,9 @@ public class TestMailSender
 		msg.setSubject("Testing Subject");
 		msg.setText("Dear Mail Crawler, \n\n No spam to my email, please!");
 
-		try
+		JavaMailSenderImpl impl = (JavaMailSenderImpl)sender2;
+		System.out.println("sending... from: " + impl.getUsername());
+/*		try
 		{
 			sender2.send(msg);
 		}
@@ -32,7 +35,7 @@ public class TestMailSender
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+*/
         System.out.println("Done");
 	}
 
