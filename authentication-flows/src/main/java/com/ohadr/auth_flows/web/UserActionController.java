@@ -60,7 +60,9 @@ public class UserActionController
 			"Account creation has failed. Please note the password policy and try again. Error message: ";
 	public static final String SECRET_ANSWER_CANNOT_CONTAIN_THE_PASSWORD_AND_VICE_VERSA = "Secret Answer cannot contain the password, and vice versa.";
 	public static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "Account is locked or does not exist";
-	public static final String SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE = "Setting a new password has failed. Please note the password policy and try again. Error message: ";
+	public static final String SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE =
+			"Setting a new password has failed. Please note the password policy and try again. Error message: ";
+	
 	public static final String AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE = "an email was sent to the given address. click on the link there";
 
 	
@@ -68,6 +70,9 @@ public class UserActionController
 	private static final String CONFIRM_PASSWORD_PARAM_NAME = "confirm_password";
 //	private static final String LOGIN_ERROR_ATTRIB = "error";
 	private static final String DELIMITER = "|";
+
+	private static final String ERR_MSG = "err_msg";
+
 
 
 
@@ -87,6 +92,12 @@ public class UserActionController
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	/**
+	 * this let applications override this impl and add their custom functionality:
+	 */
+	@Autowired
+	private CreateAccountEndpoint createAccountEndpoint = new CreateAccountEndpoint();
 
 	
 	
@@ -96,7 +107,7 @@ public class UserActionController
 	 * @throws Exception
 	 */
 	@RequestMapping("/createAccountPage")
-	protected void createAccount( HttpServletResponse response) throws Exception
+	final protected void createAccount( HttpServletResponse response) throws Exception
 	{
 		addPasswordConstraintsToResponse(response);
 	}
@@ -112,18 +123,22 @@ public class UserActionController
 	 * @param secretQuestionAnswer
 	 * @param request
 	 * @return
+	 * @throws IOException 
 	 * @throws Exception
 	 */
 	@RequestMapping("/createAccount")
-	protected View createAccount(
+	final protected View createAccount(
 			@RequestParam(EMAIL_PARAM_NAME) String email,
 			@RequestParam("password") String password,
 			@RequestParam(CONFIRM_PASSWORD_PARAM_NAME) String retypedPassword,
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
 //			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,			NOT IMPLEMENTED
 //			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED
-			HttpServletRequest request)
+			HttpServletRequest request,
+			HttpServletResponse response) throws IOException
 	{
+		PrintWriter writer = response.getWriter();
+
 		RedirectView rv = new RedirectView();
 
 //		request.setAttribute("email", email);
@@ -164,6 +179,11 @@ public class UserActionController
 		catch(AuthenticationFlowsException afe)
 		{
 			log.error( afe.getMessage() );
+			
+			writer.println(ERR_MSG + DELIMITER + 
+					unescapeJaveAndEscapeHtml( afe.getMessage() ) );
+//			return;
+
 
 			attributes.put(FlowsConstatns.ERR_MSG,  afe.getMessage());		
 			//adding attributes to the redirect return value:
@@ -178,6 +198,28 @@ public class UserActionController
 
 		String path = FlowsUtil.getServerPath(request);
 		
+		//make any other additional chackes. this let applications override this impl and add their custom functionality:
+		try
+		{
+			createAccountEndpoint.additionalValidations( email, password );
+		} 
+		catch (AuthenticationFlowsException afe)
+		{
+			log.error( afe.getMessage() );
+			
+			writer.println(ERR_MSG + DELIMITER + 
+					unescapeJaveAndEscapeHtml( afe.getMessage() ) );
+//			return;
+
+
+			attributes.put(FlowsConstatns.ERR_MSG,  afe.getMessage());		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "createAccount.jsp");
+			return rv;
+		}
+		
+		//TODO: let flowsProcessor.createAccount() throw exception if unsuccessful, instead of returning pair ...
 		Pair<String, String> retVal = flowsProcessor.createAccount(email, encodedPassword, path);
     	if( ! retVal.getLeft().equals(FlowsConstatns.OK))
     	{
