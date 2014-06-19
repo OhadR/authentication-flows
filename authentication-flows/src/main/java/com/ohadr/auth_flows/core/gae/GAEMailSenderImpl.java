@@ -14,6 +14,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
 import org.springframework.mail.MailException;
+import org.springframework.mail.MailParseException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -80,7 +81,7 @@ public class GAEMailSenderImpl implements MailSender
 		catch (MessagingException e) 
 		{
 			log.error("MessagingException: ", e);
-			throw new RuntimeException(e);
+			throw new MailParseException(e);
 		} 
 		catch (UnsupportedEncodingException e) 
 		{

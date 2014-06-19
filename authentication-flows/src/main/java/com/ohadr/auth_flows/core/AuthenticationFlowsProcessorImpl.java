@@ -8,12 +8,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.GrantedAuthority;
@@ -136,10 +139,18 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
 		
 		        
-		sendMail(email,
-				FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_SUBJECT,
-				"authentication.vm",
-				activationUrl );
+		try
+		{
+			sendMail(email,
+					FlowsConstatns.MailMessage.AUTHENTICATION_MAIL_SUBJECT,
+					"authentication.vm",
+					activationUrl );
+		}
+		catch (MailException me)
+		{
+			log.error( me.getMessage() );
+			return Pair.of(FlowsConstatns.ERROR, me.getMessage());
+		}
 		
 		return ImmutablePair.of(FlowsConstatns.OK, "");
 	}
