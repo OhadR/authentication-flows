@@ -99,6 +99,14 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException
 	{
+		//issue #34: if username is null, login fails and then we try to AuthenticationFlowsProcessorImpl.setLoginFailureForUser()
+		//that causes IllegalArgumentException.
+		if( username == null || username.isEmpty() )
+		{
+			log.error("name cannot be null or empty");
+			throw new UsernameNotFoundException( "name cannot be null or empty" );
+		}
+		
 		Key userKey = KeyFactory.createKey(AUTH_FLOWS_USER_DB_KIND, username);
 		Entity entity;
 		try 
