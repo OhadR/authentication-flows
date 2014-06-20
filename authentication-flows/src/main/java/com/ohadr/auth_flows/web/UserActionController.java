@@ -330,6 +330,19 @@ public class UserActionController
 		Map<String, String> attributes = new HashMap<String, String>();
 		attributes.put(EMAIL_PARAM_NAME,  email);		
 
+		if( email == null || email.isEmpty() )
+		{
+			//account has been locked/does not exist: notify user:
+			log.error( EMAIL_NOT_VALID );
+
+			attributes.put(FlowsConstatns.ERR_MSG,  EMAIL_NOT_VALID);		
+			attributes.put(FlowsConstatns.ERR_HEADER,  EMAIL_NOT_VALID);
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp");
+			return rv;
+		}
+		
 		
 		//if account is already locked, no need to ask the user the secret question:
 		AccountState accountState = flowsProcessor.getAccountState(email);
