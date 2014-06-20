@@ -2,13 +2,13 @@ package com.ohadr.auth_flows.core;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.mail.MessagingException;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,6 +19,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,6 +36,8 @@ import com.ohadr.auth_flows.mocks.InMemoryAuthenticationUserImpl;
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.FlowsConstatns;
+import com.ohadr.auth_flows.web.AuthenticationFlowsException;
+import com.ohadr.auth_flows.web.CreateAccountEndpoint;
 import com.ohadr.crypto.service.CryptoService;
 
 @Component
@@ -42,6 +45,20 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 {
 	private static Logger log = Logger.getLogger(AuthenticationFlowsProcessorImpl.class);
 	
+	public static final String EMAIL_NOT_VALID = "The e-mail you have entered is not valid.";
+
+	public static final String PASSWORD_CANNOT_BE_USED = "Your password is not acceptable by the organizational password policy.";
+	public static final String PASSWORD_IS_TOO_LONG = "Password is too long";
+	public static final String PASSWORD_IS_TOO_SHORT = "Password is too short";
+	public static final String PASSWORD_TOO_FEW_LOWERS = "Password needs to contains at least %d lower-case characters";
+	public static final String PASSWORD_TOO_FEW_UPPERS = "Password needs to contains at least %d upper-case characters";
+	public static final String PASSWORD_TOO_FEW_NUMERICS = "Password needs to contains at least %d numeric characters";
+	public static final String PASSWORD_TOO_FEW_SPECIAL_SYMBOLS = "Password needs to contains at least %d special symbols";
+	public static final String SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE =
+			"Setting a new password has failed. Please note the password policy and try again. Error message: ";
+	private static final String ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH = 
+			"Account creation has failed. These passwords don't match";
+
 	@Autowired
 	private AuthenticationAccountRepository repository;
 	
@@ -61,17 +78,75 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	@Autowired
 	private AuthFlowsProperties properties;
 
+	/**
+	 * this let applications override this impl and add their custom functionality:
+	 */
+	@Autowired(required=false)
+	private CreateAccountEndpoint createAccountEndpoint = new CreateAccountEndpoint();
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+
+
+
+
+	public void createAccount(
+			String email,
+			String password,
+			String retypedPassword,
+			String path) throws AuthenticationFlowsException
+	{
+		//validate the input:
+		AuthenticationPolicy settings = getAuthenticationSettings();
+		
+		String emailValidityMsg = validateEmail(email);
+		if(!emailValidityMsg.equals(FlowsConstatns.OK))
+		{
+			throw new AuthenticationFlowsException( emailValidityMsg );
+		}
+		
+		validateRetypedPassword(password, retypedPassword);
+
+		validatePassword(password, settings);
+
+
+		String encodedPassword = encodeString(email, password);
+
+
+		//make any other additional chackes. this let applications override this impl and add their custom functionality:
+		createAccountEndpoint.additionalValidations( email, password );
+		
+		//TODO: let flowsProcessor.createAccount() throw exception if unsuccessful, instead of returning pair ...
+		Pair<String, String> retVal = internalCreateAccount(email, encodedPassword, path);	//TODO rename method name
+    	if( ! retVal.getLeft().equals(FlowsConstatns.OK))
+    	{
+			String errorText = retVal.getRight();
+			throw new AuthenticationFlowsException( errorText );
+    	}
+        
+
+        //update the "remember-me" token validity:
+        int rememberMeTokenValidityInDays = settings.getRememberMeTokenValidityInDays();
+
+        //get the "remem-me" bean and update its validity:
+//        rememberMeService.setTokenValiditySeconds(rememberMeTokenValidityInDays * 60 * 60 * 24);
+	}
 
 	
-	@Override
-	public Pair<String, String> createAccount(
+	
+	/**
+	 * 
+	 * @param email
+	 * @param encodedPassword
+	 * @param secretQuestion
+	 * @param encodedAnswer
+	 * @return pair of strings. left is the status OK | ERROR, right is the message
+	 * TODO: let flowsProcessor.createAccount() throw exception if unsuccessful, instead of returning pair ...
+	 */
+	public Pair<String, String> internalCreateAccount(
 			String email,
-			String encodedPassword 
-//			String secretQuestion,		NOT IMPLEMENTED
-//			String encodedAnswer,		NOT IMPLEMENTED
-//			String redirectUri			NOT IMPLEMENTED
-			, 
+			String encodedPassword, 
 			String serverPath
 			)
 	{
@@ -359,4 +434,112 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	{
 		return "mailTemplates/" + Locale.getDefault().getLanguage() + "/" + name;
 	}
+	
+	
+	public String validateEmail(String email)
+	{
+		if( ! email.contains("@") )
+		{
+			return EMAIL_NOT_VALID;
+		}
+		return FlowsConstatns.OK;
+	}
+
+	public void validateRetypedPassword(String password, String retypedPassword) throws AuthenticationFlowsException
+	{
+		if(!password.equals(retypedPassword))
+		{
+			throw new AuthenticationFlowsException(ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH);
+		}
+	}
+
+	public void validatePassword(String password,
+			AuthenticationPolicy settings) throws AuthenticationFlowsException 
+	{
+		List<String> blackList = settings.getPasswordBlackList();
+		if(blackList != null)
+		{
+			for(String forbidenPswd : blackList)
+			{
+				if(password.equalsIgnoreCase(forbidenPswd))
+				{
+					throw new AuthenticationFlowsException(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + "; " + PASSWORD_CANNOT_BE_USED);
+				}
+			}
+		}
+
+		
+		if(password.length() > settings.getPasswordMaxLength())
+		{
+			throw new AuthenticationFlowsException(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + "; " + PASSWORD_IS_TOO_LONG);
+		}
+
+		if(password.length() < settings.getPasswordMinLength())
+		{
+			throw new AuthenticationFlowsException(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + "; " + PASSWORD_IS_TOO_SHORT);
+		}
+		
+		int uppersCounter = 0;
+		int lowersCounter = 0;
+		int numericCounter = 0;
+		int specialSymbolCounter = 0;
+		char[] dst = new char[password.length()];
+		password.getChars(0, password.length(), dst, 0);
+		for(int i=0; i<password.length(); ++i)
+		{
+			if(Character.isUpperCase(dst[i]))
+			{
+				++uppersCounter;
+			}
+			else if(Character.isLowerCase(dst[i]))
+			{
+				++lowersCounter;
+			}
+			else if(Character.isDigit(dst[i]))
+			{
+				++numericCounter;
+			}
+			else
+			{
+				//not digit and not a letter - consider it as a 'special symbol':
+				++specialSymbolCounter;
+			}
+		}
+		
+		Formatter formatter = new Formatter();
+
+		String retVal = "";
+		
+		if(uppersCounter < settings.getPasswordMinUpCaseChars())
+		{
+			retVal = formatter.format(PASSWORD_TOO_FEW_UPPERS, settings.getPasswordMinUpCaseChars()).toString() ;
+		}
+		if(lowersCounter < settings.getPasswordMinLoCaseChars())
+		{
+			retVal =  formatter.format(PASSWORD_TOO_FEW_LOWERS, settings.getPasswordMinLoCaseChars()).toString();
+		}
+		if(numericCounter < settings.getPasswordMinNumbericDigits())
+		{
+			retVal =  formatter.format(PASSWORD_TOO_FEW_NUMERICS, settings.getPasswordMinNumbericDigits()).toString();
+		}
+		if(specialSymbolCounter < settings.getPasswordMinSpecialSymbols())
+		{
+			retVal =  formatter.format(PASSWORD_TOO_FEW_SPECIAL_SYMBOLS, settings.getPasswordMinSpecialSymbols()).toString();
+		}
+		
+		formatter.close();
+		
+		if(!retVal.isEmpty())
+		{
+			throw new AuthenticationFlowsException(SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE + "; " + retVal);
+		}
+	}
+
+	public String encodeString(String salt, String rawPass) 
+	{
+		//encoding the password:
+        String encodedPassword = passwordEncoder.encodePassword(rawPass, salt);	//the email is the salt
+		return encodedPassword;
+	}
+
 }
