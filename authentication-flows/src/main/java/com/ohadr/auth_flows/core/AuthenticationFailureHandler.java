@@ -22,6 +22,11 @@ import com.ohadr.auth_flows.types.FlowsConstatns;
 
 public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 {
+	public AuthenticationFailureHandler()
+	{
+		super();
+	}
+
 	public AuthenticationFailureHandler(String defaultFailureUrl)
 	{
 		super(defaultFailureUrl);
