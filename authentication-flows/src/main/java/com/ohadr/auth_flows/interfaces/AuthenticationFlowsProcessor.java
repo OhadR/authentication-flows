@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
+import com.ohadr.auth_flows.web.AuthenticationFlowsException;
 
 
 /**
@@ -16,21 +17,18 @@ import com.ohadr.auth_flows.types.AuthenticationPolicy;
 public interface AuthenticationFlowsProcessor
 {
 	/**
-	 * 
 	 * @param email
-	 * @param encodedPassword
-	 * @param secretQuestion
-	 * @param encodedAnswer
-	 * @return pair of strings. left is the status OK | ERROR, right is the message
+	 * @param password
+	 * @param retypedPassword
+	 * @param path
+	 * @throws AuthenticationFlowsException
 	 */
-	public Pair<String, String> createAccount(
-			String email, 
-			String encodedPassword,
-//			,String secretQuestion,		NOT IMPLEMENTED
-//			String encodedAnswer,		NOT IMPLEMENTED
-//			String redirectUri			NOT IMPLEMENTED
-			String serverPath
-			);
+	public void createAccount(
+			String email,
+			String password,
+			String retypedPassword,
+			String path) throws AuthenticationFlowsException;
+
 
 	/**
 	 * 
@@ -78,5 +76,12 @@ public interface AuthenticationFlowsProcessor
 	 * 
 	public String getSecretQuestion(String email);
 		 */
+
+	public void validatePassword(String password,
+			AuthenticationPolicy settings) throws AuthenticationFlowsException;
+	
+	public void validateRetypedPassword(String password, String retypedPassword) throws AuthenticationFlowsException;
+
+	public String encodeString(String salt, String rawPass); 
 
 }
