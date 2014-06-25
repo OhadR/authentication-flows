@@ -51,6 +51,8 @@ POST /createAccount HTTP/1.1
 	password=<password>,
 	confirm_password=<confirm_password>
 ```
+* if successful, redirects user-agent to "accountCreatedSuccess.jsp", with return code of 301.
+* if failed, redirects back to the same page (createAccount.jsp), with return code of 301.
 
 ```xml
 x-www-form-urlencoded
@@ -59,6 +61,8 @@ POST /rest/createAccount HTTP/1.1
 	password=<password>,
 	confirm_password=<confirm_password>
 ```
+* if successful, returns code 201 (Created).
+* if failed, returns 400 (Bad request).
 
 
 **forgot Password**
@@ -66,6 +70,8 @@ POST /rest/createAccount HTTP/1.1
 POST /forgotPasswordPage HTTP/1.1
 	email=<email>
 ```
+* if successful, redirects user-agent to "passwordRestoreEmailSent.jsp", with return code of 301.
+* if failed, redirects user-agent to "error.jsp", with return code of 301.
 
 **set new Password**
 
