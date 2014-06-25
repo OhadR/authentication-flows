@@ -27,11 +27,14 @@ POST /j_spring_security_check HTTP/1.1
 	j_username=<email>, 
 	j_password=<password>
 ```
-After successful login, Spring redirects the user-agent to the desired resource, with return code of 301.
-Failed Authentication returns 302.
+Return codes:
+
+* After successful login, Spring redirects the user-agent to the desired resource, with return code of 301.
+* Failed Authentication returns 302.
+
 If REST capabilities are on (see appendix), then return values are different, since redirects are not in use.
-successful authentication returns 200.
-Failed Authentication returns 401 (Unauthorized).
+* successful authentication returns 200.
+* Failed Authentication returns 401 (Unauthorized).
 
 **logout**
 
