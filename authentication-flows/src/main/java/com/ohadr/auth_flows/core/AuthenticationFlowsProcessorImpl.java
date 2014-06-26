@@ -47,17 +47,20 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	
 	public static final String EMAIL_NOT_VALID = "The e-mail you have entered is not valid.";
 
-	public static final String PASSWORD_CANNOT_BE_USED = "Your password is not acceptable by the organizational password policy.";
-	public static final String PASSWORD_IS_TOO_LONG = "Password is too long";
-	public static final String PASSWORD_IS_TOO_SHORT = "Password is too short";
-	public static final String PASSWORD_TOO_FEW_LOWERS = "Password needs to contains at least %d lower-case characters";
-	public static final String PASSWORD_TOO_FEW_UPPERS = "Password needs to contains at least %d upper-case characters";
-	public static final String PASSWORD_TOO_FEW_NUMERICS = "Password needs to contains at least %d numeric characters";
-	public static final String PASSWORD_TOO_FEW_SPECIAL_SYMBOLS = "Password needs to contains at least %d special symbols";
-	public static final String SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE =
+	private static final String PASSWORD_CANNOT_BE_USED = "Your password is not acceptable by the organizational password policy.";
+	private static final String PASSWORD_IS_TOO_LONG = "Password is too long";
+	private static final String PASSWORD_IS_TOO_SHORT = "Password is too short";
+	private static final String PASSWORD_TOO_FEW_LOWERS = "Password needs to contains at least %d lower-case characters";
+	private static final String PASSWORD_TOO_FEW_UPPERS = "Password needs to contains at least %d upper-case characters";
+	private static final String PASSWORD_TOO_FEW_NUMERICS = "Password needs to contains at least %d numeric characters";
+	private static final String PASSWORD_TOO_FEW_SPECIAL_SYMBOLS = "Password needs to contains at least %d special symbols";
+	private static final String SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE =
 			"Setting a new password has failed. Please note the password policy and try again. Error message: ";
 	private static final String ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH = 
 			"Account creation has failed. These passwords don't match";
+	
+	private static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "Account is locked or does not exist";
+	
 
 	@Autowired
 	private AuthenticationAccountRepository repository;
@@ -100,11 +103,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		//validate the input:
 		AuthenticationPolicy settings = getAuthenticationSettings();
 		
-		String emailValidityMsg = validateEmail(email);
-		if(!emailValidityMsg.equals(FlowsConstatns.OK))
-		{
-			throw new AuthenticationFlowsException( emailValidityMsg );
-		}
+		validateEmail(email);
 		
 		validateRetypedPassword(password, retypedPassword);
 
@@ -117,8 +116,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		//make any other additional chackes. this let applications override this impl and add their custom functionality:
 		createAccountEndpoint.additionalValidations( email, password );
 		
-		//TODO: let flowsProcessor.createAccount() throw exception if unsuccessful, instead of returning pair ...
-		Pair<String, String> retVal = internalCreateAccount(email, encodedPassword, path);	//TODO rename method name
+		//TODO: let flowsProcessor.internalCreateAccount() throw exception if unsuccessful, instead of returning pair ...
+		Pair<String, String> retVal = internalCreateAccount(email, encodedPassword, path);	
     	if( ! retVal.getLeft().equals(FlowsConstatns.OK))
     	{
 			String errorText = retVal.getRight();
@@ -142,9 +141,9 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	 * @param secretQuestion
 	 * @param encodedAnswer
 	 * @return pair of strings. left is the status OK | ERROR, right is the message
-	 * TODO: let flowsProcessor.createAccount() throw exception if unsuccessful, instead of returning pair ...
+	 * TODO: throw exception if unsuccessful, instead of returning pair ...
 	 */
-	public Pair<String, String> internalCreateAccount(
+	private Pair<String, String> internalCreateAccount(
 			String email,
 			String encodedPassword, 
 			String serverPath
@@ -230,6 +229,23 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		return ImmutablePair.of(FlowsConstatns.OK, "");
 	}
 	
+	
+	public void handleForgotPassword( String email, String serverPath ) 
+			throws AuthenticationFlowsException
+	{
+		validateEmail(email);
+
+		//if account is already locked, no need to ask the user the secret question:
+		AccountState accountState = getAccountState(email);
+		if( accountState != AccountState.OK )
+		{
+			throw new AuthenticationFlowsException( ACCOUNT_LOCKED_OR_DOES_NOT_EXIST );
+		}
+
+		sendPasswordRestoreMail(email, serverPath);
+	}
+	
+	
 
 	private Collection<? extends GrantedAuthority> setAuthorities() 
 	{
@@ -289,8 +305,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		return repository.isAccountLocked(email);
 	}
 
-	@Override
-	public void sendPasswordRestoreMail(String email,
+	private void sendPasswordRestoreMail(String email,
 			String serverPath) 
 	{
 		String passwordRestoreUrl = serverPath + FlowsConstatns.RESTORE_PASSWORD_ENDPOINT +
@@ -436,13 +451,12 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	}
 	
 	
-	public String validateEmail(String email)
+	private void validateEmail(String email) throws AuthenticationFlowsException
 	{
 		if( ! email.contains("@") )
 		{
-			return EMAIL_NOT_VALID;
+			throw new AuthenticationFlowsException( EMAIL_NOT_VALID );
 		}
-		return FlowsConstatns.OK;
 	}
 
 	public void validateRetypedPassword(String password, String retypedPassword) throws AuthenticationFlowsException

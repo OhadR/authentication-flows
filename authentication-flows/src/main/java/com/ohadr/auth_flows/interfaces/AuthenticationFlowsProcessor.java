@@ -20,7 +20,7 @@ public interface AuthenticationFlowsProcessor
 	 * @param email
 	 * @param password
 	 * @param retypedPassword
-	 * @param path
+	 * @param path: the server-path. used for building the link in the email
 	 * @throws AuthenticationFlowsException
 	 */
 	public void createAccount(
@@ -30,6 +30,15 @@ public interface AuthenticationFlowsProcessor
 			String path) throws AuthenticationFlowsException;
 
 
+	/**
+	 * 
+	 * @param email
+	 * @param serverPath - the server-path. used for building the link in the email
+	 * @throws AuthenticationFlowsException
+	 */
+	public void handleForgotPassword( String email, String serverPath ) 
+			throws AuthenticationFlowsException;
+	
 	/**
 	 * 
 	 * @param username
@@ -42,8 +51,6 @@ public interface AuthenticationFlowsProcessor
 
 	public AccountState getAccountState(String email);
 
-	public void sendPasswordRestoreMail(String email, 
-			String serverPath);
 
 	public String getSecretAnswer(String email);
 
