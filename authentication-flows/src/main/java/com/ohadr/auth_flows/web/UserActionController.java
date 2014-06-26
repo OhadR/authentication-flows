@@ -2,15 +2,12 @@ package com.ohadr.auth_flows.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +20,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
-import com.ohadr.auth_flows.core.AuthenticationFlowsProcessorImpl;
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
@@ -34,8 +30,6 @@ import com.ohadr.auth_flows.types.FlowsConstatns;
 public class UserActionController
 {
 
-	private static final String LINK_HAS_EXPIRED = "link has expired";
-	private static final String LINK_IS_INVALID = "link is invalid";
 	public static final String PASSWORD_IS_INCORRECT = "password is incorrect";
 	public static final String USER_DOES_NOT_EXIST = "user does not exist";
 //	public static final String BAD_EMAIL_PARAM = "Bad email param";
@@ -47,12 +41,6 @@ public class UserActionController
 	public static final String AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE = "an email was sent to the given address. click on the link there";
 
 	
-	private static final String EMAIL_PARAM_NAME = "email";
-	private static final String CONFIRM_PASSWORD_PARAM_NAME = "confirm_password";
-//	private static final String LOGIN_ERROR_ATTRIB = "error";
-	private static final String DELIMITER = "|";
-
-	private static final String ERR_MSG = "err_msg";
 
 
 
@@ -99,9 +87,9 @@ public class UserActionController
 	 */
 	@RequestMapping("/createAccount")
 	final protected View createAccount(
-			@RequestParam(EMAIL_PARAM_NAME) String email,
+			@RequestParam( FlowsConstatns.EMAIL_PARAM_NAME ) String email,
 			@RequestParam("password") String password,
-			@RequestParam(CONFIRM_PASSWORD_PARAM_NAME) String retypedPassword,
+			@RequestParam( FlowsConstatns.CONFIRM_PASSWORD_PARAM_NAME ) String retypedPassword,
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
 //			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,			NOT IMPLEMENTED
 //			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED
@@ -114,7 +102,7 @@ public class UserActionController
 
 //		request.setAttribute("email", email);
 		Map<String, String> attributes = new HashMap<String, String>();
-		attributes.put(EMAIL_PARAM_NAME,  email);		
+		attributes.put(FlowsConstatns.EMAIL_PARAM_NAME,  email);		
 
 		String path = FlowsUtil.getServerPath(request);
 
@@ -128,9 +116,8 @@ public class UserActionController
 		{
 			log.error( afe.getMessage() );
 			
-			writer.println(ERR_MSG + DELIMITER + 
-					unescapeJaveAndEscapeHtml( afe.getMessage() ) );
-//			return;
+			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
+					FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage() ) );
 
 
 			attributes.put(FlowsConstatns.ERR_MSG,  afe.getMessage());		
@@ -154,7 +141,7 @@ public class UserActionController
 		try
 		{
 			PrintWriter writer = response.getWriter();
-			writer.println(FlowsConstatns.OK + DELIMITER);
+			writer.println(FlowsConstatns.OK + FlowsConstatns.DELIMITER);
 			writer.write( buildPasswordConstraintsString() );
 		}
 		catch (IOException e)
@@ -173,16 +160,16 @@ public class UserActionController
 
 
 		String passwordConstraints = 
-				"PasswordMaxLength="+ settings.getPasswordMaxLength()+ DELIMITER +
-				"PasswordMinLength="+settings.getPasswordMinLength()+ DELIMITER +
-				"PasswordMinLoCaseLetters="+settings.getPasswordMinLoCaseChars()+ DELIMITER +
-				"PasswordMinNumbers="+settings.getPasswordMinNumbericDigits()+ DELIMITER +
-				"PasswordMinSpecialSymbols="+settings.getPasswordMinSpecialSymbols()+ DELIMITER +
+				"PasswordMaxLength="+ settings.getPasswordMaxLength()+ FlowsConstatns.DELIMITER +
+				"PasswordMinLength="+settings.getPasswordMinLength()+ FlowsConstatns.DELIMITER +
+				"PasswordMinLoCaseLetters="+settings.getPasswordMinLoCaseChars()+ FlowsConstatns.DELIMITER +
+				"PasswordMinNumbers="+settings.getPasswordMinNumbericDigits()+ FlowsConstatns.DELIMITER +
+				"PasswordMinSpecialSymbols="+settings.getPasswordMinSpecialSymbols()+ FlowsConstatns.DELIMITER +
 				"PasswordMinUpCaseLetters="+settings.getPasswordMinUpCaseChars()
 				;
 
 
-		builder.append( DELIMITER		//we sepoarate the secretQ's and the constraints with '|'. the last secretQ comes with a single '|' after it, so now add another one:
+		builder.append( FlowsConstatns.DELIMITER		//we sepoarate the secretQ's and the constraints with '|'. the last secretQ comes with a single '|' after it, so now add another one:
 				+ passwordConstraints );
 
 		return builder.toString();
@@ -202,47 +189,32 @@ public class UserActionController
 	 */
 	@RequestMapping("/forgotPasswordPage")
 	protected View forgotPasswordPage(	
-			@RequestParam(EMAIL_PARAM_NAME) String email,
+			@RequestParam( FlowsConstatns.EMAIL_PARAM_NAME ) String email,
 			HttpServletRequest request) throws Exception
 	{
 		RedirectView rv = new RedirectView();
 
 //		request.setAttribute("email", email);
 		Map<String, String> attributes = new HashMap<String, String>();
-		attributes.put(EMAIL_PARAM_NAME,  email);		
-
-		if( email == null || email.isEmpty() )
+		attributes.put( FlowsConstatns.EMAIL_PARAM_NAME,  email );
+		
+		String serverPath = FlowsUtil.getServerPath(request);
+		try
 		{
-			//account has been locked/does not exist: notify user:
-			log.error( AuthenticationFlowsProcessorImpl.EMAIL_NOT_VALID );
+			flowsProcessor.handleForgotPassword(email, serverPath);
+		} 
+		catch (AuthenticationFlowsException afe)
+		{
+			log.error( afe.getMessage() );
 
-			attributes.put(FlowsConstatns.ERR_MSG,  AuthenticationFlowsProcessorImpl.EMAIL_NOT_VALID);		
-			attributes.put(FlowsConstatns.ERR_HEADER,  AuthenticationFlowsProcessorImpl.EMAIL_NOT_VALID);
+			attributes.put(FlowsConstatns.ERR_MSG,  afe.getMessage());		
+			attributes.put(FlowsConstatns.ERR_HEADER,  afe.getMessage());
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp");
 			return rv;
 		}
 		
-		
-		//if account is already locked, no need to ask the user the secret question:
-		AccountState accountState = flowsProcessor.getAccountState(email);
-		if( accountState != AccountState.OK )
-		{
-			//account has been locked/does not exist: notify user:
-			log.error(ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
-
-			attributes.put(FlowsConstatns.ERR_MSG,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);		
-			attributes.put(FlowsConstatns.ERR_HEADER,  ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
-			//adding attributes to the redirect return value:
-			rv.setAttributesMap(attributes);
-			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp");
-			return rv;
-		}
-
-		String path = FlowsUtil.getServerPath(request);
-
-		flowsProcessor.sendPasswordRestoreMail(email, path);
 
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
@@ -265,31 +237,14 @@ public class UserActionController
 	protected View setNewPassword( 
 			@RequestParam(FlowsConstatns.HASH_PARAM_NAME) String encUserAndTimestamp,
 			@RequestParam("password") String password,
-			@RequestParam(CONFIRM_PASSWORD_PARAM_NAME) String retypedPassword)
+			@RequestParam( FlowsConstatns.CONFIRM_PASSWORD_PARAM_NAME ) String retypedPassword)
 	{
 		RedirectView rv = new RedirectView();
 		Map<String, String> attributes = new HashMap<String, String>();
 
-		String email;
 		try
 		{
-			flowsProcessor.validateRetypedPassword(password, retypedPassword);
-
-			//validations: (using Fiddlr, hacker can hack this URL *AFTER* changing password to himself, and 
-			//renaming the user to someone else.
-			ImmutablePair<Date, String> stringAndDate = null;
-			stringAndDate = cryptoService.extractStringAndDate(encUserAndTimestamp);
-			
-			validateExpiration(stringAndDate.getLeft());
-
-			email = stringAndDate.getRight();
-
-			//after validations, make the work: validate password constraints, and update DB:
-
-			//validate the input:
-			AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
-
-			flowsProcessor.validatePassword(password, settings);
+			flowsProcessor.handleSetNewPassword(encUserAndTimestamp, password, retypedPassword);
 		}
 		catch(AuthenticationFlowsException afe)
 		{		
@@ -303,9 +258,9 @@ public class UserActionController
 		}
 		catch(CryptoException cryptoEx)
 		{
-			log.error( LINK_IS_INVALID + "; exception message: " + cryptoEx.getMessage() );
+			log.error( cryptoEx.getMessage() );
 
-			attributes.put(FlowsConstatns.ERR_MSG,  LINK_IS_INVALID + "; exception message: " + cryptoEx.getMessage() );		
+			attributes.put(FlowsConstatns.ERR_MSG,  cryptoEx.getMessage() );		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
@@ -313,12 +268,7 @@ public class UserActionController
 		}
 		
 
-		String encodedPassword = flowsProcessor.encodeString(email, password);
-
-		//use API to go to the DB and update the password, and activate the account:
-		flowsProcessor.setPassword(email, encodedPassword);
-
-		attributes.put(EMAIL_PARAM_NAME,  email);		
+		attributes.put(FlowsConstatns.EMAIL_PARAM_NAME,  "email");		
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
 		rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "passwordSetSuccess.jsp");
@@ -341,7 +291,7 @@ public class UserActionController
 	protected void changePassword( 
 								@RequestParam("currentPassword") String currentPassword,
 								@RequestParam("newPassword") String newPassword,
-								@RequestParam(CONFIRM_PASSWORD_PARAM_NAME) String retypedPassword,
+								@RequestParam( FlowsConstatns.CONFIRM_PASSWORD_PARAM_NAME ) String retypedPassword,
 								@RequestParam(FlowsConstatns.ENCRYPTED_USERNAME_PARAM_NAME) String encUser,
 								HttpServletResponse response) throws Exception
 	{
@@ -359,7 +309,7 @@ public class UserActionController
 //			rv.setAttributesMap(attributes);
 //			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
 //			return rv;
-			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + afe.getMessage());
+			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + afe.getMessage());
 			return;
 		}
 		
@@ -373,7 +323,7 @@ public class UserActionController
 		if( accountState != AccountState.OK )
 		{
 			//account has been locked: do not check the user's answer, but notify user:
-			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
+			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
 			return;
 		}
 
@@ -389,16 +339,16 @@ public class UserActionController
 			log.error( afe.getMessage() );
 
 			//UI will redirect back to createAccount page, with error message:
-			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + 
-					unescapeJaveAndEscapeHtml( afe.getMessage()) );
+			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
+					FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage()) );
 			return;
 		}
 		
 		
 		if(currentPassword.equals(newPassword))
 		{
-			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + 
-					unescapeJaveAndEscapeHtml( CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD ));
+			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
+					FlowsUtil.unescapeJaveAndEscapeHtml( CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD ));
 			return;
 			
 		}
@@ -415,7 +365,8 @@ public class UserActionController
 			log.error(errorText);
 			
 			//error - old password is incorrect; redirect back to same page (with the email as param):
-			writer.println(FlowsConstatns.ERR_MSG + DELIMITER + unescapeJaveAndEscapeHtml( PASSWORD_IS_INCORRECT ));
+			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
+					FlowsUtil.unescapeJaveAndEscapeHtml( PASSWORD_IS_INCORRECT ));
 
 			return;
 			
@@ -428,7 +379,7 @@ public class UserActionController
 	/**********************************************************************************************************/
 
 	
-	protected void isAccountLocked(@RequestParam(EMAIL_PARAM_NAME) String email, 
+	protected void isAccountLocked(@RequestParam( FlowsConstatns.EMAIL_PARAM_NAME ) String email, 
 			HttpServletResponse response) throws Exception
 	{
 		PrintWriter writer = response.getWriter();
@@ -442,22 +393,6 @@ public class UserActionController
 		}
 
 		//account has been locked: send email and redirect to notify user:
-		writer.println(FlowsConstatns.OK + DELIMITER + isLockedStr);
-	}
-
-	private static String unescapeJaveAndEscapeHtml(String input)
-	{
-		String tmp = StringEscapeUtils.unescapeJava( input );
-		return StringEscapeUtils.escapeHtml( tmp );
-	}
-
-
-	private void validateExpiration(Date linkCreationDate) throws AuthenticationFlowsException
-	{
-		boolean expired = (System.currentTimeMillis() - linkCreationDate.getTime()) > (properties.getLinksExpirationMinutes() * 1000 * 60L);
-		if( expired )
-		{
-			throw new AuthenticationFlowsException(LINK_HAS_EXPIRED);
-		}
+		writer.println(FlowsConstatns.OK + FlowsConstatns.DELIMITER + isLockedStr);
 	}
 }

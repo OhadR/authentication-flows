@@ -15,6 +15,10 @@ public abstract class FlowsConstatns
 	public static final String LOGIN_FORMS_DIR = "login";
 
 
+	public static final String EMAIL_PARAM_NAME = "email";
+	public static final String CONFIRM_PASSWORD_PARAM_NAME = "confirm_password";
+	public static final String DELIMITER = "|";
+
 	
 	public static final String ERR_MSG = "err_msg";
 	public static final String ERR_HEADER = "err_header";

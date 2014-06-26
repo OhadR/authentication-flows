@@ -2,6 +2,7 @@ package com.ohadr.auth_flows.core;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -65,6 +66,13 @@ public class FlowsUtil
 			path = StringUtils.substring(requestURL, 0, indexOf);
 		}
 		return path;
+	}
+
+	
+	public static String unescapeJaveAndEscapeHtml(String input)
+	{
+		String tmp = StringEscapeUtils.unescapeJava( input );
+		return StringEscapeUtils.escapeHtml( tmp );
 	}
 
 }
