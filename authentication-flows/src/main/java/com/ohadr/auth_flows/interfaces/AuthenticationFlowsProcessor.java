@@ -39,6 +39,11 @@ public interface AuthenticationFlowsProcessor
 	public void handleForgotPassword( String email, String serverPath ) 
 			throws AuthenticationFlowsException;
 	
+	public void handleSetNewPassword( 
+			String encUserAndTimestamp,
+			String password,
+			String retypedPassword) throws AuthenticationFlowsException;
+	
 	/**
 	 * 
 	 * @param username

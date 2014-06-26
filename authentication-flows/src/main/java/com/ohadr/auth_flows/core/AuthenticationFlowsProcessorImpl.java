@@ -60,7 +60,9 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			"Account creation has failed. These passwords don't match";
 	
 	private static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "Account is locked or does not exist";
-	
+
+	private static final String LINK_HAS_EXPIRED = "link has expired";
+
 
 	@Autowired
 	private AuthenticationAccountRepository repository;
@@ -244,6 +246,44 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 		sendPasswordRestoreMail(email, serverPath);
 	}
+	
+	
+	
+	public void handleSetNewPassword( 
+			String encUserAndTimestamp,
+			String password,
+			String retypedPassword) throws AuthenticationFlowsException
+	{
+		String email;
+
+		validateRetypedPassword(password, retypedPassword);
+
+		//validations: (using Fiddlr, hacker can hack this URL *AFTER* changing password to himself, and 
+		//renaming the user to someone else.
+		ImmutablePair<Date, String> stringAndDate = null;
+		stringAndDate = cryptoService.extractStringAndDate( encUserAndTimestamp );
+		
+		validateExpiration(stringAndDate.getLeft());
+
+		email = stringAndDate.getRight();
+
+		//after validations, make the work: validate password constraints, and update DB:
+
+		//validate the input:
+		AuthenticationPolicy settings = getAuthenticationSettings();
+
+		validatePassword(password, settings);
+
+		
+
+		String encodedPassword = encodeString(email, password);
+
+		// go to the DB and: (1) update the password, and (2) activate the account:
+		setPassword(email, encodedPassword);
+	}
+
+	
+	
 	
 	
 
@@ -556,4 +596,13 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		return encodedPassword;
 	}
 
+	private void validateExpiration(Date linkCreationDate) throws AuthenticationFlowsException
+	{
+		boolean expired = (System.currentTimeMillis() - linkCreationDate.getTime()) > (properties.getLinksExpirationMinutes() * 1000 * 60L);
+		if( expired )
+		{
+			throw new AuthenticationFlowsException( LINK_HAS_EXPIRED );
+		}
+	}
+	
 }
