@@ -124,7 +124,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		createAccountEndpoint.additionalValidations( email, password );
 		
 		//TODO: let flowsProcessor.internalCreateAccount() throw exception if unsuccessful, instead of returning pair ...
-		Pair<String, String> retVal = internalCreateAccount(email, encodedPassword, path);	
+		Pair<String, String> retVal = internalCreateAccount(email, encodedPassword, 
+				firstName, lastName, path);	
     	if( ! retVal.getLeft().equals(FlowsConstatns.OK))
     	{
 			String errorText = retVal.getRight();
@@ -145,6 +146,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	 * 
 	 * @param email
 	 * @param encodedPassword
+	 * @param firstName TODO
+	 * @param lastName TODO
 	 * @param secretQuestion
 	 * @param encodedAnswer
 	 * @return pair of strings. left is the status OK | ERROR, right is the message
@@ -153,6 +156,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	private Pair<String, String> internalCreateAccount(
 			String email,
 			String encodedPassword, 
+			String firstName, 
+			String lastName, 
 			String serverPath
 			)
 	{
