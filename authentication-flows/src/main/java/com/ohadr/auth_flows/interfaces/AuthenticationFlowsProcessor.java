@@ -2,8 +2,6 @@ package com.ohadr.auth_flows.interfaces;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.web.AuthenticationFlowsException;
@@ -20,6 +18,8 @@ public interface AuthenticationFlowsProcessor
 	 * @param email
 	 * @param password
 	 * @param retypedPassword
+	 * @param firstName TODO
+	 * @param lastName TODO
 	 * @param path: the server-path. used for building the link in the email
 	 * @throws AuthenticationFlowsException
 	 */
@@ -27,6 +27,8 @@ public interface AuthenticationFlowsProcessor
 			String email,
 			String password,
 			String retypedPassword,
+			String firstName, 
+			String lastName, 
 			String path) throws AuthenticationFlowsException;
 
 
@@ -43,6 +45,23 @@ public interface AuthenticationFlowsProcessor
 			String encUserAndTimestamp,
 			String password,
 			String retypedPassword) throws AuthenticationFlowsException;
+	
+
+	/**
+	 * changes the user password. user must be logged in when he calls this method. 
+	 * from security reasons, user must provide with the old password.
+	 * @param currentPassword
+	 * @param newPassword
+	 * @param retypedPassword
+	 * @param encUser
+	 * @throws AuthenticationFlowsException
+	 */
+	public void handleChangePassword( 
+			String currentPassword,
+			String newPassword,
+			String retypedPassword,
+			String encUser) throws AuthenticationFlowsException;
+
 	
 	/**
 	 * 
@@ -69,16 +88,6 @@ public interface AuthenticationFlowsProcessor
 	Date getPasswordLastChangeDate(String email);
 
 
-	/**
-	 * 
-	 * @param email
-	 * @param encodedCurrentPassword
-	 * @param encodedNewPassword
-	 * @return pair of strings. left is the status OK | ERROR, right is the message
-	 */
-	public Pair<String, String> changePassword(String email, String encodedCurrentPassword,
-			String newEncodedPassword);
-
 	public void setEnabled(String userEmail);
 
 	/**
@@ -93,7 +102,5 @@ public interface AuthenticationFlowsProcessor
 			AuthenticationPolicy settings) throws AuthenticationFlowsException;
 	
 	public void validateRetypedPassword(String password, String retypedPassword) throws AuthenticationFlowsException;
-
-	public String encodeString(String salt, String rawPass); 
 
 }

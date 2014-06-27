@@ -32,6 +32,8 @@ public class UserActionRestController
 			@RequestParam( FlowsConstatns.EMAIL_PARAM_NAME ) String email,
 			@RequestParam("password") String password,
 			@RequestParam( FlowsConstatns.CONFIRM_PASSWORD_PARAM_NAME ) String retypedPassword,
+			@RequestParam( value = "firstName", required = false ) String firstName,
+			@RequestParam( value = "lastName", required = false ) String lastName,
 			HttpServletRequest request,
 			HttpServletResponse response) throws IOException
 	{
@@ -42,7 +44,9 @@ public class UserActionRestController
 		try
 		{
 			flowsProcessor.createAccount(
-					email, password, retypedPassword, path);
+					email, password, retypedPassword, 
+					firstName, lastName, 
+					path);
 		} 
 		catch (AuthenticationFlowsException afe)
 		{

@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,23 +28,14 @@ import com.ohadr.auth_flows.types.FlowsConstatns;
 @Controller
 public class UserActionController
 {
-
 	public static final String PASSWORD_IS_INCORRECT = "password is incorrect";
-	public static final String USER_DOES_NOT_EXIST = "user does not exist";
-//	public static final String BAD_EMAIL_PARAM = "Bad email param";
 
-	public static final String CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD = "CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD";
-	public static final String SECRET_ANSWER_CANNOT_CONTAIN_THE_PASSWORD_AND_VICE_VERSA = "Secret Answer cannot contain the password, and vice versa.";
 	public static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "Account is locked or does not exist";
 	
-	public static final String AN_EMAIL_WAS_SENT_TO_THE_GIVEN_ADDRESS_CLICK_ON_THE_LINK_THERE = "an email was sent to the given address. click on the link there";
-
-	
 
 
 
-
-	private static Logger log = Logger.getLogger(UserActionController.class);
+	private static Logger log = Logger.getLogger( UserActionController.class );
 	
 	@Autowired
 	private AuthFlowsProperties properties;
@@ -93,6 +83,8 @@ public class UserActionController
 //			@RequestParam("secretQuestion") String secretQuestion,						NOT IMPLEMENTED
 //			@RequestParam("secretQuestionAnswer") String secretQuestionAnswer,			NOT IMPLEMENTED
 //			@RequestParam(FlowsConstatns.REDIRECT_URI_PARAM_NAME) String redirectUri,	NOT IMPLEMENTED
+			@RequestParam( value = "firstName", required = false ) String firstName,
+			@RequestParam( value = "lastName", required = false ) String lastName,
 			HttpServletRequest request,
 			HttpServletResponse response) throws IOException
 	{
@@ -110,7 +102,9 @@ public class UserActionController
 		try
 		{
 			flowsProcessor.createAccount(
-					email, password, retypedPassword, path);
+					email, password, retypedPassword, 
+					firstName, lastName, 
+					path);
 		} 
 		catch (AuthenticationFlowsException afe)
 		{
@@ -300,7 +294,7 @@ public class UserActionController
 
 		try
 		{
-			flowsProcessor.validateRetypedPassword(newPassword, retypedPassword);
+			flowsProcessor.handleChangePassword(currentPassword, newPassword, retypedPassword, encUser);
 		}
 		catch (AuthenticationFlowsException afe)
 		{
@@ -309,72 +303,17 @@ public class UserActionController
 //			rv.setAttributesMap(attributes);
 //			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "setNewPassword.jsp");
 //			return rv;
-			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + afe.getMessage());
-			return;
-		}
-		
-
-		String email = cryptoService.extractString(encUser);
-		
-
-		// we need to check is account locked?! (for hackers...)
-		//if account is already locked, no need to ask the user the secret question:
-		AccountState accountState = flowsProcessor.getAccountState(email);
-		if( accountState != AccountState.OK )
-		{
-			//account has been locked: do not check the user's answer, but notify user:
-			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + ACCOUNT_LOCKED_OR_DOES_NOT_EXIST);
-			return;
-		}
-
-		//validate the input:
-		AuthenticationPolicy settings = flowsProcessor.getAuthenticationSettings();
-
-		try
-		{
-			flowsProcessor.validatePassword(newPassword, settings);
-		}
-		catch(AuthenticationFlowsException afe)
-		{
 			log.error( afe.getMessage() );
 
 			//UI will redirect back to createAccount page, with error message:
 			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
 					FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage()) );
-			return;
-		}
-		
-		
-		if(currentPassword.equals(newPassword))
-		{
-			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
-					FlowsUtil.unescapeJaveAndEscapeHtml( CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD ));
-			return;
-			
-		}
-		
-		String encodedCurrentPassword = flowsProcessor.encodeString(email, currentPassword);
-		String encodedNewPassword = flowsProcessor.encodeString(email, newPassword);
-
-		//use API to go to the DB, validate current pswd and update the new one, and activate the account:
-		Pair<String, String> retVal = flowsProcessor.changePassword(email, encodedCurrentPassword, encodedNewPassword);
-		if( ! retVal.getLeft().equals(FlowsConstatns.OK))
-		{
-			String errorText = retVal.getRight();
-
-			log.error(errorText);
-			
-			//error - old password is incorrect; redirect back to same page (with the email as param):
-			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
-					FlowsUtil.unescapeJaveAndEscapeHtml( PASSWORD_IS_INCORRECT ));
 
 			return;
-			
 		}
-		
+
 
 		writer.println(FlowsConstatns.OK);
-
 	}
 	/**********************************************************************************************************/
 

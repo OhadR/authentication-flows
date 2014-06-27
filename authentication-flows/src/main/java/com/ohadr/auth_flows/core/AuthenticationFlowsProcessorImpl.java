@@ -63,6 +63,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 	private static final String LINK_HAS_EXPIRED = "link has expired";
 
+	private static final String CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD = "CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD";
+
 
 	@Autowired
 	private AuthenticationAccountRepository repository;
@@ -96,10 +98,13 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 
 
+	@Override
 	public void createAccount(
 			String email,
 			String password,
 			String retypedPassword,
+			String firstName, 
+			String lastName, 
 			String path) throws AuthenticationFlowsException
 	{
 		//validate the input:
@@ -232,6 +237,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	}
 	
 	
+	@Override
 	public void handleForgotPassword( String email, String serverPath ) 
 			throws AuthenticationFlowsException
 	{
@@ -249,6 +255,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	
 	
 	
+	@Override
 	public void handleSetNewPassword( 
 			String encUserAndTimestamp,
 			String password,
@@ -282,6 +289,50 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		setPassword(email, encodedPassword);
 	}
 
+	
+	
+	@Override
+	public void handleChangePassword( 
+			String currentPassword,
+			String newPassword,
+			String retypedPassword,
+			String encUser) throws AuthenticationFlowsException
+	{
+		validateRetypedPassword(newPassword, retypedPassword);
+		
+		String email = cryptoService.extractString(encUser);
+		
+		
+		// we need to check is account locked?! (for hackers...)
+		//if account is already locked, no need to ask the user the secret question:
+		AccountState accountState = getAccountState(email);
+		if( accountState != AccountState.OK )
+		{
+			throw new AuthenticationFlowsException( ACCOUNT_LOCKED_OR_DOES_NOT_EXIST );
+		}
+		
+		//validate the input:
+		AuthenticationPolicy settings = getAuthenticationSettings();
+		
+		validatePassword(newPassword, settings);
+		
+		
+		if( currentPassword.equals(newPassword) )
+		{
+			throw new AuthenticationFlowsException( CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD );
+		}
+		
+		String encodedCurrentPassword = encodeString(email, currentPassword);
+		String encodedNewPassword = encodeString(email, newPassword);
+		
+		//use API to go to the DB, validate current pswd and update the new one, and activate the account:
+		Pair<String, String> retVal = invokeChangePassword(email, encodedCurrentPassword, encodedNewPassword);
+		if( ! retVal.getLeft().equals(FlowsConstatns.OK))
+		{
+			String errorText = retVal.getRight();
+			throw new AuthenticationFlowsException( errorText );
+		}
+	}
 	
 	
 	
@@ -420,8 +471,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	}
 	
 
-	@Override
-	public Pair<String, String> changePassword(String username,
+	private Pair<String, String> invokeChangePassword(String username,
 			String encodedCurrentPassword, String newEncodedPassword)
 	{
 		log.info("changing password for user " + username);
@@ -589,7 +639,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		}
 	}
 
-	public String encodeString(String salt, String rawPass) 
+	private String encodeString(String salt, String rawPass) 
 	{
 		//encoding the password:
         String encodedPassword = passwordEncoder.encodePassword(rawPass, salt);	//the email is the salt

@@ -49,7 +49,9 @@ x-www-form-urlencoded
 POST /createAccount HTTP/1.1
 	email=<email>, 
 	password=<password>,
-	confirm_password=<confirm_password>
+	confirm_password=<confirm_password>,
+	firstName=<firstName>,     //optional
+	lastName=<lastName>        //optional
 ```
 * if successful, redirects user-agent to "accountCreatedSuccess.jsp", with return code of 301.
 * if failed, redirects back to the same page (createAccount.jsp), with return code of 301.
@@ -59,7 +61,9 @@ x-www-form-urlencoded
 POST /rest/createAccount HTTP/1.1
 	email=<email>, 
 	password=<password>,
-	confirm_password=<confirm_password>
+	confirm_password=<confirm_password>,
+	firstName=<firstName>,     //optional
+	lastName=<lastName>        //optional
 ```
 * if successful, returns code 201 (Created).
 * if failed, returns 400 (Bad request).
