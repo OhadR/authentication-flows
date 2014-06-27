@@ -18,9 +18,9 @@ public interface AuthenticationFlowsProcessor
 	 * @param email
 	 * @param password
 	 * @param retypedPassword
-	 * @param firstName TODO
-	 * @param lastName TODO
-	 * @param path: the server-path. used for building the link in the email
+	 * @param firstName: first name of the registered user.
+	 * @param lastName: second (last) name of the registered user.
+	 * @param path: the server-path. used for building the link in the email.
 	 * @throws AuthenticationFlowsException
 	 */
 	public void createAccount(
