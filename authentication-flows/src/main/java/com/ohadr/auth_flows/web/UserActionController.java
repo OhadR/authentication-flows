@@ -18,7 +18,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
-import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
@@ -37,9 +36,6 @@ public class UserActionController
 
 	private static Logger log = Logger.getLogger( UserActionController.class );
 	
-	@Autowired
-	private AuthFlowsProperties properties;
-
 	@Autowired
 	private CryptoService cryptoService;
 	

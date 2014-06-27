@@ -2,11 +2,9 @@ package com.ohadr.auth_flows.interfaces;
 
 import java.util.Date;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.UserDetailsManager;
 
 import com.ohadr.auth_flows.types.AccountState;
-import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
 
 public interface AuthenticationAccountRepository extends UserDetailsManager
