@@ -24,6 +24,8 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 	private static final String LOGIN_ATTEMPTS_LEFT_PROP_NAME = "loginAttemptsLeft";
 	private static final String ENABLED_PROP_NAME = "enabled";
 	private static final String LAST_PSWD_CHANGE_DATE_PROP_NAME = "lastPasswordChangeDate";
+	private static final String FIRST_NAME_PROP_NAME = "firstName";
+	private static final String LAST_NAME_PROP_NAME = "lastName";
 	private static final String AUTHORITIES_PROP_NAME = "authorities";
 
 	private static final String AUTH_FLOWS_USER_DB_KIND = "authentication-flows-user";
@@ -68,6 +70,10 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 		dbUser.setProperty(ENABLED_PROP_NAME, user.isEnabled());
 		dbUser.setProperty(LOGIN_ATTEMPTS_LEFT_PROP_NAME, authUser.getLoginAttemptsLeft());
 		dbUser.setProperty(LAST_PSWD_CHANGE_DATE_PROP_NAME, new Date( System.currentTimeMillis()) );
+
+		dbUser.setProperty( FIRST_NAME_PROP_NAME, authUser.getFirstName() );
+		dbUser.setProperty( LAST_NAME_PROP_NAME, authUser.getLastName() );
+
 		dbUser.setProperty(AUTHORITIES_PROP_NAME, "ROLE_USER" );
 
 		datastore.put(dbUser);	
@@ -136,6 +142,8 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 
 		String roleName = (String)entity.getProperty(AUTHORITIES_PROP_NAME);
 		GrantedAuthority userAuth = new SimpleGrantedAuthority(roleName);
+		String firstName = (String)entity.getProperty(FIRST_NAME_PROP_NAME);
+		String lastName = (String)entity.getProperty(LAST_NAME_PROP_NAME);
 		Collection<GrantedAuthority>  authSet = new HashSet<GrantedAuthority>();
 		authSet.add(userAuth);
 		
@@ -145,6 +153,8 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 						isEnabled,
 						loginAttemptsLeft,
 						(Date)entity.getProperty(LAST_PSWD_CHANGE_DATE_PROP_NAME),
+						firstName,
+						lastName,
 						authSet);
 		
 	}

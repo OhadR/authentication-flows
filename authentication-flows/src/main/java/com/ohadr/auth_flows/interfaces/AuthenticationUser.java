@@ -17,4 +17,7 @@ public interface AuthenticationUser extends UserDetails
 	public int getLoginAttemptsLeft();
 
 	public Date getPasswordLastChangeDate();
+	
+	public String getFirstName();
+	public String getLastName();
 }

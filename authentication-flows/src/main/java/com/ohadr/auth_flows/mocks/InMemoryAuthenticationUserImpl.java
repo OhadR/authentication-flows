@@ -6,14 +6,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.Assert;
 
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
@@ -25,6 +23,8 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 	private boolean 	activated;
 	private Date 		passwordLastChangeDate;
 	private int 		loginAttemptsLeft;
+	private String 		firstName; 
+	private String 		lastName;
     private final Set<GrantedAuthority> authorities;
 
 	
@@ -34,6 +34,8 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 			boolean activated,
 			int	loginAttemptsLeft,
 			Date passwordLastChangeDate,
+			String firstName, 
+			String lastName, 
 			Collection<? extends GrantedAuthority> authorities)
 	{
 		this.email = username;
@@ -41,6 +43,8 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
 		this.activated = activated;
 		this.loginAttemptsLeft = loginAttemptsLeft;
 		this.passwordLastChangeDate = passwordLastChangeDate;
+		this.firstName = firstName;
+		this.lastName = lastName;
         this.authorities = Collections.unmodifiableSet(sortAuthorities(authorities));
 	}
 
@@ -165,5 +169,17 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
             return g1.getAuthority().compareTo(g2.getAuthority());
         }
     }
+
+	@Override
+	public String getFirstName()
+	{
+		return firstName;
+	}
+
+	@Override
+	public String getLastName()
+	{
+		return lastName;
+	}
 
 }
