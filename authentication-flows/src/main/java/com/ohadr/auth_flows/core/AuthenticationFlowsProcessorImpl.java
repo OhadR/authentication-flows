@@ -103,7 +103,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			String email,
 			String password,
 			String retypedPassword,
-			String firstName, 
+            String firstName, 
 			String lastName, 
 			String path) throws AuthenticationFlowsException
 	{
@@ -197,6 +197,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 					false,									//start as de-activated
 					properties.getMaxAttempts(),
 					null,					//set by the repo-impl
+					firstName,
+					lastName,
 					authorities);			
 
 			repository.createUser(user);

@@ -3,11 +3,8 @@ package com.ohadr.auth_flows.core.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -21,19 +18,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.util.Assert;
 
 import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 import com.ohadr.auth_flows.mocks.InMemoryAuthenticationUserImpl;
-import com.ohadr.auth_flows.types.AccountState;
-import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
 
 public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticationAccountRepository
@@ -151,7 +142,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	{
 		public AuthenticationUser mapRow(ResultSet rs, int rowNum) throws SQLException 
 		{
-			String roleName = rs.getString(6);			//column 6 : authorities
+			String roleName = rs.getString(8);			//column 8 : authorities
 			GrantedAuthority userAuth = new SimpleGrantedAuthority(roleName);
 			Set<GrantedAuthority> authSet = new HashSet<GrantedAuthority>();
 			authSet.add(userAuth);
@@ -162,6 +153,8 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 					rs.getBoolean(3),		//activated?
 					rs.getInt(4),			//attempts left
 					rs.getDate(5),			//PasswordLastChangeDate
+					rs.getString(6),		//firstName
+					rs.getString(7),		//lastName
 					authSet					//authorities
 					);
 			

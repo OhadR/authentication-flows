@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.ohadr.auth_flows.core.AbstractAuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
-import com.ohadr.auth_flows.types.AccountState;
-import com.ohadr.auth_flows.types.AuthenticationPolicy;
 
 
 //@Component
@@ -44,6 +42,8 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 				false,
 				authUser.getLoginAttemptsLeft(),
 				new Date(System.currentTimeMillis()),
+				authUser.getFirstName(),
+				authUser.getLastName(),
 				user.getAuthorities());
 		
 		if( loadUserByUsername( newUser.getUsername() ) != null )
@@ -78,6 +78,8 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 			AuthenticationUser newUser = new InMemoryAuthenticationUserImpl(
 					username, newEncodedPassword, true, storedUser.getLoginAttemptsLeft(),
 					new Date(System.currentTimeMillis()),
+					storedUser.getFirstName(),
+					storedUser.getLastName(),
 					storedUser.getAuthorities());
 
 			//delete old user and set a new one, since iface does not support "setPassword()":
@@ -112,6 +114,8 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 					flag,
 					storedUser.getLoginAttemptsLeft(),
 					storedUser.getPasswordLastChangeDate(),
+					storedUser.getFirstName(),
+					storedUser.getLastName(),
 					storedUser.getAuthorities());
 
 			//delete old user and set a new one, since iface does not support "setPassword()":
@@ -134,6 +138,8 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 					storedUser.isEnabled(),
 					storedUser.getLoginAttemptsLeft(),
 					storedUser.getPasswordLastChangeDate(),
+					storedUser.getFirstName(),
+					storedUser.getLastName(),
 					storedUser.getAuthorities());
 			
 			//delete old user and set a new one, since iface does not support "setPassword()":
