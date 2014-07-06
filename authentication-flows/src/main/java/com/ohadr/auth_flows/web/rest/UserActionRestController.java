@@ -37,6 +37,10 @@ public class UserActionRestController
 			HttpServletRequest request,
 			HttpServletResponse response) throws IOException
 	{
+		log.debug( "/rest/createAccount: email=" + email +
+				", firstName=" + firstName + 
+				", lastName=" + lastName
+				);
 		PrintWriter writer = response.getWriter();
 
 		String path = FlowsUtil.getServerPath(request);
