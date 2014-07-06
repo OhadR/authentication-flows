@@ -56,8 +56,7 @@ public class UserActionRestController
 		{
 			log.error( afe.getMessage() );
 			
-			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
-					FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage() ) );
+			writer.println(	FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage() ) );
 
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -87,8 +86,7 @@ public class UserActionRestController
 		{
 			log.error( afe.getMessage() );
 
-			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
-					FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage() ) );
+			writer.println( FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage() ) );
 
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -115,8 +113,7 @@ public class UserActionRestController
 		{		
 			log.error( afe.getMessage() );
 
-			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
-					FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage() ) );
+			writer.println( FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage() ) );
 
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -125,8 +122,7 @@ public class UserActionRestController
 		{
 			log.error( cryptoEx.getMessage() );
 
-			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
-					FlowsUtil.unescapeJaveAndEscapeHtml( cryptoEx.getMessage() ) );
+			writer.println( FlowsUtil.unescapeJaveAndEscapeHtml( cryptoEx.getMessage() ) );
 
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
