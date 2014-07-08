@@ -140,12 +140,15 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 			loginAttemptsLeft = new Integer(loginAttemptsLeftObj.toString());
 		}
 
-		String roleName = (String)entity.getProperty(AUTHORITIES_PROP_NAME);
-		GrantedAuthority userAuth = new SimpleGrantedAuthority(roleName);
 		String firstName = (String)entity.getProperty(FIRST_NAME_PROP_NAME);
 		String lastName = (String)entity.getProperty(LAST_NAME_PROP_NAME);
+
+		String roleName = (String)entity.getProperty(AUTHORITIES_PROP_NAME);
+		GrantedAuthority userAuth = new SimpleGrantedAuthority(roleName);
 		Collection<GrantedAuthority>  authSet = new HashSet<GrantedAuthority>();
 		authSet.add(userAuth);
+		
+		log.debug( "$$$$$ user " + username + ", authSet= " + authSet );
 		
 		return new InMemoryAuthenticationUserImpl(
 						username, 
@@ -221,6 +224,26 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 		entity.setProperty(LAST_PSWD_CHANGE_DATE_PROP_NAME, new Date( System.currentTimeMillis()));
 		entity.setProperty(PASSWORD_PROP_NAME, newEncodedPassword);
 		datastore.put(entity);	
+	}
+
+	@Override
+	public void setAuthority(String username, String authority)
+	{
+		Key userKey = KeyFactory.createKey(AUTH_FLOWS_USER_DB_KIND, username);
+		Entity entity;
+		try 
+		{
+			entity = datastore.get(userKey);
+			log.debug("got entity of " + username + ": " + entity);
+		} 
+		catch (EntityNotFoundException e) 
+		{
+			log.error("entity of " + username + " not found");
+			throw new NoSuchElementException(e.getMessage());
+		}
+		
+		entity.setProperty(AUTHORITIES_PROP_NAME, authority );
+		datastore.put( entity );	
 	}
 
 }

@@ -1,10 +1,14 @@
 package com.ohadr.auth_flows.mocks;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.springframework.security.acls.model.AlreadyExistsException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -163,6 +167,34 @@ public class InMemoryAuthenticationAccountRepositoryImpl extends AbstractAuthent
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+
+	@Override
+	public void setAuthority( String username, String authority )
+	{
+		AuthenticationUser storedUser =  loadUserByUsername( username );
+		if( storedUser != null )
+		{
+			GrantedAuthority userAuth = new SimpleGrantedAuthority( authority );
+			Collection<GrantedAuthority> authSet = new HashSet<GrantedAuthority>();
+			authSet.add(userAuth);
+			
+			AuthenticationUser newUser = new InMemoryAuthenticationUserImpl(
+					username, 
+					storedUser.getPassword(), 
+					storedUser.isEnabled(),
+					storedUser.getLoginAttemptsLeft(),
+					storedUser.getPasswordLastChangeDate(),
+					storedUser.getFirstName(),
+					storedUser.getLastName(),
+					authSet );
+
+			//delete old user and set a new one, since iface does not support "setPassword()":
+			deleteUser(username);
+			users.put(username, newUser);
+		}
 	}
 
 }

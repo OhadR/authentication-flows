@@ -33,6 +33,8 @@ public interface AuthenticationAccountRepository extends UserDetailsManager
 	
 	String getEncodedPassword(String username);
 	Date getPasswordLastChangeDate(String email);
+	
+	void setAuthority(String username, String authority);
 
 	/**
 	 * NOT IMPLEMENTED

@@ -56,7 +56,10 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 	private static final String DEFAULT_UPDATE_ATTEMPTS_CNTR_STATEMENT = "update " + TABLE_NAME +
 			" set LOGIN_ATTEMPTS_COUNTER = ? where USERNAME = ?";
-	
+
+	private static final String DEFAULT_UPDATE_AUTHORITY_STATEMENT = "update " + TABLE_NAME + 
+			" set authorities = ? where USERNAME = ?";
+
 	
 	@Autowired
 	private DataSource dataSource;
@@ -215,6 +218,17 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	@Override
+	public void setAuthority(String username, String authority)
+	{
+		int count = jdbcTemplate.update( DEFAULT_UPDATE_AUTHORITY_STATEMENT, authority, username);
+		if ( count != 1 )
+		{
+			throw new NoSuchElementException("No user with email: " + username);
+		}
 	}
 
 }
