@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
-import com.ohadr.auth_flows.types.FlowsConstatns;
-import com.ohadr.auth_flows.web.AuthenticationFlowsException;
+import com.ohadr.auth_flows.types.*;
 import com.ohadr.crypto.exception.CryptoException;
 
 @Controller

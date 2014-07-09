@@ -1,5 +1,7 @@
 package com.ohadr.auth_flows.web;
 
+import com.ohadr.auth_flows.types.AuthenticationFlowsException;
+
 
 /**
  * this class let applications override this impl and add their custom functionality

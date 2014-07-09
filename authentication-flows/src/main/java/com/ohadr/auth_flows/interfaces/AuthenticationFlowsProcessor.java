@@ -3,8 +3,8 @@ package com.ohadr.auth_flows.interfaces;
 import java.util.Date;
 
 import com.ohadr.auth_flows.types.AccountState;
+import com.ohadr.auth_flows.types.AuthenticationFlowsException;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
-import com.ohadr.auth_flows.web.AuthenticationFlowsException;
 
 
 /**

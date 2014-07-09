@@ -20,6 +20,7 @@ import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
+import com.ohadr.auth_flows.types.AuthenticationFlowsException;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.FlowsConstatns;

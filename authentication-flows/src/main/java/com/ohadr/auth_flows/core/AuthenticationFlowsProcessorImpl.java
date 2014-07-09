@@ -34,9 +34,9 @@ import com.ohadr.auth_flows.interfaces.AuthenticationPolicyRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationUser;
 import com.ohadr.auth_flows.mocks.InMemoryAuthenticationUserImpl;
 import com.ohadr.auth_flows.types.AccountState;
+import com.ohadr.auth_flows.types.AuthenticationFlowsException;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.FlowsConstatns;
-import com.ohadr.auth_flows.web.AuthenticationFlowsException;
 import com.ohadr.auth_flows.web.CreateAccountEndpoint;
 import com.ohadr.crypto.service.CryptoService;
 
