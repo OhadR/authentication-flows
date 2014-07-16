@@ -16,6 +16,8 @@ public class AuthFlowsProperties
 	@Value("${com.ohadr.auth-flows.maxAttempts}")
 	private int maxAttempts;
 	
+	@Value("${com.ohadr.auth-flows.isREST}")
+	private boolean isREST;
 	
 	
 	public int getLinksExpirationMinutes()
@@ -31,6 +33,11 @@ public class AuthFlowsProperties
 	public int getMaxAttempts()
 	{
 		return maxAttempts;
+	}
+
+	public boolean isREST() 
+	{
+		return isREST;
 	}
 
 }
