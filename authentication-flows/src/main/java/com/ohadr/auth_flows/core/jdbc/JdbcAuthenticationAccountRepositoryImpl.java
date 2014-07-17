@@ -34,9 +34,13 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 
 	private static final String TABLE_NAME = "users";
 
-	private static final String AUTHENTICATION_USER_FIELDS = "USERNAME, password, enabled, "
-			+ "LOGIN_ATTEMPTS_COUNTER,"
-			+ "LAST_PSWD_CHANGE_DATE,"
+	private static final String AUTHENTICATION_USER_FIELDS = "USERNAME, "
+			+ "password, "
+			+ "enabled, "
+			+ "LOGIN_ATTEMPTS_COUNTER, "
+			+ "LAST_PSWD_CHANGE_DATE, "
+			+ "FIRSTNAME, "
+			+ "LASTNAME, "
 			+ "authorities";
 
 	private static final String DEFAULT_USER_INSERT_STATEMENT = "insert into " + TABLE_NAME + "(" + AUTHENTICATION_USER_FIELDS
