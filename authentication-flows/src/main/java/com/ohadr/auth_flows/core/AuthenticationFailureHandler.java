@@ -13,16 +13,36 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Service;
 
+import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.FlowsConstatns;
 
-// nice and intersting reference: 
-// https://code.google.com/p/springas-train-example/source/browse/trunk/serverIntegration/server/common/src/main/java/cn/com/oceansoft/flex4/server/common/interceptor/CustomAuthenticationFailureHandler.java?r=73&spec=svn73
 
+/**
+ * nice and intersting reference:
+ * https://code.google.com/p/springas-train-example/source/browse/trunk/serverIntegration/server/common/src/main/java/cn/com/oceansoft/flex4/server/common/interceptor/CustomAuthenticationFailureHandler.java?r=73&spec=svn73
+ * 
+ * this class is good for REST as well, since if no "redirect-uri" is defined, the parent class 
+ * (SimpleUrlAuthenticationFailureHandler) does not redirect, but sends 401 instead.
+ * However, if account is locked, i have a special treatment here, that DOES redirect. and this is a bug (#43). So
+ * there is a need in a flag that indicates whether this is REST call, and if it is, when account is locked, instead of 
+ * redirection it will return 423 (LOCKED).
+ * 
+ * @author OhadR
+ *
+ */
 public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 {
-	public AuthenticationFailureHandler()
+	@Autowired
+	private AuthFlowsProperties properties;
+
+	/**
+     * Status code (423) indicating that the resource that is being accessed is locked
+     */
+    public static final int SC_LOCKED = 423;
+
+    public AuthenticationFailureHandler()
 	{
 		super();
 	}
@@ -71,8 +91,15 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
 			String path = FlowsUtil.getServerPath(request);
 		    processor.sendUnlockAccountMail(username, path);
 		    
-		    //redirect the user to "account has been locked" page:
-		    getRedirectStrategy().sendRedirect(request, response, accountLockedUrl);
+		    if( properties.isREST() )
+		    {
+	            response.sendError( SC_LOCKED, "Locked" );
+		    }
+		    else
+		    {
+			    //redirect the user to "account has been locked" page:
+			    getRedirectStrategy().sendRedirect(request, response, accountLockedUrl);
+		    }
 		}
 	    else
 	    {
