@@ -28,6 +28,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.util.Assert;
 
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
+import com.ohadr.auth_flows.endpoints.CreateAccountEndpoint;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.interfaces.AuthenticationPolicyRepository;
@@ -37,7 +38,6 @@ import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationFlowsException;
 import com.ohadr.auth_flows.types.AuthenticationPolicy;
 import com.ohadr.auth_flows.types.FlowsConstatns;
-import com.ohadr.auth_flows.web.CreateAccountEndpoint;
 import com.ohadr.crypto.service.CryptoService;
 
 @Component

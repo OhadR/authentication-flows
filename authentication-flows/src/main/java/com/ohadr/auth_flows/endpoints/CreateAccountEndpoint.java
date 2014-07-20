@@ -1,4 +1,4 @@
-package com.ohadr.auth_flows.web;
+package com.ohadr.auth_flows.endpoints;
 
 import com.ohadr.auth_flows.types.AuthenticationFlowsException;
 
