@@ -17,4 +17,9 @@ public class CreateAccountEndpoint
 	public void additionalValidations(String email, String password) throws AuthenticationFlowsException 
 	{
 	}
+	
+	public void postCreateAccount()
+	{
+	}
+	
 }
