@@ -195,7 +195,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			AuthenticationUser user = new InMemoryAuthenticationUserImpl(
 					email, encodedPassword, 
 					false,									//start as de-activated
-					properties.getMaxAttempts(),
+					policyRepo.getDefaultAuthenticationPolicy().getMaxPasswordEntryAttempts(),
 					null,					//set by the repo-impl
 					firstName,
 					lastName,
@@ -359,7 +359,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	public boolean setLoginSuccessForUser(String username) 
 	{
 		log.debug("setting login success for user " + username);
-		repository.setAttemptsLeft(username, properties.getMaxAttempts());
+		repository.setAttemptsLeft( username,
+				policyRepo.getDefaultAuthenticationPolicy().getMaxPasswordEntryAttempts() );
 		
 		return isPasswordChangeRequired(username);		
 	}
