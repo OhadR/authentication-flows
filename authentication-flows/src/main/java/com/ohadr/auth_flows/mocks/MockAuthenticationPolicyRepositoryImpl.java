@@ -10,7 +10,7 @@ public class MockAuthenticationPolicyRepositoryImpl implements
 	private static final int setPasswordMinLength = 1;
 	private static final int setPasswordMaxLength = 8;
 	private static final int setRememberMeTokenValidityInDays = 30;
-	private static final int passwordLifeInDays = 5;
+	private static final int passwordLifeInDays = 30;
 
 	@Override
 	public AuthenticationPolicy getDefaultAuthenticationPolicy() 
