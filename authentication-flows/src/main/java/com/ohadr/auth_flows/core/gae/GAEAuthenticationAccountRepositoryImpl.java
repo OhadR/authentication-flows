@@ -28,7 +28,7 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 	private static final String LAST_NAME_PROP_NAME = "lastName";
 	private static final String AUTHORITIES_PROP_NAME = "authorities";
 
-	private static final String AUTH_FLOWS_USER_DB_KIND = "authentication-flows-user";
+	public static final String AUTH_FLOWS_USER_DB_KIND = "authentication-flows-user";
 
 
 	private static Logger log = Logger.getLogger(GAEAuthenticationAccountRepositoryImpl.class);

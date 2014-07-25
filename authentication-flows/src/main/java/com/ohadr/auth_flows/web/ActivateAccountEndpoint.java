@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,15 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
+import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.types.FlowsConstatns;
-import com.ohadr.auth_flows.web.FlowsEndpointsCommon.EmailExtractedData;
 import com.ohadr.crypto.exception.CryptoException;
 
 @Controller
 @RequestMapping(value = "/aa")
 public class ActivateAccountEndpoint extends FlowsEndpointsCommon 
 {
+	@Autowired
+	private AuthFlowsProperties properties;
 	
 	@RequestMapping
     public View activateAccount(HttpServletRequest request) throws IOException 
@@ -31,8 +31,6 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 		Map<String, String> attributes = new HashMap<String, String>();
 
 		EmailExtractedData extractedData= null;
-
-		String redirectUri;
 
 		try
 		{
@@ -47,7 +45,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS INVALID" + " exception message: " + cryptoEx.getMessage());		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp");
+			rv.setUrl( FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp" );
 			return rv;
 		}
 		
@@ -75,8 +73,8 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			request.getSession(true);
 			SecurityContextHolder.getContext().setAuthentication(null);
 
-
-			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "AccountActivated.htm");
+			String accountActivatedEndpointUrl = properties.getAccountActivatedEndpointUrl();
+			rv.setUrl( accountActivatedEndpointUrl );
 		}
 		return rv;
 	}

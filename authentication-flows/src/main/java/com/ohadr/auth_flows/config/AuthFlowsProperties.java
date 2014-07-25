@@ -19,6 +19,9 @@ public class AuthFlowsProperties
 	@Value("${com.ohadr.auth-flows.isREST}")
 	private boolean isREST;
 	
+	@Value("${com.ohadr.auth-flows.endpoints.accountActivatedEndpointUrl}")
+	private String accountActivatedEndpointUrl;
+	
 	
 	public int getLinksExpirationMinutes()
 	{
@@ -38,6 +41,11 @@ public class AuthFlowsProperties
 	public boolean isREST() 
 	{
 		return isREST;
+	}
+	
+	public String getAccountActivatedEndpointUrl()
+	{
+		return accountActivatedEndpointUrl;
 	}
 
 }
