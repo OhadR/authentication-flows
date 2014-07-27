@@ -360,7 +360,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	{
 		log.debug("setting login success for user " + username);
 		repository.setAttemptsLeft( username,
-				policyRepo.getDefaultAuthenticationPolicy().getMaxPasswordEntryAttempts() );
+				getAuthenticationSettings().getMaxPasswordEntryAttempts() );
 		
 		return isPasswordChangeRequired(username);		
 	}
@@ -387,6 +387,10 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		if(passChangeRequired)
 		{
 			log.info("password expired for user " + username);
+//			log.info("getPasswordLifeInDays(): " + policy.getPasswordLifeInDays() + 
+//					" passwordLastChangeDate: " + passwordLastChangeDate + 
+//					" passwordLimitDate: " + passwordLimitDate + 
+//					" passwordLifeInMilisecs: " + passwordLifeInMilisecs);
 		}
 
 		return passChangeRequired;
