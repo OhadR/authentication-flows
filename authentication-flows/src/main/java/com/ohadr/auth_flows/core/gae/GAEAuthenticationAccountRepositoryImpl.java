@@ -33,7 +33,8 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 
 	private static Logger log = Logger.getLogger(GAEAuthenticationAccountRepositoryImpl.class);
 
-	private DatastoreService datastore;
+	//allow classes that inherit this class to use datastore elegantly
+	protected DatastoreService datastore;
 	
 	public GAEAuthenticationAccountRepositoryImpl()
 	{
