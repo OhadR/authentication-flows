@@ -13,15 +13,17 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 
+import com.ohadr.auth_flows.config.AuthFlowsProperties;
+
 
 /**
- * this implementation uses pure javax.mail to send mail.
- * Deprecated because newer version uses Spring @link:JavaMailSenderImpl
+ * this implementation uses GAE's javax.mail to send mail.
  * @author OhadR
  *
  */
@@ -30,7 +32,10 @@ public class GAEMailSenderImpl implements MailSender
 {
 	private static Logger log = Logger.getLogger(GAEMailSenderImpl.class);
 
-    private Session session;
+	@Autowired
+	private AuthFlowsProperties properties;
+
+	private Session session;
 	
 
 	public GAEMailSenderImpl()
@@ -66,7 +71,8 @@ public class GAEMailSenderImpl implements MailSender
 		try 
 		{
 		    Message message = new MimeMessage(session);
-		    message.setFrom(new InternetAddress("ohadr.developer@gmail.com", "ohadr.com Admin"));
+		    message.setFrom(new InternetAddress("ohadr.developer@gmail.com", 
+		    		properties.getAuthFlowsEmailsFromField() ) );
 		    message.addRecipient(Message.RecipientType.TO,
 		    	     new InternetAddress( msg.getTo()[0] ));		//Spring's getTo returns String[]
 

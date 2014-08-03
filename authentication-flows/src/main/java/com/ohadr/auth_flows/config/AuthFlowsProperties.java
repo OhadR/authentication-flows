@@ -19,6 +19,11 @@ public class AuthFlowsProperties
 	@Value("${com.ohadr.auth-flows.endpoints.accountActivatedEndpointUrl}")
 	private String accountActivatedEndpointUrl;
 	
+	/**
+	 * indicates the "from" field of the emails that auth-flows sends.
+	 */
+	@Value("${com.ohadr.auth-flows.email.fromField}")
+	private String authFlowsEmailsFromField;
 	
 	public int getLinksExpirationMinutes()
 	{
@@ -38,6 +43,11 @@ public class AuthFlowsProperties
 	public String getAccountActivatedEndpointUrl()
 	{
 		return accountActivatedEndpointUrl;
+	}
+
+	public String getAuthFlowsEmailsFromField()
+	{
+		return authFlowsEmailsFromField;
 	}
 
 }
