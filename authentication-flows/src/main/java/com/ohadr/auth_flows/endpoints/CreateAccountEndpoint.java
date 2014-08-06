@@ -18,7 +18,7 @@ public class CreateAccountEndpoint
 	{
 	}
 	
-	public void postCreateAccount()
+	public void postCreateAccount( String username )
 	{
 	}
 	

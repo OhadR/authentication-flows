@@ -203,7 +203,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 			repository.createUser(user);
 			
-			createAccountEndpoint.postCreateAccount();
+			createAccountEndpoint.postCreateAccount( email );
 		}
 		//we should not get to these exceptions since we check earlier if account already exist (so repo's do not 
 		// have to check it)
