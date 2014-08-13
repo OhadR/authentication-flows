@@ -376,9 +376,16 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			//error, technically:
 			return false;
 		}
+		
 		long passwordLastChange = passwordLastChangeDate.getTime();
 		AuthenticationPolicy policy = getAuthenticationSettings();
-		long passwordLifeInMilisecs = policy.getPasswordLifeInDays() * FlowsConstatns.DAY_IN_MILLI;
+		int passwordLifeInDays = policy.getPasswordLifeInDays();
+		if( passwordLifeInDays == FlowsConstatns.ETERNAL_PASSWORD )
+		{
+			return false;
+		}
+		
+		long passwordLifeInMilisecs = passwordLifeInDays * FlowsConstatns.DAY_IN_MILLI;
 		Date passwordLimitDate = new Date( passwordLastChange + passwordLifeInMilisecs );
 		Date current = new Date(System.currentTimeMillis());
 		
