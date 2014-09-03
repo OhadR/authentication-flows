@@ -437,13 +437,6 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 				passwordRestoreUrl );
 	}
 
-	@Override
-	public String getSecretAnswer(String email) 
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/**
 	 * the processor is a higher level than the repository. so when we increment, the proc should also check 
 	 * if we crossed the max-attempts, and if so - lock the account. the repo simply does one function at a time.

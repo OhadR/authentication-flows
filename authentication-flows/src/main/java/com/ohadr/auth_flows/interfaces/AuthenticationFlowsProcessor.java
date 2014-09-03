@@ -83,8 +83,6 @@ public interface AuthenticationFlowsProcessor
 	public AccountState getAccountState(String email);
 
 
-	public String getSecretAnswer(String email);
-
 	public void setLoginFailureForUser(String email);
 
 	public void sendUnlockAccountMail(String email, 
@@ -96,14 +94,6 @@ public interface AuthenticationFlowsProcessor
 
 
 	public void setEnabled(String userEmail);
-
-	/**
-	 * NOT IMPLEMENTED:
-	 * @param email
-	 * @return
-	 * 
-	public String getSecretQuestion(String email);
-		 */
 
 	public void validatePassword(String password,
 			AuthenticationPolicy settings) throws AuthenticationFlowsException;
