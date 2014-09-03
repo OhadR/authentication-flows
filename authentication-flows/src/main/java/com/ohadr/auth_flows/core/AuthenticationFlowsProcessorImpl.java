@@ -65,7 +65,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 	private static final String LINK_HAS_EXPIRED = "link has expired";
 
-	private static final String CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD = "CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD";
+	private static final String CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD = "CHANGE PASSWORD FAILED: New Password is same as Old Password.";
+	private static final String CHANGE_PASSWORD_BAD_OLD_PASSWORD = "CHANGE PASSWORD Failed: Bad Old Password.";
 
 
 	@Autowired
@@ -535,7 +536,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 //			boolean retVal = Boolean.valueOf(isLocked);
 
 //			throw errorsHandler.createError(ApiErrors.CHANGE_PASSWORD_BAD_OLD_PASSWORD, username);
-			return Pair.of(FlowsConstatns.ERROR, "CHANGE_PASSWORD_BAD_OLD_PASSWORD");
+			return Pair.of(FlowsConstatns.ERROR, CHANGE_PASSWORD_BAD_OLD_PASSWORD);
 		}
 		
 		
