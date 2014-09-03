@@ -20,8 +20,10 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineUtils;
@@ -307,10 +309,30 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			String retypedPassword,
 			String encUser) throws AuthenticationFlowsException
 	{
-		validateRetypedPassword(newPassword, retypedPassword);
-		
 		String email = cryptoService.extractString(encUser);
 		
+		internalHandleChangePassword(currentPassword, newPassword, retypedPassword, email);
+	}
+
+	@Override
+	public void handleChangePassword( 
+			String currentPassword,
+			String newPassword,
+			String retypedPassword) throws AuthenticationFlowsException
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String email = auth.getName(); //get logged in username
+		
+		internalHandleChangePassword(currentPassword, newPassword, retypedPassword, email);
+	}
+
+	public void internalHandleChangePassword( 
+			String currentPassword,
+			String newPassword,
+			String retypedPassword,
+			String email) throws AuthenticationFlowsException
+	{
+		validateRetypedPassword(newPassword, retypedPassword);
 		
 		// we need to check is account locked?! (for hackers...)
 		//if account is already locked, no need to ask the user the secret question:
@@ -342,7 +364,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			throw new AuthenticationFlowsException( errorText );
 		}
 	}
-	
+
 	
 	
 	

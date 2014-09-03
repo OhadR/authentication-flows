@@ -129,4 +129,42 @@ public class UserActionRestController
 		
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
+	
+	/**
+	 * called by the UI, changePassword.jsp#submit
+	 * 
+	 * @param email
+	 * @param currentPassword
+	 * @param newPassword
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/rest/changePassword")
+	protected void changePassword( 
+								@RequestParam("currentPassword") String currentPassword,
+								@RequestParam("newPassword") String newPassword,
+								@RequestParam( FlowsConstatns.CONFIRM_PASSWORD_PARAM_NAME ) String retypedPassword,
+								HttpServletResponse response) throws Exception
+	{
+		PrintWriter writer = response.getWriter();
+		
+
+		try
+		{
+			flowsProcessor.handleChangePassword(currentPassword, newPassword, retypedPassword);
+		}
+		catch (AuthenticationFlowsException afe)
+		{
+			log.error( afe.getMessage() );
+
+			//UI will redirect back to createAccount page, with error message:
+			writer.println( FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage()) );
+
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		writer.println(FlowsConstatns.OK);
+	}
+	
 }

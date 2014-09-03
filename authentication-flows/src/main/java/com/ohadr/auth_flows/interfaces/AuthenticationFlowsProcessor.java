@@ -53,7 +53,8 @@ public interface AuthenticationFlowsProcessor
 	 * @param currentPassword
 	 * @param newPassword
 	 * @param retypedPassword
-	 * @param encUser
+	 * @param encUser - Originally, it was built for oAuth. so the app had to pass the auth-server
+	 * the username, encrypted.
 	 * @throws AuthenticationFlowsException
 	 */
 	public void handleChangePassword( 
@@ -63,6 +64,12 @@ public interface AuthenticationFlowsProcessor
 			String encUser) throws AuthenticationFlowsException;
 
 	
+	public void handleChangePassword(
+			String currentPassword,
+			String newPassword, 
+			String retypedPassword) throws AuthenticationFlowsException;
+
+
 	/**
 	 * 
 	 * @param username
