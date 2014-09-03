@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,14 +125,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		//make any other additional chackes. this let applications override this impl and add their custom functionality:
 		createAccountEndpoint.additionalValidations( email, password );
 		
-		//TODO: let flowsProcessor.internalCreateAccount() throw exception if unsuccessful, instead of returning pair ...
-		Pair<String, String> retVal = internalCreateAccount(email, encodedPassword, 
-				firstName, lastName, path);	
-    	if( ! retVal.getLeft().equals(FlowsConstatns.OK))
-    	{
-			String errorText = retVal.getRight();
-			throw new AuthenticationFlowsException( errorText );
-    	}
+		internalCreateAccount(email, encodedPassword, firstName, lastName, path);
         
 
         //update the "remember-me" token validity:
@@ -149,20 +141,18 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	 * 
 	 * @param email
 	 * @param encodedPassword
-	 * @param firstName TODO
-	 * @param lastName TODO
-	 * @param secretQuestion
-	 * @param encodedAnswer
-	 * @return pair of strings. left is the status OK | ERROR, right is the message
-	 * TODO: throw exception if unsuccessful, instead of returning pair ...
+	 * @param firstName
+	 * @param lastName
+	 * @param serverPath
+	 * @throws AuthenticationFlowsException
 	 */
-	private Pair<String, String> internalCreateAccount(
+	private void internalCreateAccount(
 			String email,
 			String encodedPassword, 
 			String firstName, 
 			String lastName, 
 			String serverPath
-			)
+			) throws AuthenticationFlowsException
 	{
 		email = email.toLowerCase();		// issue #23 : username is case-sensitive (https://github.com/OhadR/oAuth2-sample/issues/23)
 		log.info("createAccount() for user " + email);
@@ -190,7 +180,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 				{
 					//error - user already exists and active
 					log.error( "cannot create account - user " + email + " already exist." );
-					return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
+					throw new AuthenticationFlowsException( "USER_ALREADY_EXIST" );
 				}
 			}
 
@@ -219,7 +209,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			
 
 			log.error( msg );
-			return Pair.of(FlowsConstatns.ERROR, "USER_ALREADY_EXIST");
+			throw new AuthenticationFlowsException( "USER_ALREADY_EXIST" );
 		}
 		
 
@@ -242,10 +232,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		catch (MailException me)
 		{
 			log.error( me.getMessage() );
-			return Pair.of(FlowsConstatns.ERROR, me.getMessage());
+			throw new AuthenticationFlowsException( me.getMessage() );
 		}
-		
-		return ImmutablePair.of(FlowsConstatns.OK, "");
 	}
 	
 	
@@ -357,13 +345,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		String encodedCurrentPassword = encodeString(email, currentPassword);
 		String encodedNewPassword = encodeString(email, newPassword);
 		
-		//use API to go to the DB, validate current pswd and update the new one, and activate the account:
-		Pair<String, String> retVal = invokeChangePassword(email, encodedCurrentPassword, encodedNewPassword);
-		if( ! retVal.getLeft().equals(FlowsConstatns.OK))
-		{
-			String errorText = retVal.getRight();
-			throw new AuthenticationFlowsException( errorText );
-		}
+		//go to the DB, validate current pswd and update the new one:
+		invokeChangePassword(email, encodedCurrentPassword, encodedNewPassword);
 	}
 
 	
@@ -515,8 +498,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	}
 	
 
-	private Pair<String, String> invokeChangePassword(String username,
-			String encodedCurrentPassword, String newEncodedPassword)
+	private void invokeChangePassword(String username,
+			String encodedCurrentPassword, String newEncodedPassword) throws AuthenticationFlowsException
 	{
 		log.info("changing password for user " + username);
 		
@@ -524,8 +507,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		String dbPassword = repository.getEncodedPassword(username);
 		if(dbPassword == null)
 		{
-//			throw errorsHandler.createError(ApiErrors.USER_NOT_EXIST, username);
-			return Pair.of(FlowsConstatns.ERROR, "USER_NOT_EXIST");
+			throw new AuthenticationFlowsException( "USER_NOT_EXIST" );
 		}
 		if( !dbPassword.equals(encodedCurrentPassword) )
 		{
@@ -535,14 +517,10 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 //			String isLocked = onLoginFailure(username);
 //			boolean retVal = Boolean.valueOf(isLocked);
 
-//			throw errorsHandler.createError(ApiErrors.CHANGE_PASSWORD_BAD_OLD_PASSWORD, username);
-			return Pair.of(FlowsConstatns.ERROR, CHANGE_PASSWORD_BAD_OLD_PASSWORD);
+			throw new AuthenticationFlowsException( CHANGE_PASSWORD_BAD_OLD_PASSWORD );
 		}
 		
-		
 		setPassword(username, newEncodedPassword);
-
-		return Pair.of(FlowsConstatns.OK, "");
 	}
 
 
