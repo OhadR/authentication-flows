@@ -1,5 +1,6 @@
 package com.ohadr.auth_flows.core;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -26,7 +27,7 @@ public class TestMailSender
 
 		JavaMailSenderImpl impl = (JavaMailSenderImpl)sender2;
 		System.out.println("sending... from: " + impl.getUsername());
-/*		try
+		try
 		{
 			sender2.send(msg);
 		}
@@ -34,8 +35,9 @@ public class TestMailSender
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Assert.fail( e.getMessage() );
 		}
-*/
+
         System.out.println("Done");
 	}
 
