@@ -10,7 +10,7 @@
 	<artifactId>authentication-flows</artifactId>
 	<name>authentication-flows</name>
 	<description>Manages the auth flows (register, forgot password, change password)</description>
-	<version>1.6.1-RELEASE</version>
+	<version>1.6.1-SNAPSHOT</version>
 	
 	<properties>
 		<warFileName>auth-flows-${project.version}</warFileName>
