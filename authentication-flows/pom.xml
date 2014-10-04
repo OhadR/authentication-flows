@@ -4,13 +4,13 @@
 	<parent>
 		<groupId>com.ohadr</groupId>
 		<artifactId>auth-parent</artifactId>
-		<version>1.6.1</version>
+		<version>1.6.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>authentication-flows</artifactId>
 	<name>authentication-flows</name>
 	<description>Manages the auth flows (register, forgot password, change password)</description>
-	<version>1.6.1</version>
+	<version>1.6.2-SNAPSHOT</version>
 	
 	<properties>
 		<warFileName>auth-flows-${project.version}</warFileName>
