@@ -14,8 +14,6 @@
 
     <context:property-placeholder location="classpath:/client.properties" />
 
-    <!-- 
-    <context:component-scan base-package="com.ohadr.security.oauth.examples" />
     <context:component-scan base-package="com.ohadr.auth_flows.*" />
     <context:component-scan base-package="com.ohadr.crypto.*" />
 
@@ -24,7 +22,6 @@
     <mvc:default-servlet-handler />
 
     <mvc:annotation-driven/>
- 	-->
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix">
@@ -88,6 +85,7 @@
 	
     <!-- decide how you wanna work: in-mem repo, or jdbc impl: -->
     <bean class="com.ohadr.auth_flows.mocks.InMemoryAuthenticationAccountRepositoryImpl" />
+    <bean class="com.ohadr.auth_flows.mocks.MockAuthenticationPolicyRepositoryImpl" />
 
 
 
@@ -104,5 +102,15 @@
 			</props>
 		</property>
 	</bean>
+
 	
+	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <value>
+                resource.loader=class
+                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+            </value>
+        </property>
+    </bean>
+			
 </beans>
