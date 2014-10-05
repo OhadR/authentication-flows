@@ -47,6 +47,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	private static Logger log = Logger.getLogger(AuthenticationFlowsProcessorImpl.class);
 	
 	public static final String EMAIL_NOT_VALID = "The e-mail you have entered is not valid.";
+	public static final String USER_ALREADY_EXIST = "USER_ALREADY_EXIST";
 
 	private static final String PASSWORD_CANNOT_BE_USED = "Your password is not acceptable by the organizational password policy.";
 	private static final String PASSWORD_IS_TOO_LONG = "Password is too long";
@@ -57,7 +58,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	private static final String PASSWORD_TOO_FEW_SPECIAL_SYMBOLS = "Password needs to contains at least %d special symbols";
 	private static final String SETTING_A_NEW_PASSWORD_HAS_FAILED_PLEASE_NOTE_THE_PASSWORD_POLICY_AND_TRY_AGAIN_ERROR_MESSAGE =
 			"Setting a new password has failed. Please note the password policy and try again. Error message: ";
-	private static final String ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH = 
+	public static final String ACCOUNT_CREATION_HAS_FAILED_PASSWORDS_DO_NOT_MATCH = 
 			"Account creation has failed. These passwords don't match";
 	
 	private static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "Account is locked or does not exist";
@@ -180,7 +181,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 				{
 					//error - user already exists and active
 					log.error( "cannot create account - user " + email + " already exist." );
-					throw new AuthenticationFlowsException( "USER_ALREADY_EXIST" );
+					throw new AuthenticationFlowsException( USER_ALREADY_EXIST );
 				}
 			}
 
@@ -209,7 +210,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			
 
 			log.error( msg );
-			throw new AuthenticationFlowsException( "USER_ALREADY_EXIST" );
+			throw new AuthenticationFlowsException( USER_ALREADY_EXIST );
 		}
 		
 
