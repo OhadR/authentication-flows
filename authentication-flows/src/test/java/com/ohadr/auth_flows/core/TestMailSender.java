@@ -14,8 +14,10 @@ public class TestMailSender
 	@Test
 	public void test() 
 	{
-	   	ApplicationContext context = 
-	             new ClassPathXmlApplicationContext("spring-servlet.xml");
+		//TODO: in roder to test the email-sending, change to "...-real-email.xml" 
+		//and make sure in client.properties you have user+password of valid email account.
+		ApplicationContext context = 
+	             new ClassPathXmlApplicationContext("spring-servlet-mock-email.xml");
 	 
     	MailSender sender2 = (MailSender) context.getBean("mailSender");
 

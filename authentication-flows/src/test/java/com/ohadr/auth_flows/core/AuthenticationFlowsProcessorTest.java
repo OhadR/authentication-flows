@@ -2,8 +2,6 @@ package com.ohadr.auth_flows.core;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -12,16 +10,15 @@ import com.ohadr.auth_flows.types.AuthenticationFlowsException;
 
 public class AuthenticationFlowsProcessorTest
 {
-//	@Autowired
 	AuthenticationFlowsProcessor processor;
 	
 	@Test
 	public void testCreateAccountBadEmail()
 	{
 	   	ApplicationContext context = 
-	             new ClassPathXmlApplicationContext("spring-servlet.xml");
+	             new ClassPathXmlApplicationContext("spring-servlet-mock-email.xml");
 	 
-   	   	AuthenticationFlowsProcessor processor = (AuthenticationFlowsProcessor) context.getBean("authenticationFlowsProcessorImpl");
+   	   	processor = (AuthenticationFlowsProcessor) context.getBean("authenticationFlowsProcessorImpl");
    	
 		try
 		{
@@ -39,9 +36,9 @@ public class AuthenticationFlowsProcessorTest
 	public void testCreateAccountUnequalPasswords()
 	{
 	   	ApplicationContext context = 
-	             new ClassPathXmlApplicationContext("spring-servlet.xml");
+	             new ClassPathXmlApplicationContext("spring-servlet-mock-email.xml");
 	 
-	   	AuthenticationFlowsProcessor processor = (AuthenticationFlowsProcessor) context.getBean("authenticationFlowsProcessorImpl");
+	   	processor = (AuthenticationFlowsProcessor) context.getBean("authenticationFlowsProcessorImpl");
    	
 		try
 		{
@@ -64,9 +61,9 @@ public class AuthenticationFlowsProcessorTest
 	public void testCreateAccount_CreateExistingAccount()
 	{
 	   	ApplicationContext context = 
-	             new ClassPathXmlApplicationContext("spring-servlet.xml");
+	             new ClassPathXmlApplicationContext("spring-servlet-mock-email.xml");
 	 
-	   	AuthenticationFlowsProcessor processor = (AuthenticationFlowsProcessor) context.getBean("authenticationFlowsProcessorImpl");
+	   	processor = (AuthenticationFlowsProcessor) context.getBean("authenticationFlowsProcessorImpl");
    	
 	   	final String EMAIL = "email@ohadr.com";
 		//create the account
