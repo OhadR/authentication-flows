@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,10 +15,8 @@ public class TestMailSender
 	@Test
 	public void test() 
 	{
-		//TODO: in roder to test the email-sending, change to "...-real-email.xml" 
-		//and make sure in client.properties you have user+password of valid email account.
 		ApplicationContext context = 
-	             new ClassPathXmlApplicationContext("spring-servlet-mock-email.xml");
+	             new ClassPathXmlApplicationContext("spring-servlet-real-email.xml");
 	 
     	MailSender sender2 = (MailSender) context.getBean("mailSender");
 
@@ -32,6 +31,11 @@ public class TestMailSender
 		try
 		{
 			sender2.send(msg);
+		}
+		catch (MailAuthenticationException authEx)
+		{
+			authEx.printStackTrace();
+			System.out.println("failed to send email due to authentication issue; " + authEx.getMessage());
 		}
 		catch (MailException e)
 		{
