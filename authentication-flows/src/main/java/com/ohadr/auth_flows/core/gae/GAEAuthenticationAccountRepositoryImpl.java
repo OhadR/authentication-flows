@@ -81,9 +81,9 @@ public class GAEAuthenticationAccountRepositoryImpl extends
 	}
 
 	@Override
-	public void updateUser(UserDetails user) {
-		// TODO Auto-generated method stub
-		
+	public void updateUser(UserDetails user) 
+	{
+		createUser( user );
 	}
 
 	@Override
