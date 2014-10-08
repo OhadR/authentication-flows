@@ -565,7 +565,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		}
 	}
 
-	public void validateRetypedPassword(String password, String retypedPassword) throws AuthenticationFlowsException
+	private void validateRetypedPassword(String password, String retypedPassword) throws AuthenticationFlowsException
 	{
 		if(!password.equals(retypedPassword))
 		{
@@ -573,7 +573,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		}
 	}
 
-	public void validatePassword(String password,
+	private void validatePassword(String password,
 			AuthenticationPolicy settings) throws AuthenticationFlowsException 
 	{
 		List<String> blackList = settings.getPasswordBlackList();

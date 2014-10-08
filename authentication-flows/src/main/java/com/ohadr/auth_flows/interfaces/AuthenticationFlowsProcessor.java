@@ -95,11 +95,4 @@ public interface AuthenticationFlowsProcessor
 
 	public void setEnabled(String userEmail);
 
-	//TODO: do i need this in the interface?
-	public void validatePassword(String password,
-			AuthenticationPolicy settings) throws AuthenticationFlowsException;
-	
-	//TODO: do i need this in the interface?
-	public void validateRetypedPassword(String password, String retypedPassword) throws AuthenticationFlowsException;
-
 }
