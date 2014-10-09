@@ -41,7 +41,15 @@ public interface AuthenticationFlowsProcessor
 	public void handleForgotPassword( String email, String serverPath ) 
 			throws AuthenticationFlowsException;
 	
-	public void handleSetNewPassword( 
+	/**
+	 * 
+	 * @param encUserAndTimestamp
+	 * @param password
+	 * @param retypedPassword
+	 * @return the username (decrypted from 'encUserAndTimestamp', by crytpService)
+	 * @throws AuthenticationFlowsException
+	 */
+	public String handleSetNewPassword( 
 			String encUserAndTimestamp,
 			String password,
 			String retypedPassword) throws AuthenticationFlowsException;

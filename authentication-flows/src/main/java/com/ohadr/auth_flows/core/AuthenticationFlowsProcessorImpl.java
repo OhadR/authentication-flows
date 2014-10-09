@@ -257,7 +257,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	
 	
 	@Override
-	public void handleSetNewPassword( 
+	public String handleSetNewPassword( 
 			String encUserAndTimestamp,
 			String password,
 			String retypedPassword) throws AuthenticationFlowsException
@@ -288,6 +288,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 		// go to the DB and: (1) update the password, and (2) activate the account:
 		setPassword(email, encodedPassword);
+		
+		return email;
 	}
 
 	

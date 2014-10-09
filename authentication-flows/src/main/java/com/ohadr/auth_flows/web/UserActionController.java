@@ -232,10 +232,11 @@ public class UserActionController
 	{
 		RedirectView rv = new RedirectView();
 		Map<String, String> attributes = new HashMap<String, String>();
+		String email;
 
 		try
 		{
-			flowsProcessor.handleSetNewPassword(encUserAndTimestamp, password, retypedPassword);
+			email = flowsProcessor.handleSetNewPassword(encUserAndTimestamp, password, retypedPassword);
 		}
 		catch(AuthenticationFlowsException afe)
 		{		
@@ -259,7 +260,7 @@ public class UserActionController
 		}
 		
 
-		attributes.put(FlowsConstatns.EMAIL_PARAM_NAME,  "email");		
+		attributes.put(FlowsConstatns.EMAIL_PARAM_NAME,  email);		
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
 		rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "passwordSetSuccess.jsp");
