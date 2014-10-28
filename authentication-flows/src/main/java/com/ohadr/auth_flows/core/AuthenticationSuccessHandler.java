@@ -13,6 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
+import com.ohadr.auth_flows.endpoints.CreateAccountEndpoint;
+import com.ohadr.auth_flows.endpoints.LoginEndpoint;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.FlowsConstatns;
 import com.ohadr.crypto.service.CryptoService;
@@ -26,6 +28,9 @@ public class AuthenticationSuccessHandler extends
 
 	@Autowired
 	private CryptoService cryptoService;
+
+	@Autowired(required=false)
+	private LoginEndpoint loginEndpoint = new LoginEndpoint();
 
 	private static Logger log = Logger.getLogger(AuthenticationSuccessHandler.class);
 
@@ -59,6 +64,8 @@ public class AuthenticationSuccessHandler extends
 		// changeSessionTimeout(request);
 		/////////////////////////////////////////
 
+		//let applications do a custom-behavior upon login (e.g. count logins etc.):
+		loginEndpoint.postLogin( username );
 		
     	super.onAuthenticationSuccess(request, response, authentication);
     }
