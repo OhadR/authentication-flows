@@ -262,18 +262,16 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			String password,
 			String retypedPassword) throws AuthenticationFlowsException
 	{
-		String email;
-
 		validateRetypedPassword(password, retypedPassword);
 
 		//validations: (using Fiddlr, hacker can hack this URL *AFTER* changing password to himself, and 
 		//renaming the user to someone else.
-		ImmutablePair<Date, String> stringAndDate = null;
-		stringAndDate = cryptoService.extractStringAndDate( encUserAndTimestamp );
+		ImmutablePair<Date, String> stringAndDate =
+				cryptoService.extractStringAndDate( encUserAndTimestamp );
 		
 		validateExpiration(stringAndDate.getLeft());
 
-		email = stringAndDate.getRight();
+		String email = stringAndDate.getRight();
 
 		//after validations, make the work: validate password constraints, and update DB:
 
