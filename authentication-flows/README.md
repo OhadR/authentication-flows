@@ -120,11 +120,11 @@ the email address is the username, but it shouldn't matter as long as each user 
 
 3. User enters an email address and presses "Submit".
 
-3.1. IF the email address is associated with a valid account, we generate a link using a crypto-library, and send the user an email
+  1. IF the email address is associated with a valid account, we generate a link using a crypto-library, and send the user an email
 containing this link. This link consists of the link-creation time and the username. 
 Hacker that intercepts this link cannot decrypt it so he cannot set a new password for another user.
 
-3.2. IF the email address does not exist, we do nothing. No email is sent to anyone. Server returns message "account is locked
+  2. IF the email address does not exist, we do nothing. No email is sent to anyone. Server returns message "account is locked
 or does not exist". Even though the server distinguishes between these cases, we do not want to specify the exact reason of
 failure, in order to avoid account-harvesting by hackers. (hacker will not know whether the account does not exist, or exist but locked.
 From this reason, maybe a better way is to show the same output as in 3.1. - that email was sent to the given address).
