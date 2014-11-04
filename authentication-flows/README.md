@@ -111,6 +111,37 @@ JAR: common-crypto
 authentication-flows JAR uses cryptography in order to encrypt the data. Read about it in the [main README](/).
 
 
+Create Account Flow
+-------------
+1. On the login form, there is a link for "create account" AKA register.
+
+2. The 'create account' screen in a simple form, where the user can enter his email address and password. In our implementation, 
+the email address is the username, so each user has a valid email address attached to their account. 
+
+3. User presses "Submit". 
+   1. There are several validations:
+      1. on the email address structure (e.g. '@' must exist, and a domain). Other validations
+	  2. validate password matches the policy.
+	  3. etc
+   2. If the email address is associated with a valid account, we generate a link using a crypto-library, and send the user an email
+containing this link. This link consists of the link-creation time and the username. 
+Hacker that intercepts this link cannot decrypt it so he cannot set a new password for another user.
+
+  3. IF the email address does not exist, we do nothing. No email is sent to anyone. Server returns message "account is locked
+or does not exist". Even though the server distinguishes between these cases, we do not want to specify the exact reason of
+failure, in order to avoid account-harvesting by hackers. (hacker will not know whether the account does not exist, or exist but locked.
+From this reason, maybe a better way is to show the same output as in 3.1. - that email was sent to the given address).
+
+4. Regardless if the email address is correct or not, we always show a "Thanks, if the email address you entered is correct, 
+you will be receiving an email shortly with instructions on how to reset your password". This is important as you don't want a bad user 
+using this form to try and discover user names.
+
+5. The user receives the email and clicks the link. If a configurable expiration time has not elapsed, and if the link is valid,
+this takes them to a reset password screen (with a new password/confirm new password textboxes). If it is not, we show a 
+"this reset link is no longer valid" if the key is expired or does not exist.
+
+6. After reset, user is redirected to login screen to login to the application.
+
 Forgot Password Flow
 -------------
 1. On the login form, there is a link for "forgot password"
