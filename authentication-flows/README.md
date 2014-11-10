@@ -2,8 +2,8 @@ Authentication-Flows
 ==================
 
 The Authentication-Flows JAR implements all authentication flows: 
-* create account, 
-* forgot password, 
+* [create account](https://github.com/OhadR/oAuth2-sample/tree/master/authentication-flows#create-account-flow), 
+* [forgot password](https://github.com/OhadR/oAuth2-sample/tree/master/authentication-flows#forgot-password-flow), 
 * change password by user request, 
 * force change password if password is expired,
 * locks the accont after pre-configured login failures.
@@ -132,13 +132,10 @@ or does not exist". Even though the server distinguishes between these cases, we
 failure, in order to avoid account-harvesting by hackers. (hacker will not know whether the account does not exist, or exist but locked.
 From this reason, maybe a better way is to show the same output as in 3.1. - that email was sent to the given address).
 
-4. Regardless if the email address is correct or not, we always show a "Thanks, if the email address you entered is correct, 
-you will be receiving an email shortly with instructions on how to reset your password". This is important as you don't want a bad user 
-using this form to try and discover user names.
+4. We show a "An email with an activation link was sent to your inbox."
 
 5. The user receives the email and clicks the link. If a configurable expiration time has not elapsed, and if the link is valid,
-this takes them to a reset password screen (with a new password/confirm new password textboxes). If it is not, we show a 
-"this reset link is no longer valid" if the key is expired or does not exist.
+this takes them to a "account activated successfully" page, with link to login page.
 
 6. After reset, user is redirected to login screen to login to the application.
 
