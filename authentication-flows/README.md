@@ -118,26 +118,30 @@ Create Account Flow
 2. The 'create account' screen in a simple form, where the user can enter his email address and password. In our implementation, 
 the email address is the username, so each user has a valid email address attached to their account. 
 
-3. User presses "Submit". 
-   1. There are several validations:
-      1. on the email address structure (e.g. '@' must exist, and a domain). Other validations
-	  2. validate password matches the policy.
-	  3. etc
-   2. If the email address is associated with a valid account, we generate a link using a crypto-library, and send the user an email
-containing this link. This link consists of the link-creation time and the username. 
-Hacker that intercepts this link cannot decrypt it so he cannot set a new password for another user.
+3. User presses "Submit". There are several validations:
+      1. validate email address (e.g. '@' must exist, and a domain). Other validations
+      2. validate password matches the policy.
+      3. validate retype password.
+      4. custom validations - the framework allows to customize and add extra validations. For example, validate that the registered
+      email address is from "nice.com" domain.
 
-  3. IF the email address does not exist, we do nothing. No email is sent to anyone. Server returns message "account is locked
-or does not exist". Even though the server distinguishes between these cases, we do not want to specify the exact reason of
-failure, in order to avoid account-harvesting by hackers. (hacker will not know whether the account does not exist, or exist but locked.
-From this reason, maybe a better way is to show the same output as in 3.1. - that email was sent to the given address).
+4. If all validations passed, we check in the DB whether this email address already exists. 
+    1. If it does exists, and the account is active, a "user already exists" exception is raised. 
+    2. If it is exists but inactive, the account is deleted.
 
-4. We show a "An email with an activation link was sent to your inbox."
+5. Account is created in the DB.
 
-5. The user receives the email and clicks the link. If a configurable expiration time has not elapsed, and if the link is valid,
+6. The framework calls to custom post-create-account endpoint, if exists.
+
+7. We generate a link using a crypto-library, and send the user an email containing this link. This link consists of the link-creation 
+time and the username. Hacker that intercepts this link cannot decrypt it so he cannot set a new password for another user.
+
+8. Account creation is successful.
+    1. If it is a REST flow, return 201.
+    2. If it is MVC flow, redirect the client to a page with a message of "account was created successfully, an email was sent to your inbox".
+
+9. The user receives the email and clicks the link. If a configurable expiration time has not elapsed, and if the link is valid,
 this takes them to a "account activated successfully" page, with link to login page.
-
-6. After reset, user is redirected to login screen to login to the application.
 
 Forgot Password Flow
 -------------
