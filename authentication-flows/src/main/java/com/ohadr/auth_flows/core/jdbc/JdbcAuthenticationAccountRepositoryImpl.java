@@ -44,7 +44,7 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 			+ "authorities";
 
 	private static final String DEFAULT_USER_INSERT_STATEMENT = "insert into " + TABLE_NAME + "(" + AUTHENTICATION_USER_FIELDS
-			+ ") values (?,?,?,?,?,?)";
+			+ ") values (?,?,?,?,?,?,?,?)";
 
 	private static final String DEFAULT_USER_SELECT_STATEMENT = "select " + AUTHENTICATION_USER_FIELDS
 			+ " from " + TABLE_NAME + " where USERNAME = ?";
@@ -90,8 +90,10 @@ public class JdbcAuthenticationAccountRepositoryImpl extends AbstractAuthenticat
 					false,
 					authUser.getLoginAttemptsLeft(), 
 					new Date( System.currentTimeMillis()),
+					authUser.getFirstName(),
+					authUser.getLastName(),
 					user.getAuthorities()},
-				new int[] { Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.DATE, Types.VARCHAR });
+				new int[] { Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN, Types.INTEGER, Types.DATE, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR });
 
 		if(rowsUpdated != 1)
 		{
