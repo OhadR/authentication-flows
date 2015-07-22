@@ -65,14 +65,14 @@ public interface AuthenticationFlowsProcessor
 	 * the username, encrypted.
 	 * @throws AuthenticationFlowsException
 	 */
-	public void handleChangePassword( 
+	public String handleChangePassword( 
 			String currentPassword,
 			String newPassword,
 			String retypedPassword,
 			String encUser) throws AuthenticationFlowsException;
 
 	
-	public void handleChangePassword(
+	public String handleChangePassword(
 			String currentPassword,
 			String newPassword, 
 			String retypedPassword) throws AuthenticationFlowsException;
