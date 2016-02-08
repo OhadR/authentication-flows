@@ -1,0 +1,31 @@
+
+description = 'authentication-flows'
+dependencies {
+	compile project(':common-crypto')
+    compile "com.google.appengine:appengine-api-1.0-sdk:1.9.3"			//to support Google AppEngine capabilities
+    compile "org.springframework.security:spring-security-core:3.1.0.RELEASE"
+    compile "org.springframework.security:spring-security-config:3.1.0.RELEASE"
+    compile "org.springframework.security:spring-security-web:3.1.0.RELEASE"
+    compile "org.springframework.security:spring-security-taglibs:3.1.0.RELEASE"
+    compile "org.springframework:spring-web:3.1.0.RELEASE"
+    compile "org.springframework:spring-core:3.1.0.RELEASE"
+    compile "org.springframework:spring-aop:3.1.0.RELEASE"
+    compile "org.springframework:spring-context:3.1.0.RELEASE"
+    compile "org.springframework:spring-beans:3.1.0.RELEASE"
+    compile "org.springframework:spring-jdbc:3.1.0.RELEASE"
+    compile "org.springframework:spring-webmvc:3.1.0.RELEASE"
+    compile "org.springframework:spring-tx:3.1.0.RELEASE"
+    compile "org.springframework:spring-expression:3.1.0.RELEASE"
+    compile "c3p0:c3p0:0.9.1.2"
+    compile "mysql:mysql-connector-java:5.1.16"
+    compile "com.jamonapi:jamon:2.4"
+    compile "cglib:cglib:2.2.2"
+    compile "javax.servlet:jstl:1.2"
+    compile "commons-lang:commons-lang:2.6"
+    compile "org.apache.commons:commons-lang3:3.1"
+    compile "javax.mail:mail:1.4.1"
+    compile "org.apache.velocity:velocity:1.6.2"
+	provided "javax.servlet:servlet-api:2.5"
+	testCompile "junit:junit:4.8.2"
+	
+}

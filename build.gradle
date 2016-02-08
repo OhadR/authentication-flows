@@ -1,0 +1,70 @@
+subprojects {
+    apply plugin: 'java'
+	apply plugin: 'eclipse'
+
+	group = 'com.ohadr'
+	version = '1.6.2-SNAPSHOT'
+
+	eclipse {
+		classpath {
+		   downloadSources=true
+		}
+	}
+
+    repositories {
+		mavenLocal()
+       	mavenCentral()
+    }
+
+	ext {
+		ohadr_flows_version = "1.6.1-RELEASE"
+		ohadr_spring_security_version = "3.1.0.RELEASE"
+		ohadr_spring_version = "3.1.0.RELEASE"
+		ohadr_spring_security_oauth_version = "1.0.5.RELEASE"
+	}
+	
+    
+
+	/** allow 'provided' dependency: **/
+	configurations {
+	    provided
+	}
+	
+	sourceSets {
+	    main.compileClasspath += configurations.provided
+	    test.compileClasspath += configurations.provided
+	    test.runtimeClasspath += configurations.provided
+	}
+	
+	/*********************************/
+      
+    jar {
+	    
+	    //in case we wanna add the sources (.java) files to the artifacts, along with the .class files:
+	    // from sourceSets.main.allSource
+	    
+
+	    manifest {
+	        attributes(
+				'provider': 'gradle',
+				'Product-Version': version,
+                )
+	    }
+    }
+	
+	task listJars << {
+		configurations.compile.each { File file -> println file.name }
+	}
+	
+	task copyRuntimeDependencies(type: Copy) {
+		into('../build/output/lib')
+		from configurations.compile
+		from configurations.runtime
+	}
+	
+	uploadArchives {
+	    repositories {
+	     	mavenLocal()
+	    }
+	}	
+}

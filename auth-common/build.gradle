@@ -1,0 +1,41 @@
+eclipse.project {
+	natures 'org.springsource.ide.eclipse.gradle.core.nature',
+			'org.springframework.ide.eclipse.core.springnature',
+			'org.eclipse.jdt.core.javanature'
+	
+}
+
+description = 'Common code for OAuth2 implementations using spring-security-oauth2'
+
+group = 'com.ohadr.oauth2'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+dependencies {
+	compile project(':common-crypto')
+	compile	"log4j:log4j:1.2.17"
+	compile	"commons-codec:commons-codec:1.5"
+	compile	"org.springframework:spring-core:$ohadr_spring_version"
+	compile	"org.springframework:spring-beans:$ohadr_spring_version"
+	compile	"org.springframework.security:spring-security-core:$ohadr_spring_security_version"
+	compile	"org.springframework.security:spring-security-crypto:$ohadr_spring_security_version"
+	compile	"org.springframework.security.oauth:spring-security-oauth2:$ohadr_spring_security_oauth_version"
+}
+
+
+		
+
+
+	
+sourceSets {
+	main {
+		java { 
+		}
+		resources {
+			srcDir '$projectDir/../src/main/resources/'
+		}
+	}
+}
+
