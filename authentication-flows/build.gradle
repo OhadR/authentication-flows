@@ -1,5 +1,6 @@
 
-description = 'authentication-flows'
+description = 'Manages the auth flows (register, forgot password, change password)'
+
 dependencies {
 	compile project(':common-crypto')
     compile "com.google.appengine:appengine-api-1.0-sdk:1.9.3"			//to support Google AppEngine capabilities
