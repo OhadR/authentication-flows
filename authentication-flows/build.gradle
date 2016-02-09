@@ -26,7 +26,7 @@ dependencies {
     compile "org.apache.commons:commons-lang3:3.1"
     compile "javax.mail:mail:1.4.1"
     compile "org.apache.velocity:velocity:1.6.2"
-	provided "javax.servlet:servlet-api:2.5"
+	testCompile "javax.servlet:servlet-api:2.5"
 	testCompile "junit:junit:4.8.2"
 	
 }

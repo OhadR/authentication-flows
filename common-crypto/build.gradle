@@ -19,8 +19,8 @@ dependencies {
 	compile	"org.springframework:spring-tx:$ohadr_spring_version"
 	compile	"org.springframework:spring-jdbc:$ohadr_spring_version"
 	compile	"org.springframework.security:spring-security-config:$ohadr_spring_security_version"
-	provided "javax.servlet:servlet-api:2.5"
 	compile	"org.apache.commons:commons-lang3:3.1"
+	compile "javax.servlet:servlet-api:2.5"
 	testCompile	"org.mockito:mockito-all:1.9.5"
 }
 

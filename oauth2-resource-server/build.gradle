@@ -1,0 +1,35 @@
+group = 'com.ohadr.oauth2'
+apply plugin: 'war'
+
+description = 'oAuth2.0 - resource server demo app'
+dependencies {
+	compile	"org.springframework.security:spring-security-core:$ohadr_spring_security_version"
+	compile	"org.springframework.security:spring-security-config:$ohadr_spring_security_version"
+	compile	"org.springframework.security:spring-security-web:$ohadr_spring_security_version"
+	compile	("org.springframework.security.oauth:spring-security-oauth2:$ohadr_spring_security_oauth_version") {
+exclude(module: 'spring-beans')
+exclude(module: 'spring-core')
+exclude(module: 'spring-context')
+exclude(module: 'spring-aop')
+exclude(module: 'spring-jdbc')
+exclude(module: 'spring-webmvc')
+exclude(module: 'spring-web')
+exclude(module: 'spring-security-core')
+exclude(module: 'spring-security-config')
+exclude(module: 'spring-security-web')
+exclude(module: 'spring-security-core')
+    }
+	compile	"org.springframework:spring-web:$ohadr_spring_version"
+	compile	"org.springframework:spring-core:$ohadr_spring_version"
+	compile	"org.springframework:spring-aop:$ohadr_spring_version"
+	compile	"org.springframework:spring-context:$ohadr_spring_version"
+	compile	"org.springframework:spring-beans:$ohadr_spring_version"
+	compile	"org.springframework:spring-jdbc:$ohadr_spring_version"
+	compile	"org.springframework:spring-webmvc:$ohadr_spring_version"
+	compile	"org.springframework:spring-tx:$ohadr_spring_version"
+	compile	"org.springframework:spring-expression:$ohadr_spring_version"
+
+    compile "cglib:cglib:2.2.2"
+    compile "javax.servlet:jstl:1.2"
+    compile "log4j:log4j:1.2.17"
+}

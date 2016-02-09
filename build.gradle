@@ -1,3 +1,6 @@
+description = 'parent POM for authentication projects'
+
+
 subprojects {
     apply plugin: 'java'
 	apply plugin: 'eclipse'
@@ -24,19 +27,6 @@ subprojects {
 	
     
 
-	/** allow 'provided' dependency: **/
-	configurations {
-	    provided
-	}
-	
-	sourceSets {
-	    main.compileClasspath += configurations.provided
-	    test.compileClasspath += configurations.provided
-	    test.runtimeClasspath += configurations.provided
-	}
-	
-	/*********************************/
-      
     jar {
 	    
 	    //in case we wanna add the sources (.java) files to the artifacts, along with the .class files:
