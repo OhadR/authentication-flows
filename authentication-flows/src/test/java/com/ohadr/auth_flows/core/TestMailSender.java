@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 public class TestMailSender
 {
-	//TODO @Test
+	@Test
 	public void test() 
 	{
 		ApplicationContext context = 
