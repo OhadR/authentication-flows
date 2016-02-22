@@ -13,10 +13,10 @@ import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
-import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -76,8 +76,8 @@ public class OAuth2TokenServices implements AuthorizationServerTokenServices, In
 	}
 
 	@Override
-	public OAuth2AccessToken refreshAccessToken(String refreshTokenValue,
-			AuthorizationRequest request) throws AuthenticationException 
+	public OAuth2AccessToken refreshAccessToken(String refreshTokenValue, TokenRequest tokenRequest)
+			throws AuthenticationException 
 	{
 		log.info("authentication-provider is refreshing token");
 		
