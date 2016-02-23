@@ -2,11 +2,12 @@ oAuth2-sample
 =============
 
 Mainly, this project is a oAuth2 POC, consists of all 3 oAuth parties: the authentication server, a resource server, and a client app.
-Each party is represented by its own WAR.
+Each party is represented by its own WAR. In addition, the [Authentication-Flows](https://github.com/OhadR/oAuth2-sample#jar-authentication-flows) 
+is a sub-module here.
 
-NOTE: Spring Versions Updated
+23-02-2016: Spring Versions Updated
 ---------------------------
-On 23-02-2016, we have updated the authentication flows dependencies to Spring newest!
+On 23-02-2016, we have updated Spring versions to the newest!
 * Spring Security: 4.0.3.RELEASE
 * Spring: 4.2.4.RELEASE
 * Spring Security oAuth: 2.0.9.RELEASE

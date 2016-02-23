@@ -1,5 +1,17 @@
 Authentication-Flows
 ==================
+**Authentication-Flows is a powerful and highly customizable framework that covers all flows that authentication-server 
+that is based on Spring-Security needs.**
+
+Authentication-Flows is a framework that focuses on providing all flows of authentication to Java applications built on Spring Security. 
+It saves from the application developer all the bother in developing and maintaining the code such as create account, forgot password, etc. 
+Like a Spring project, the real power of Authentication-Flows is found in how easily it can be extended to meet custom requirements
+
+it is completely secured. It uses a key-store (KS) to encrypt the passwords. In addition, this KS is used to encrypt the data that is sent 
+to the user upon registration, account-locking, etc. This KS is customizable by the customer.
+
+
+
 
 The Authentication-Flows JAR implements all authentication flows: 
 * [create account](https://github.com/OhadR/oAuth2-sample/tree/master/authentication-flows#create-account-flow), 
@@ -10,6 +22,16 @@ The Authentication-Flows JAR implements all authentication flows:
 
 To make it serious, authentication-flows JAR uses cryptography in order to encrypt the data in the links that are sent to the user's email, 
 upon user's registration and "forget password" flows.
+
+23-02-2016: Spring Versions Updated
+---------------------------
+On 23-02-2016, we have updated Spring versions to the newest!
+* Spring Security: 4.0.3.RELEASE
+* Spring: 4.2.4.RELEASE
+
+In addition, we have changed the build tool from Maven to **Gradle**. If you wish to use the older version, i.e. Maven and older Spring versions (3.1.X, oAuth 1.0.5), you can find
+it on a separated branch. The version in that branch is 1.6.2-SNAPSHOT (you can find in Maven Central the latest release, 1.6.2). The version on Master is 2.0.0-SNAPSHOT.
+
 
 API
 ---------
