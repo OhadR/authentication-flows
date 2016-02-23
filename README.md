@@ -4,7 +4,17 @@ oAuth2-sample
 Mainly, this project is a oAuth2 POC, consists of all 3 oAuth parties: the authentication server, a resource server, and a client app.
 Each party is represented by its own WAR.
 
-Works over spring-security-oauth 1.0.5.RELEASE.
+NOTE: Spring Versions Updated
+---------------------------
+On 23-02-2016, we have updated the authentication flows dependencies to Spring newest!
+* Spring Security: 4.0.3.RELEASE
+* Spring: 4.2.4.RELEASE
+* Spring Security oAuth: 2.0.9.RELEASE
+
+In addition, we have changed the build tool from Maven to **Gradle**. If you wish to use the older version, i.e. Maven and older Spring versions (3.1.X, oAuth 1.0.5), you can find
+it on a separated branch. The version in that branch is 1.6.2-SNAPSHOT (you can find in Maven Central the latest release, 1.6.2). The version on Master is 2.0.0-SNAPSHOT.
+
+
 
 Make it work
 ------------
