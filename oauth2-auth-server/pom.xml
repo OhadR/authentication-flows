@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>com.ohadr</groupId>
 		<artifactId>auth-parent</artifactId>
-		<version>1.1.4-SNAPSHOT</version>
+		<version>1.6.2-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -155,6 +155,11 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 		</dependency>
 		
 		
