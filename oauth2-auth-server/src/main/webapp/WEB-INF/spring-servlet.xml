@@ -55,14 +55,10 @@
 
 		<security:form-login 
 			login-page="/login/login.htm" 
-			authentication-success-handler-ref="authenticationSuccessHandler"
 			authentication-failure-url="/login/login.htm?login_error=1" />
 
 
         <security:anonymous enabled="false"/>
-
-        <!-- >security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" /-->
-        <!-- security:access-denied-handler ref="oauthAccessDeniedHandler" /-->
 
 		<security:remember-me
 			data-source-ref="dataSource"
@@ -144,8 +140,6 @@
         <property name="minPoolSize" value="5"/>
     </bean>
     
-    <bean class="com.ohadr.auth_flows.mocks.InMemoryAuthenticationAccountRepositoryImpl" />
-
 	<bean id="passwordEncoder" 	class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
 		<constructor-arg value="256"/>
 	</bean>

@@ -33,12 +33,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.ohadr</groupId>
-			<artifactId>authentication-flows</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
