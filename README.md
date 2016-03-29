@@ -91,7 +91,7 @@ keytool.exe -genkeypair -alias <alias> -keypass <key-password> -keyalg DSA -keys
 for example:
 C:\Dev\Tools>"%JAVA_HOME%\bin\keytool.exe" -genkeypair -alias alias -keypass kspass -keystore ohad.ks -storepass kspass -keyalg DSA -storetype JCEKS -v
 
-Note that your servlet container will have to adapted to use this keysotre (for https use). For example, if you used the command above to create the keysotre, 
+Note that your servlet container will have to be adapted to use this keysotre (for https use). For example, if you used the command above to create the keysotre, 
 and you use tomcat, your server.xml file will have this section:
 
 ```xml
