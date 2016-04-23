@@ -28,12 +28,7 @@
 		location="classpath*:com.ohadr.authentication.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
 
     <security:http pattern="/login/**" security="none" />
-    <security:http pattern="/forgotPasswordPage" security="none" />
-    <security:http pattern="/forgotPassword" security="none" />
-    <security:http pattern="/createAccountPage" security="none" />
-    <security:http pattern="/createAccount" security="none" />
 
-    
     <!-- Protect the /oauth/token url to allow only registered clients -->
     <!-- this statement enables the access to /oauth/token. without it we get "cannot access" -->
     <security:http pattern="/oauth/token"  authentication-manager-ref="clientAuthenticationManager">
@@ -99,7 +94,7 @@
 	<oauth:authorization-server
 		client-details-service-ref="clientDetails" 
 		token-services-ref="myAuthorizationServerTokenServices"
-		user-approval-handler-ref="automaticUserApprovalHandler">
+		user-approval-handler-ref="defaultUserApprovalHandler">
 		<oauth:authorization-code />
 		<oauth:implicit />
 		<oauth:refresh-token />
@@ -124,6 +119,7 @@
 			authorities="ROLE_CLIENT"/>
 	</oauth:client-details-service>
 	
+	<bean id="defaultUserApprovalHandler" class="org.springframework.security.oauth2.provider.approval.DefaultUserApprovalHandler" />
 
 	<!-- data-source (for the remember me feature) -->
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
