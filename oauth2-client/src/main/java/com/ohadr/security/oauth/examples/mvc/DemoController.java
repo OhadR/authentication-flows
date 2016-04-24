@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.ohadr.security.oauth.examples.DemoService;
 
 
-/**
- * @author Ryan Heaton
- * @author Dave Syer
- */
 @Controller
 @RequestMapping("/hello")
 public class DemoController
