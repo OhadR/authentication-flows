@@ -29,7 +29,6 @@ import com.ohadr.authentication.token.interfaces.UsernameTranslationService;
 public class OAuth2TokenServices implements AuthorizationServerTokenServices, InitializingBean
 {
     private static final Logger log = Logger.getLogger(OAuth2TokenServices.class);
-    private final static String TOKEN_TYPE = "Bearer";
 
 	@Autowired
 	private AuthProperties authProperties;
@@ -65,7 +64,7 @@ public class OAuth2TokenServices implements AuthorizationServerTokenServices, In
 			log.info("the generated token: " + generatedToken);
 			DefaultOAuth2AccessToken result = new DefaultOAuth2AccessToken( generatedToken );
 			result.setExpiration(new Date(new Date().getTime() + secondsToExpire * 1000));
-			result.setTokenType(TOKEN_TYPE);
+			result.setTokenType(OAuth2AccessToken.BEARER_TYPE);
 			result.setRefreshToken(createRefreshToken(authentication));
 			return result;
 		}
