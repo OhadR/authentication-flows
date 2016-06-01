@@ -1,7 +1,4 @@
-image:https://travis-ci.org/OhadR/oAuth2-sample.svg?branch=master["Build Status", link="https://travis-ci.org/OhadR/oAuth2-sample"]
-
-
-oAuth2-sample
+oAuth2-sample   [![Build Status](https://travis-ci.org/OhadR/oAuth2-sample.svg?branch=master)](https://travis-ci.org/OhadR/oAuth2-sample)
 =============
 
 Mainly, this project is a oAuth2 POC, consists of all 3 oAuth parties: the authentication server, a resource server, and a client app.
