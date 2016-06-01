@@ -1,7 +1,7 @@
 description = 'parent POM for authentication projects'
 
 
-subpr ojects {
+subprojects {
     apply plugin: 'java'
 	apply plugin: 'eclipse'
 
