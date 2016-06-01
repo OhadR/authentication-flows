@@ -1,3 +1,5 @@
+image:https://travis-ci.org/OhadR/oAuth2-sample.svg?branch=maven-1.6.2-SNAPSHOT["Build Status", link="https://travis-ci.org/OhadR/oAuth2-sample"]
+
 oAuth2-sample
 =============
 
