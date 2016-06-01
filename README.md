@@ -1,3 +1,6 @@
+image:https://travis-ci.org/OhadR/oAuth2-sample.svg?branch=master["Build Status", link="https://travis-ci.org/OhadR/oAuth2-sample"]
+
+
 oAuth2-sample
 =============
 
