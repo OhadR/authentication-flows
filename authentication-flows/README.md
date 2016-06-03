@@ -1,4 +1,4 @@
-Authentication-Flows
+Authentication-Flows   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows)
 ==================
 
 The Authentication-Flows JAR implements all authentication flows: 

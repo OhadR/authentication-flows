@@ -1,4 +1,4 @@
-oAuth2-sample   [![Build Status](https://travis-ci.org/OhadR/oAuth2-sample.svg?branch=maven-1.6.2-SNAPSHOT)](https://travis-ci.org/OhadR/oAuth2-sample)
+oAuth2-sample   [![Build Status](https://travis-ci.org/OhadR/oAuth2-sample.svg?branch=maven-1.6.2-SNAPSHOT)](https://travis-ci.org/OhadR/oAuth2-sample)   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows)
 =============
 
 Mainly, this project is a oAuth2 POC, consists of all 3 oAuth parties: the authentication server, a resource server, and a client app.
