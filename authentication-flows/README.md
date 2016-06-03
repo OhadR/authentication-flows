@@ -1,4 +1,4 @@
-Authentication-Flows
+Authentication-Flows   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows)
 ==================
 **Authentication-Flows is a powerful and highly customizable framework that covers all flows that authentication-server 
 that is based on Spring-Security needs.**

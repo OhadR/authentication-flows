@@ -1,4 +1,4 @@
-oAuth2-sample   [![Build Status](https://travis-ci.org/OhadR/oAuth2-sample.svg?branch=master)](https://travis-ci.org/OhadR/oAuth2-sample)
+oAuth2-sample   [![Build Status](https://travis-ci.org/OhadR/oAuth2-sample.svg?branch=master)](https://travis-ci.org/OhadR/oAuth2-sample)   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows)
 =============
 
 Mainly, this project is a oAuth2 POC, consists of all 3 oAuth parties: the authentication server, a resource server, and a client app.
@@ -27,7 +27,7 @@ Make it work
 
 Project Components
 ==================
-JAR: Authentication-Flows
+JAR: Authentication-Flows   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows)
 --------------------
 The Authentication-Flows JAR implements all authentication flows: 
 * create account, 
@@ -41,7 +41,7 @@ upon user's registration and "forget password" flows. Read more about the encryp
 
 [Authentication-Flows APIs](authentication-flows#api)
 
-JAR: common-crypto
+JAR: common-crypto   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/common-crypto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/common-crypto)
 -------------
 Both oAuth identity-provider and the authentication-flows JAR use cryptography in order to encrypt the data:
 - oAuth encrypts the access-token 
@@ -62,7 +62,7 @@ Add this dependency to your POM.xml::
 
 Note the version - make sure you use the latest.
 
-JAR: auth-common
+JAR: auth-common   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/auth-common/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/auth-common)
 ------------
 common code for authentication.  You can find it also in this project,
 and also it is available in Maven repository:
