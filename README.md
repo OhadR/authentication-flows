@@ -62,7 +62,7 @@ Add this dependency to your POM.xml::
 
 Note the version - make sure you use the latest.
 
-JAR: auth-common   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/auth-common/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/auth-common)
+JAR: auth-common   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr.oauth2/auth-common/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr.oauth2/auth-common)
 ------------
 common code for authentication.  You can find it also in this project,
 and also it is available in Maven repository:
