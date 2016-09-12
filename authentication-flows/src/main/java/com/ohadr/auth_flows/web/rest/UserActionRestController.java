@@ -133,10 +133,8 @@ public class UserActionRestController
 	/**
 	 * called by the UI, changePassword.jsp#submit
 	 * 
-	 * @param email
 	 * @param currentPassword
 	 * @param newPassword
-	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping("/rest/changePassword")

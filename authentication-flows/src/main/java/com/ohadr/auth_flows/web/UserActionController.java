@@ -62,15 +62,11 @@ public class UserActionController
 	/**
 	 * we get the params from the HTML-form. 
 	 * this method is called by AJAX from "create-account" form submission
-	 * @param name
 	 * @param email
 	 * @param password
-	 * @param secretQuestion
-	 * @param secretQuestionAnswer
 	 * @param request
 	 * @return
 	 * @throws IOException 
-	 * @throws Exception
 	 */
 	@RequestMapping("/createAccount")
 	final protected View createAccount(
@@ -222,7 +218,6 @@ public class UserActionController
 	 * @param encUserAndTimestamp
 	 * @param password
 	 * @return
-	 * @throws Exception
 	 */
 	@RequestMapping("/setNewPassword")
 	protected View setNewPassword( 
@@ -273,10 +268,8 @@ public class UserActionController
 	/**
 	 * called by the UI, changePassword.jsp#submit
 	 * 
-	 * @param email
 	 * @param currentPassword
 	 * @param newPassword
-	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping("/changePassword")

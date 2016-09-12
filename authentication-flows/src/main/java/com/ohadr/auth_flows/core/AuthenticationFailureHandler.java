@@ -21,7 +21,8 @@ import com.ohadr.auth_flows.types.FlowsConstatns;
 
 /**
  * nice and intersting reference:
- * https://code.google.com/p/springas-train-example/source/browse/trunk/serverIntegration/server/common/src/main/java/cn/com/oceansoft/flex4/server/common/interceptor/CustomAuthenticationFailureHandler.java?r=73&spec=svn73
+ * @see <a href="https://code.google.com/p/springas-train-example/source/browse/trunk/serverIntegration/server/common/src/main/java/cn/com/oceansoft/flex4/server/common/interceptor/CustomAuthenticationFailureHandler.java?r=73&spec=svn73">nice and intersting reference</a>
+ * 
  * 
  * this class is good for REST as well, since if no "redirect-uri" is defined, the parent class 
  * (SimpleUrlAuthenticationFailureHandler) does not redirect, but sends 401 instead.

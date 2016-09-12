@@ -149,8 +149,6 @@ public class InMemoryAuthenticationUserImpl implements AuthenticationUser
     /**
      * copied from org.springframework.security.core.userdetails.User
      * 
-     * @param authorities
-     * @return
      */
     private static class AuthorityComparator implements Comparator<GrantedAuthority>, Serializable {
         private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
