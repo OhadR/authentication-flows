@@ -30,9 +30,9 @@ subprojects {
 		archives javadocJar, sourcesJar
 	}
 	
-	signing {
-		sign configurations.archives
-	}
+//	signing {
+//		sign configurations.archives
+//	}
 
     repositories {
 		mavenLocal()
