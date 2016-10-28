@@ -14,7 +14,9 @@ public abstract class FlowsConstatns
 	public static final int ETERNAL_PASSWORD = -1;
 	
 	public static final String LOGIN_FORMS_DIR = "login";
-
+	public static final String SECURE_FORMS_DIR = "secure";
+	public static final String BASE_URL_PATH = "baseUrlPath";
+	public static final String LOGIN_URL_SUCCESS = "loginSuccessEndpointUrl";
 
 	public static final String EMAIL_PARAM_NAME = "email";
 	public static final String CONFIRM_PASSWORD_PARAM_NAME = "confirm_password";

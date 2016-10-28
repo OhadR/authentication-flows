@@ -19,6 +19,12 @@ public class AuthFlowsProperties
 	@Value("${com.ohadr.auth-flows.endpoints.accountActivatedEndpointUrl}")
 	private String accountActivatedEndpointUrl;
 	
+	@Value("${com.ohadr.auth-flows.endpoints.loginSuccessEndpointUrl}")
+	private String loginSuccessEndpointUrl;
+	
+	@Value("${com.ohadr.auth-flows.email.baseUrlPath}")
+	private String baseUrlPath;
+
 	/**
 	 * indicates the "from" field of the emails that auth-flows sends.
 	 */
@@ -44,6 +50,16 @@ public class AuthFlowsProperties
 	{
 		return accountActivatedEndpointUrl;
 	}
+
+	public String getLoginSuccessEndpointUrl()
+	{
+		return loginSuccessEndpointUrl;
+	}
+
+	public String getBaseUrlPath()
+	{
+		return baseUrlPath;
+	}	
 
 	public String getAuthFlowsEmailsFromField()
 	{

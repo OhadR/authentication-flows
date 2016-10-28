@@ -155,6 +155,8 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 			String serverPath
 			) throws AuthenticationFlowsException
 	{
+		String baseUrlPath=properties.getBaseUrlPath();
+		String finalPath;
 		email = email.toLowerCase();		// issue #23 : username is case-sensitive (https://github.com/OhadR/oAuth2-sample/issues/23)
 		log.info("createAccount() for user " + email);
 
@@ -216,8 +218,12 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 
 		log.info("Manager: sending registration email to " + email + "...");
 
-		
-		String activationUrl = serverPath + FlowsConstatns.ACTIVATE_ACCOUNT_ENDPOINT +
+		if((baseUrlPath!=null) && (!baseUrlPath.isEmpty()))
+			finalPath=baseUrlPath;
+		else
+			finalPath=serverPath;
+
+		String activationUrl = finalPath + FlowsConstatns.ACTIVATE_ACCOUNT_ENDPOINT +
 			"?" + 
 //			"a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + "&" + 
 			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
@@ -293,7 +299,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	
 	
 	@Override
-	public void handleChangePassword( 
+	public String handleChangePassword( 
 			String currentPassword,
 			String newPassword,
 			String retypedPassword,
@@ -302,18 +308,19 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		String email = cryptoService.extractString(encUser);
 		
 		internalHandleChangePassword(currentPassword, newPassword, retypedPassword, email);
+		return email;
 	}
 
 	@Override
-	public void handleChangePassword( 
+	public String handleChangePassword( 
 			String currentPassword,
 			String newPassword,
 			String retypedPassword) throws AuthenticationFlowsException
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email = auth.getName(); //get logged in username
-		
 		internalHandleChangePassword(currentPassword, newPassword, retypedPassword, email);
+		return email;
 	}
 
 	public void internalHandleChangePassword( 
@@ -427,7 +434,16 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	private void sendPasswordRestoreMail(String email,
 			String serverPath) 
 	{
-		String passwordRestoreUrl = serverPath + FlowsConstatns.RESTORE_PASSWORD_ENDPOINT +
+		String passwordRestoreUrl;
+		String finalPath;
+		String baseUrlPath=properties.getBaseUrlPath();
+
+		if((baseUrlPath!=null) && (!baseUrlPath.isEmpty()))
+                        finalPath=baseUrlPath;
+                else
+                        finalPath=serverPath;
+
+		passwordRestoreUrl = finalPath + FlowsConstatns.RESTORE_PASSWORD_ENDPOINT +
 				"?" + 
 //				"a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + "&" + 
 				"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
@@ -471,9 +487,17 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	public void sendUnlockAccountMail(String email, 
 			String serverPath)
 	{
+                String finalPath;
+                String baseUrlPath=properties.getBaseUrlPath();
+
+                if((baseUrlPath!=null) && (!baseUrlPath.isEmpty()))
+                        finalPath=baseUrlPath;
+                else
+                        finalPath=serverPath;
+		
 		log.info("Manager: sending Unlock-Account email to " + email + "...");
 		
-		String activationUrl = serverPath + FlowsConstatns.ACTIVATE_ACCOUNT_ENDPOINT +
+		String activationUrl = finalPath + FlowsConstatns.ACTIVATE_ACCOUNT_ENDPOINT +
 			"?" + 
 			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
 		

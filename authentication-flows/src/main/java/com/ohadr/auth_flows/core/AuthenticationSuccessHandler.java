@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
+import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.FlowsConstatns;
 import com.ohadr.crypto.service.CryptoService;
@@ -23,6 +24,9 @@ public class AuthenticationSuccessHandler extends
 {
 	@Autowired
 	private AuthenticationFlowsProcessor processor;
+	
+	@Autowired
+	private AuthFlowsProperties properties;
 
 	@Autowired
 	private CryptoService cryptoService;
@@ -58,8 +62,9 @@ public class AuthenticationSuccessHandler extends
 		/////////////////////////////////////////
 		// changeSessionTimeout(request);
 		/////////////////////////////////////////
-
-    	super.onAuthenticationSuccess(request, response, authentication);
+		response.sendRedirect(properties.getLoginSuccessEndpointUrl());
+		//super.setDefaultTargetUrl(properties.getLoginSuccessEndpointUrl());
+    	//super.onAuthenticationSuccess(request, response, authentication);
     }
     
     private void changeSessionTimeout(HttpServletRequest request)

@@ -12,12 +12,14 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
+import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
 import com.ohadr.auth_flows.types.AuthenticationFlowsException;
@@ -32,10 +34,10 @@ public class UserActionController
 
 	public static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "Account is locked or does not exist";
 	
-
-
-
 	private static Logger log = Logger.getLogger( UserActionController.class );
+		
+	@Autowired
+	private AuthFlowsProperties properties;
 	
 	@Autowired
 	private CryptoService cryptoService;
@@ -255,7 +257,9 @@ public class UserActionController
 		}
 		
 
-		attributes.put(FlowsConstatns.EMAIL_PARAM_NAME,  email);		
+		attributes.put(FlowsConstatns.EMAIL_PARAM_NAME,  email);
+		attributes.put(FlowsConstatns.BASE_URL_PATH, properties.getBaseUrlPath());
+		attributes.put(FlowsConstatns.LOGIN_URL_SUCCESS, properties.getLoginSuccessEndpointUrl());
 		//adding attributes to the redirect return value:
 		rv.setAttributesMap(attributes);
 		rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "passwordSetSuccess.jsp");
@@ -273,19 +277,21 @@ public class UserActionController
 	 * @throws Exception
 	 */
 	@RequestMapping("/changePassword")
-	protected void changePassword( 
+	protected View changePassword( 
 								@RequestParam("currentPassword") String currentPassword,
 								@RequestParam("newPassword") String newPassword,
 								@RequestParam( FlowsConstatns.CONFIRM_PASSWORD_PARAM_NAME ) String retypedPassword,
-								@RequestParam(FlowsConstatns.ENCRYPTED_USERNAME_PARAM_NAME) String encUser,
+								//@RequestParam(FlowsConstatns.ENCRYPTED_USERNAME_PARAM_NAME) String encUser,
 								HttpServletResponse response) throws Exception
 	{
+		String email="";
+		RedirectView rv = new RedirectView();
 		PrintWriter writer = response.getWriter();
-		
+		Map<String, String> attributes = new HashMap<String, String>();
 
 		try
 		{
-			flowsProcessor.handleChangePassword(currentPassword, newPassword, retypedPassword, encUser);
+			email=flowsProcessor.handleChangePassword(currentPassword, newPassword, retypedPassword);
 		}
 		catch (AuthenticationFlowsException afe)
 		{
@@ -299,12 +305,24 @@ public class UserActionController
 			//UI will redirect back to createAccount page, with error message:
 			writer.println(FlowsConstatns.ERR_MSG + FlowsConstatns.DELIMITER + 
 					FlowsUtil.unescapeJaveAndEscapeHtml( afe.getMessage()) );
+			
+			attributes.put(FlowsConstatns.ERR_MSG,  afe.getMessage());		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl(FlowsConstatns.SECURE_FORMS_DIR +"/" + "changePassword.jsp");
 
-			return;
+			return rv;
 		}
 
 
 		writer.println(FlowsConstatns.OK);
+		attributes.put(FlowsConstatns.EMAIL_PARAM_NAME,  email);
+		attributes.put(FlowsConstatns.BASE_URL_PATH, properties.getBaseUrlPath());
+		attributes.put(FlowsConstatns.LOGIN_URL_SUCCESS, properties.getLoginSuccessEndpointUrl());
+		//adding attributes to the redirect return value:
+		rv.setAttributesMap(attributes);		
+		rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "passwordSetSuccess.jsp");
+		return rv;
 	}
 	/**********************************************************************************************************/
 
