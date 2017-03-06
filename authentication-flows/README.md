@@ -33,6 +33,144 @@ In addition, we have changed the build tool from Maven to **Gradle**. If you wis
 it on a separated branch. The version in that branch is 1.6.2-SNAPSHOT (you can find in Maven Central the latest release, 1.6.2). The version on Master is 2.0.0-SNAPSHOT.
 
 
+Configuration
+=============
+All necessary configurations are described in detail in the client's project, as the client is responsible for configurations. However, here are the DB configurations that are required:
+
+1. Client's [Spring-Beans.XML](client/src/main/webapp/WEB-INF/spring-servlet.xml)
+---------------------------
+**1.1. Component-Scan**
+
+the XML should contain to the component-scan path the following paths:
+<pre>
+com.ohadr.auth_flows.*
+com.ohadr.crypto.*
+</pre>
+
+**1.2. password encoder**
+
+add bean in the spring XML. it is in use in the `UserActionController`.
+
+```xml
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider user-service-ref="userDetailsService" >
+			<sec:password-encoder hash="sha-256">
+				<sec:salt-source user-property="username"/>
+			</sec:password-encoder>
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+
+	<bean id="passwordEncoder" 	class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<constructor-arg value="256"/>
+	</bean>
+```
+
+```xml
+	<sec:form-login 
+			login-page="/login/login.htm" 
+			authentication-success-handler-ref="authenticationSuccessHandler"
+			authentication-failure-handler-ref="authenticationFailureHandler" />
+```
+
+
+**1.3. authentication success handler**
+
+add this to the `<form-login>` block:
+<pre>
+	authentication-success-handler-ref="authenticationSuccessHandler"
+</pre>
+after a successful login, we need to check whether the user has to change hos password (if it is expired).
+
+**1.4. authentication failure handler**
+
+add this to the `<form-login>` block:
+<pre>
+	authentication-failure-handler-ref="authenticationFailureHandler"
+</pre>
+
+and this bean:
+
+```xml
+	<bean id="authenticationFailureHandler" class="com.ohadr.auth_flows.core.AuthenticationFailureHandler">
+		<constructor-arg value="/login/login.htm?login_error=1"/>
+		<property name="accountLockedUrl" value="/login/accountLocked.htm" />
+	</bean>
+```
+
+**1.5. velocity - for better emails...**
+
+issue https://github.com/OhadR/oAuth2-sample/issues/31 : read content of emails from a file. For this, we use [velocity](http://velocity.apache.org/).
+
+```xml
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <value>
+                resource.loader=class
+                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+            </value>
+        </property>
+    </bean>
+```
+
+
+2. Database
+----------
+need to declare on dataSource bean, that is the connection to the DB.
+The connection properties are in client.properties.
+The client is responsible for creating a schema named 'auth-flows' in the DB. In this schema, there are tables,
+created using the following scripts:
+
+<pre>
+CREATE SCHEMA `auth-flows`
+</pre>
+
+**2.1. TABLE: policy**
+
+<pre>
+CREATE TABLE `auth-flows`.`policy` (
+  `POLICY_ID` int(10) unsigned NOT NULL,
+  `PASSWORD_MIN_LENGTH` int(11) DEFAULT NULL,
+  `PASSWORD_MAX_LENGTH` int(11) DEFAULT NULL,
+  `PASSWORD_MIN_UPCASE_CHARS` int(11) DEFAULT NULL,
+  `PASSWORD_MIN_LOCASE_CHARS` int(11) DEFAULT NULL,
+  `PASSWORD_MIN_NUMERALS` int(11) DEFAULT NULL,
+  `PASSWORD_MIN_SPECIAL_SYMBOLS` int(11) DEFAULT NULL,
+  `PASSWORD_BLACKLIST` longtext,
+  `MAX_PASSWORD_ENTRY_ATTEMPTS` int(11) DEFAULT NULL,
+  `PASSWORD_LIFE_IN_DAYS` int(11) DEFAULT NULL,
+  `REMEMBER_ME_VALIDITY_IN_DAYS` int(11) DEFAULT NULL,
+  PRIMARY KEY (`POLICY_ID`)
+)
+</pre>
+
+**2.2. TABLE: users**
+
+<pre>
+CREATE  TABLE `auth-flows`.`users` (
+  `USERNAME` VARCHAR(50) NOT NULL ,
+  `PASSWORD` VARCHAR(100) NOT NULL ,
+  `ENABLED` TINYINT(1)  NOT NULL DEFAULT 1 ,
+  `LOGIN_ATTEMPTS_COUNTER` INT NOT NULL DEFAULT 0,
+  `LAST_PSWD_CHANGE_DATE` DATETIME NOT NULL, 
+  `FIRSTNAME` VARCHAR(30) ,
+  `LASTNAME` VARCHAR(30) ,
+  `AUTHORITIES` VARCHAR(100) NOT NULL ,
+  PRIMARY KEY (`USERNAME`) ,
+  UNIQUE INDEX `idusers_UNIQUE` (`USERNAME` ASC) 
+  )
+</pre>
+  
+It is used by `JdbcAuthenticationAccountRepositoryImpl` class.
+
+Important note: in `JdbcUserDetailsManager`, Spring expects the table-name is 'user', and that 
+a column called 'username' for the authentication exists. Unless a derived class changes it, these values
+must remain.
+In my solution I try to keep it simple and stay as close as I can to Spring' implementation, so even though
+I wanted the column name to be 'email' - I had to rename it back to 'username' in order to stay as close
+as possible to Spring.
+
+
+
 API
 ---------
 
