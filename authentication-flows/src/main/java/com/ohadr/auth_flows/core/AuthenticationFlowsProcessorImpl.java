@@ -214,15 +214,15 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		}
 		
 
-		log.info("Manager: sending registration email to " + email + "...");
-
-		
 		String activationUrl = serverPath + FlowsConstatns.ACTIVATE_ACCOUNT_ENDPOINT +
 			"?" + 
 //			"a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + "&" + 
 			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
 		
-		        
+		 
+		log.info("Manager: sending registration email to " + email + "; activationUrl: " + activationUrl);
+
+		
 		try
 		{
 			sendMail(email,
