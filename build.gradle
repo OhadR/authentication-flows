@@ -8,7 +8,7 @@ subprojects {
     apply plugin: 'signing'
 	
 	group = 'com.ohadr'
-	version = '2.0.0-SNAPSHOT'
+	version = '2.0.0-RELEASE'
 
 	eclipse {
 		classpath {
@@ -30,9 +30,9 @@ subprojects {
 		archives javadocJar, sourcesJar
 	}
 	
-//	signing {
-//		sign configurations.archives
-//	}
+	signing {
+		sign configurations.archives
+	}
 
     repositories {
 		mavenLocal()
@@ -76,16 +76,16 @@ subprojects {
 		  }
 
 		  pom.project {
-			name 'Example Application'
+			name 'authentication parent'
 			packaging 'jar'
 			// optionally artifactId can be defined here 
-			description 'A application used as an example on how to set up pushing  its components to the Central Repository.'
-			url 'http://www.example.com/example-application'
+			description 'parent POM for authentication projects.'
+			url 'https://github.com/OhadR/oAuth2-sample'
 
 			scm {
-			  connection 'scm:svn:http://foo.googlecode.com/svn/trunk/'
-			  developerConnection 'scm:svn:https://foo.googlecode.com/svn/trunk/'
-			  url 'http://foo.googlecode.com/svn/trunk/'
+			  connection 'scm:git:git@github.com:OhadR/oAuth2-sample.git'
+			  developerConnection 'scm:git:git@github.com:OhadR/oAuth2-sample.git'
+			  url 'git@github.com:OhadR/oAuth2-sample.git'
 			}
 
 			licenses {
@@ -97,9 +97,8 @@ subprojects {
 
 			developers {
 			  developer {
-				id 'manfred'
-				name 'Manfred Moser'
-				email 'manfred@sonatype.com'
+				id 'ohadr'
+				name 'Ohad Redlich'
 			  }
 			}
 		  }
