@@ -8,7 +8,7 @@ subprojects {
     apply plugin: 'signing'
 	
 	group = 'com.ohadr'
-	version = '2.0.0-RELEASE'
+	version = '2.1-SNAPSHOT'
 
 	eclipse {
 		classpath {
