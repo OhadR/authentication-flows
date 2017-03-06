@@ -27,6 +27,8 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 	@RequestMapping
     public View activateAccount(HttpServletRequest request) throws IOException 
     {
+		String appName = request.getContextPath();
+
 		RedirectView rv = new RedirectView();
 		Map<String, String> attributes = new HashMap<String, String>();
 
@@ -45,7 +47,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS INVALID" + " exception message: " + cryptoEx.getMessage());		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl( FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp" );
+			rv.setUrl( appName + "/" + FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp" );
 			return rv;
 		}
 		
@@ -58,7 +60,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS Expired");		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
-			rv.setUrl(FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp");
+			rv.setUrl(appName + "/" + FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp");
 		}
 		else		
 		{
@@ -74,7 +76,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			SecurityContextHolder.getContext().setAuthentication(null);
 
 			String accountActivatedEndpointUrl = properties.getAccountActivatedEndpointUrl();
-			rv.setUrl( accountActivatedEndpointUrl );
+			rv.setUrl( appName + accountActivatedEndpointUrl );
 		}
 		return rv;
 	}
