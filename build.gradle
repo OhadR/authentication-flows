@@ -5,7 +5,7 @@ subprojects {
     apply plugin: 'java'
 	apply plugin: 'eclipse'
     apply plugin: 'maven'
-    apply plugin: 'signing'
+//    apply plugin: 'signing'	//use only for Maven-Central deployments
 	
 	group = 'com.ohadr'
 	version = '2.1-SNAPSHOT'
@@ -30,10 +30,12 @@ subprojects {
 		archives javadocJar, sourcesJar
 	}
 	
+//use only for Maven-Central deployments
+/*
 	signing {
 		sign configurations.archives
 	}
-
+*/
     repositories {
 		mavenLocal()
        	mavenCentral()
