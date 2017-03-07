@@ -35,7 +35,7 @@ it on a separated branch. The version in that branch is 1.6.2-SNAPSHOT (you can 
 
 Configuration
 =============
-All necessary configurations are described in detail in the client's project, as the client is responsible for configurations. However, here are the DB configurations that are required:
+The client-app is responsible for all configurations. Here are the required configurations:
 
 1. Client's [Spring-Beans.XML](client/src/main/webapp/WEB-INF/spring-servlet.xml)
 ---------------------------
@@ -117,8 +117,8 @@ issue https://github.com/OhadR/oAuth2-sample/issues/31 : read content of emails 
 ----------
 need to declare on dataSource bean, that is the connection to the DB.
 The connection properties are in client.properties.
-The client is responsible for creating a schema named 'auth-flows' in the DB. In this schema, there are tables,
-created using the following scripts:
+The client is responsible for creating a schema named 'auth-flows' in the DB (The schema name can be different, of course, but it should
+be changed in client.properties respectively). In this schema, there are tables, created using the following scripts:
 
 <pre>
 CREATE SCHEMA `auth-flows`
@@ -169,7 +169,16 @@ In my solution I try to keep it simple and stay as close as I can to Spring' imp
 I wanted the column name to be 'email' - I had to rename it back to 'username' in order to stay as close
 as possible to Spring.
 
+**2.3. TABLE: links** (from version 2.1-RELEASE)
 
+<pre>
+CREATE TABLE `auth-flows`.`links` (
+  `LINK` VARCHAR(150) NOT NULL,
+  PRIMARY KEY (`LINK`)
+);
+</pre>
+
+In init-db.sql there are all the scripts above.
 
 API
 ---------
