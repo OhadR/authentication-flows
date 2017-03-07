@@ -68,7 +68,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 		}
 		else		
 		{
-			// enable the account
+			// enable the account. NOTE: if userEmail was not found in DB, we will get RuntimeException (NoSuchElement)
 			processor.setEnabled(extractedData.userEmail);
 
 			// reset the #attempts, since there is a flow of exceeding attempts number, so when clicking the link

@@ -466,7 +466,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		
 		if( 0 == user.getLoginAttemptsLeft() )
 		{
-			//lock the user:
+			//lock the user; NOTE: if email was not found in DB, we will get RuntimeException (NoSuchElement). but it cannot happen as we just called @loadUserByUsername() 
 			repository.setDisabled(email);
 		}
 		else
