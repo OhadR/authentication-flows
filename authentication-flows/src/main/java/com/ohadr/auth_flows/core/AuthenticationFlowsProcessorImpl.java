@@ -431,10 +431,15 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	private void sendPasswordRestoreMail(String email,
 			String serverPath) 
 	{
+		String utsPart = cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
 		String passwordRestoreUrl = serverPath + FlowsConstatns.RESTORE_PASSWORD_ENDPOINT +
 				"?" + 
 //				"a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + "&" + 
-				"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
+				"uts=" + utsPart;
+		
+		log.debug("Manager: sending restore-password email to " + email + "; activationUrl: " + passwordRestoreUrl);
+
+		linksRepository.addLink(utsPart);
 
 		sendMail(email,
 				FlowsConstatns.MailMessage.RESTORE_PASSWORD_MAIL_SUBJECT,
@@ -477,9 +482,12 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	{
 		log.info("Manager: sending Unlock-Account email to " + email + "...");
 		
+		String utsPart = cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email); 
 		String activationUrl = serverPath + FlowsConstatns.ACTIVATE_ACCOUNT_ENDPOINT +
 			"?" + 
-			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
+			"uts=" + utsPart;
+		
+		linksRepository.addLink(utsPart);
 		
 		sendMail(email,
 				FlowsConstatns.MailMessage.UNLOCK_MAIL_SUBJECT,

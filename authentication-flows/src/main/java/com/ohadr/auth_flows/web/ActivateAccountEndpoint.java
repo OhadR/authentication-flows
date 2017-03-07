@@ -42,24 +42,13 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 		{
 			extractedData = extractEmailData(request);
 		} 
-		catch (CryptoException cryptoEx)
+		catch (CryptoException | AuthenticationFlowsException cryptoEx)
 		{
 			log.error("Could not extract data from URL", cryptoEx);
 			cryptoEx.printStackTrace();
 			
 			attributes.put(FlowsConstatns.ERR_HEADER,  "URL IS INVALID");		
 			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS INVALID" + " exception message: " + cryptoEx.getMessage());		
-			//adding attributes to the redirect return value:
-			rv.setAttributesMap(attributes);
-			rv.setUrl( appName + "/" + FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp" );
-			return rv;
-		}
-		catch (AuthenticationFlowsException afe) 
-		{
-			log.error("Could not extract data from URL", afe);
-			
-			attributes.put(FlowsConstatns.ERR_HEADER,  "URL IS INVALID");		
-			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS INVALID" + " exception message: " + afe.getMessage());		
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl( appName + "/" + FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp" );
