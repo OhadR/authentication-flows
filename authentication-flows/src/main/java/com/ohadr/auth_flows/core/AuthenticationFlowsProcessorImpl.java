@@ -30,10 +30,7 @@ import org.springframework.util.Assert;
 
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.endpoints.CreateAccountEndpoint;
-import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
-import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
-import com.ohadr.auth_flows.interfaces.AuthenticationPolicyRepository;
-import com.ohadr.auth_flows.interfaces.AuthenticationUser;
+import com.ohadr.auth_flows.interfaces.*;
 import com.ohadr.auth_flows.mocks.InMemoryAuthenticationUserImpl;
 import com.ohadr.auth_flows.types.AccountState;
 import com.ohadr.auth_flows.types.AuthenticationFlowsException;
@@ -64,6 +61,7 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	private static final String ACCOUNT_LOCKED_OR_DOES_NOT_EXIST = "Account is locked or does not exist";
 
 	private static final String LINK_HAS_EXPIRED = "link has expired";
+	private static final String LINK_DOES_NOT_EXIST = "link does not exist in DB";	//means that link was already used, or it is invalid
 
 	private static final String CHANGE_PASSWORD_FAILED_NEW_PASSWORD_SAME_AS_OLD_PASSWORD = "CHANGE PASSWORD FAILED: New Password is same as Old Password.";
 	private static final String CHANGE_PASSWORD_BAD_OLD_PASSWORD = "CHANGE PASSWORD Failed: Bad Old Password.";
@@ -74,6 +72,9 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 	
 	@Autowired
 	private AuthenticationPolicyRepository policyRepo;
+	
+	@Autowired
+	private LinksRepository linksRepository;
 	
 	@Autowired
 	private CryptoService	cryptoService;
@@ -214,10 +215,13 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		}
 		
 
+		String utsPart = cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
 		String activationUrl = serverPath + FlowsConstatns.ACTIVATE_ACCOUNT_ENDPOINT +
 			"?" + 
 //			"a=" + FlowsConstatns.MailMessage.OAUTH_ACTIVATE_ACCOUNT + "&" + 
-			"uts=" + cryptoService.createEncodedContent( new Date(System.currentTimeMillis()), email);
+			"uts=" + utsPart;
+		//persist the "uts", so this activation link will be single-used:
+		linksRepository.addLink( utsPart );
 		
 		 
 		log.info("Manager: sending registration email to " + email + "; activationUrl: " + activationUrl);
@@ -669,6 +673,15 @@ public class AuthenticationFlowsProcessorImpl implements AuthenticationFlowsProc
 		{
 			throw new AuthenticationFlowsException( LINK_HAS_EXPIRED );
 		}
+	}
+
+
+
+	@Override
+	public void removeLinkFromDB(String link) throws AuthenticationFlowsException 
+	{
+		if( !linksRepository.removeLink(link) )
+			throw new AuthenticationFlowsException( LINK_DOES_NOT_EXIST );
 	}
 	
 }

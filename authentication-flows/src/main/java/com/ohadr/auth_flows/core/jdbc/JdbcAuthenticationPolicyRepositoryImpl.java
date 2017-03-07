@@ -25,8 +25,7 @@ import com.ohadr.auth_flows.types.AuthenticationPolicy;
  * @author OhadR
  *
  */
-public class JdbcAuthenticationPolicyRepositoryImpl implements 
-	AuthenticationPolicyRepository, InitializingBean
+public class JdbcAuthenticationPolicyRepositoryImpl implements AuthenticationPolicyRepository, InitializingBean
 {
 	private static Logger log = Logger.getLogger(JdbcAuthenticationPolicyRepositoryImpl.class);
 

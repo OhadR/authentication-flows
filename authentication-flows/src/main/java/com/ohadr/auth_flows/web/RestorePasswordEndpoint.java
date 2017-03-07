@@ -18,6 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationAccountRepository;
+import com.ohadr.auth_flows.types.AuthenticationFlowsException;
 import com.ohadr.auth_flows.types.FlowsConstatns;
 import com.ohadr.crypto.exception.CryptoException;
 
@@ -36,6 +37,8 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 	@RequestMapping
 	public View restorePassword(HttpServletRequest request) throws IOException 
 	{
+		String appName = request.getContextPath();
+
 		RedirectView rv = new RedirectView();
 		Map<String, String> attributes = new HashMap<String, String>();
 
@@ -54,6 +57,17 @@ public class RestorePasswordEndpoint extends FlowsEndpointsCommon
 			//adding attributes to the redirect return value:
 			rv.setAttributesMap(attributes);
 			rv.setUrl("login/error.jsp");
+			return rv;
+		}
+		catch (AuthenticationFlowsException afe) 
+		{
+			log.error("Could not extract data from URL", afe);
+			
+			attributes.put(FlowsConstatns.ERR_HEADER,  "URL IS INVALID");		
+			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS INVALID" + " exception message: " + afe.getMessage());		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl( appName + "/" + FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp" );
 			return rv;
 		}
 

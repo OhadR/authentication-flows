@@ -102,5 +102,11 @@ public interface AuthenticationFlowsProcessor
 
 
 	public void setEnabled(String userEmail);
-
+	
+	/**
+	 * 
+	 * @param link- the link to search
+	 * @throws AuthenticationFlowsException - if link was not found in DB. it means that link was already used, or it is invalid.
+	 */
+	void removeLinkFromDB(String link) throws AuthenticationFlowsException;
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
+import com.ohadr.auth_flows.types.AuthenticationFlowsException;
 import com.ohadr.auth_flows.types.FlowsConstatns;
 import com.ohadr.crypto.exception.CryptoException;
 
@@ -21,6 +23,8 @@ import com.ohadr.crypto.exception.CryptoException;
 @RequestMapping(value = "/aa")
 public class ActivateAccountEndpoint extends FlowsEndpointsCommon 
 {
+	private static Logger log = Logger.getLogger( ActivateAccountEndpoint.class );
+
 	@Autowired
 	private AuthFlowsProperties properties;
 	
@@ -40,7 +44,7 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 		} 
 		catch (CryptoException cryptoEx)
 		{
-//			log.error("Could not extract data from URL", cryptoEx);
+			log.error("Could not extract data from URL", cryptoEx);
 			cryptoEx.printStackTrace();
 			
 			attributes.put(FlowsConstatns.ERR_HEADER,  "URL IS INVALID");		
@@ -50,11 +54,22 @@ public class ActivateAccountEndpoint extends FlowsEndpointsCommon
 			rv.setUrl( appName + "/" + FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp" );
 			return rv;
 		}
+		catch (AuthenticationFlowsException afe) 
+		{
+			log.error("Could not extract data from URL", afe);
+			
+			attributes.put(FlowsConstatns.ERR_HEADER,  "URL IS INVALID");		
+			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS INVALID" + " exception message: " + afe.getMessage());		
+			//adding attributes to the redirect return value:
+			rv.setAttributesMap(attributes);
+			rv.setUrl( appName + "/" + FlowsConstatns.LOGIN_FORMS_DIR +"/" + "error.jsp" );
+			return rv;
+		}
 		
 		
 		if(extractedData.expired)
 		{
-//			log.error("user " + extractedData.userEmail + " tried to use an expired link");
+			log.error("user " + extractedData.userEmail + " tried to use an expired link");
 
 			attributes.put(FlowsConstatns.ERR_HEADER,  "URL IS EXPIRED");		
 			attributes.put(FlowsConstatns.ERR_MSG,  "URL IS Expired");		

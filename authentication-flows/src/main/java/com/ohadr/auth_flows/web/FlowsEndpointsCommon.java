@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
 import com.ohadr.auth_flows.core.FlowsUtil;
 import com.ohadr.auth_flows.interfaces.AuthenticationFlowsProcessor;
+import com.ohadr.auth_flows.types.AuthenticationFlowsException;
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.service.CryptoService;
 
@@ -27,11 +28,14 @@ public abstract class FlowsEndpointsCommon
 	
 
 	
-	protected EmailExtractedData extractEmailData(HttpServletRequest request) throws CryptoException 
+	protected EmailExtractedData extractEmailData(HttpServletRequest request) throws CryptoException, AuthenticationFlowsException 
 	{
 //		String encRedirectUri = FlowsUtil.getParamRedirectUri(request);
 		String encUserAndTimestamp = FlowsUtil.getParamsUserAndTimestamp(request);
-		
+		//this part was persisted in the DB, in order to make sure the activation-link is single-used.
+		//so here we remove it from the DB:
+		processor.removeLinkFromDB( encUserAndTimestamp );
+
 		
 		EmailExtractedData extractedData = new EmailExtractedData();
 		ImmutablePair<Date, String> stringAndDate;

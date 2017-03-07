@@ -26,6 +26,11 @@ CREATE  TABLE `auth-flows`.`users` (
   UNIQUE INDEX `idusers_UNIQUE` (`USERNAME` ASC) 
 );
   
+CREATE TABLE `auth-flows`.`links` (
+  `LINK` VARCHAR(150) NOT NULL,
+  PRIMARY KEY (`LINK`)
+);
+
 insert into `auth-flows`.`policy` (
  `POLICY_ID`,
   `PASSWORD_MIN_LENGTH`,
