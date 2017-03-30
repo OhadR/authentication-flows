@@ -143,6 +143,16 @@ CREATE TABLE `auth-flows`.`policy` (
 )
 </pre>
 
+Note: in order to get the project up and running, you will have to insert an initial data to the `policy` table. The minimal set that is essential can 
+be set using the below statement:
+
+<pre>
+INSERT INTO `auth-flows`.`policy` (`POLICY_ID`, `PASSWORD_MAX_LENGTH`, `PASSWORD_BLACKLIST`) VALUES (1, 10, "");
+</pre>
+
+Needless to mention, you can add more "columns" (which means adding more constraints on the password the user enters), but the above is the minimum required. 
+
+
 **2.2. TABLE: users**
 
 <pre>
