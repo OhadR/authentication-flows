@@ -17,16 +17,13 @@ dependencies {
     compile "org.springframework:spring-jdbc:$ohadr_spring_version"
     compile "org.springframework:spring-webmvc:$ohadr_spring_version"
     compile "org.springframework:spring-tx:$ohadr_spring_version"
-    compile "org.springframework:spring-expression:$ohadr_spring_version"
+    runtime "org.springframework:spring-expression:$ohadr_spring_version"
 	compile "org.springframework:spring-context-support:$ohadr_spring_version"
-    compile "com.jamonapi:jamon:2.4"
-    compile "cglib:cglib:2.2.2"
     compile "javax.servlet:jstl:1.2"
     compile "org.apache.commons:commons-lang3:3.1"
     compile "javax.mail:mail:1.4.1"
     compile "org.apache.velocity:velocity:1.6.2"
-//    compile "mysql:mysql-connector-java:5.1.16"
-	runtime "com.mchange:c3p0:0.9.5.1"
+
 	testCompile "javax.servlet:servlet-api:2.5"
 	testCompile "junit:junit:4.8.2"
 	
