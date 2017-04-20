@@ -147,10 +147,15 @@ Note: in order to get the project up and running, you will have to insert an ini
 be set using the below statement:
 
 <pre>
-INSERT INTO `auth-flows`.`policy` (`POLICY_ID`, `PASSWORD_MAX_LENGTH`, `PASSWORD_BLACKLIST`) VALUES (1, 10, "");
+INSERT INTO `auth-flows`.`policy` (`POLICY_ID`, `PASSWORD_MAX_LENGTH`, `PASSWORD_BLACKLIST`, `PASSWORD_LIFE_IN_DAYS`) VALUES (1, 10, "", -1);
 </pre>
 
 Needless to mention, you can add more "columns" (which means adding more constraints on the password the user enters), but the above is the minimum required. 
+
+If you leave `PASSWORD_LIFE_IN_DAYS` NULL, after each successful login the framework will redirect the user to "change password" page, as it detects his current 
+password as expired. Note that value of -1 means ETERNAL_PASSWORD.
+
+If you leave `MAX_PASSWORD_ENTRY_ATTEMPTS` NULL, the user will have only a single attempt to login before he gets locked up.
 
 
 **2.2. TABLE: users**
