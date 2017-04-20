@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 import com.ohadr.auth_flows.config.AuthFlowsProperties;
@@ -35,13 +36,19 @@ import com.ohadr.auth_flows.types.FlowsConstatns;
  */
 public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 {
-	@Autowired
-	private AuthFlowsProperties properties;
+	public static final String DEFAULT_ACCOUNT_LOCKED_PAGE = FlowsConstatns.LOGIN_FORMS_DIR +"/" + "accountLocked.htm";
+	
+    private static Logger log = Logger.getLogger(AuthenticationFailureHandler.class);
 
 	/**
      * Status code (423) indicating that the resource that is being accessed is locked
      */
     public static final int SC_LOCKED = 423;
+
+    
+    @Autowired
+	private AuthFlowsProperties properties;
+
 
     public AuthenticationFailureHandler()
 	{
@@ -53,11 +60,6 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
 		super(defaultFailureUrl);
 	}
 
-
-	public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";
-	public static final String DEFAULT_ACCOUNT_LOCKED_PAGE = FlowsConstatns.LOGIN_FORMS_DIR +"/" + "accountLocked.htm";
-	
-    private static Logger log = Logger.getLogger(AuthenticationFailureHandler.class);
 	
 	@Autowired
 	private AuthenticationFlowsProcessor processor;
@@ -116,7 +118,7 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
 	
     protected String obtainUsername(HttpServletRequest request) 
     {
-        return request.getParameter(SPRING_SECURITY_FORM_USERNAME_KEY);
+        return request.getParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY);
     }
 
 }
