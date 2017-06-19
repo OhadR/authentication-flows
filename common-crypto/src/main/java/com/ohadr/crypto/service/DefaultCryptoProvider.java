@@ -33,7 +33,7 @@ import com.ohadr.crypto.interfaces.KeyHive;
  * creates the keys and stores it. if file exists but one or more keys are missing - it creates the keys and 
  * stores to the file. 
  * 
- * if this jar is deplyed on GAE, for example, where files cannot be stored - we have a flag for these cases,
+ * if this jar is deployed where files cannot be stored (GAE, for example), then we have a flag for these cases,
  * so this class will not try to store the key-store file, but will work in-mem.
  * 
  * @author OhadR

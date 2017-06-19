@@ -7,7 +7,6 @@ import java.util.Date;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.ContextLoader;
 
 import com.ohadr.crypto.exception.CryptoException;
 import com.ohadr.crypto.interfaces.ICryptoUtil;
@@ -22,7 +21,7 @@ public class CryptoService
 	private ICryptoUtil cryptoUtil;
 
 	
-	public String createEncodedBased64String(byte[] content)
+	private String createEncodedBased64String(byte[] content)
 	{
 		String based64EncryptedContent = cryptoUtil.encryptAndBase64(content, getKey());
 		return ENCRYPTION_VERSION + based64EncryptedContent.replaceAll("=", "").replaceAll("\\+", ".");
@@ -109,7 +108,7 @@ public class CryptoService
 		return createEncodedBased64String(content);
 	}
 
-	public byte[] serializeToByteArray(Object... params)
+	byte[] serializeToByteArray(Object... params)
 	{
 		int contentSize = 0;
 		for (Object obj : params)
@@ -170,7 +169,13 @@ public class CryptoService
 		return content;
 	}
 	
-	private static void storeInteger(byte[] content, int theInteger, int from)
+	/**
+	 * 
+	 * @param content the place where the given int will be stored
+	 * @param theInteger the given int
+	 * @param from offset from the beginning of 'content', where to place the int's value
+	 */
+	private void storeInteger(byte[] content, int theInteger, int from)
 	{
 		byte[] intBytes = intToByteArray(theInteger);
 		for (int i = 0; i < 4; ++i)
@@ -179,7 +184,14 @@ public class CryptoService
 		}
 	}
 
-	private static int storeString(byte[] content, String string, int from)
+	/**
+	 * 
+	 * @param content the place where the given int will be stored
+	 * @param string the given string that should be placed in content
+	 * @param from offset from the beginning of 'content', where to place the string's value
+	 * @return
+	 */
+	private int storeString(byte[] content, String string, int from)
 	{
 		byte[] stringBytes = string.getBytes();
 		for (int i = 0; i < stringBytes.length; ++i)
