@@ -31,8 +31,10 @@ the keystore file password.
 
 the keystore file alias.
 
+**com.ohadr.crypto.createKeystoreFileIfNotExist**
 
 a flag indicates whether to auto create a keystore file if such does not already exist.
+if this jar is used where files (keystore is a file...) cannot be stored (GAE, for example), then this flag should be set to <pre>false</pre>. Then,
 the framework will not try to store the key-store file, but will work in-mem.
 
 
