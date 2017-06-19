@@ -24,23 +24,14 @@ public class CryptoService
 	
 	public String createEncodedBased64String(byte[] content)
 	{
-		String based64EncryptedContent = getCryptoUtil().encryptAndBase64(content, getKey());
+		String based64EncryptedContent = cryptoUtil.encryptAndBase64(content, getKey());
 		return ENCRYPTION_VERSION + based64EncryptedContent.replaceAll("=", "").replaceAll("\\+", ".");
 	}
 
 	
-	public ICryptoUtil getCryptoUtil()
-	{
-		if (cryptoUtil != null)
-		{
-			return cryptoUtil;
-		}
-		return ContextLoader.getCurrentWebApplicationContext().getBean(ICryptoUtil.class);
-	}
-
 	private Key getKey()
 	{
-		return getCryptoUtil().getCryptoKey(URL_CONTENT);
+		return cryptoUtil.getCryptoKey(URL_CONTENT);
 	}
 
 	
@@ -259,7 +250,7 @@ public class CryptoService
 		byte[] content;
 		try
 		{
-			content = getCryptoUtil().decryptBase64(contentWithSuffix.replaceAll("\\.", "+"), getKey());
+			content = cryptoUtil.decryptBase64(contentWithSuffix.replaceAll("\\.", "+"), getKey());
 		}
 		catch (GeneralSecurityException e)
 		{
