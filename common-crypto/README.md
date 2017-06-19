@@ -17,19 +17,23 @@ Configuration:
 =======
 The client-app is responsible for all configurations. Here are the required configurations:
 
-1. properties TODO
----------------------------
-**1.1. Componecan**
+1. properties 
+--------------
+**com.ohadr.crypto.keystore**
 
-the XML should contain to the component-scan path the following paths:
-<pre>
-com.ohadr.auth_flows.*
-com.ohadr.crypto.*
-</pre>
+path to the keystore file. example: C:/Ohad/Dev/Projects/rest_login/ohad.ks
 
-**1.2. passworoder**
+**com.ohadr.crypto.password**
 
-add bean in the spring XML. it is in use in the `UserActionController`.
+the keystore file password.
+
+**com.ohadr.crypto.keyAlias**
+
+the keystore file alias.
+
+
+a flag indicates whether to auto create a keystore file if such does not already exist.
+the framework will not try to store the key-store file, but will work in-mem.
 
 
 
