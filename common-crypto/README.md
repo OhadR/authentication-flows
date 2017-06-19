@@ -31,20 +31,12 @@ com.ohadr.crypto.*
 
 add bean in the spring XML. it is in use in the `UserActionController`.
 
-```xml
-	<sec:authentication-manager alias="authenticationManager">
-		<sec:authentication-provider user-service-ref="userDetailsService" >
-			<sec:password-encoder hash="sha-256">
-				<sec:salt-source user-property="username"/>
-			</sec:password-encoder>
-		</sec:authentication-provider>
-	</sec:authentication-manager>
 
 
 
 
 API
-==
+====
 
 ** PublicKeyController **
 
@@ -57,7 +49,7 @@ Return codes:
 * the public key.
 
 
-
+<pre>
    +------------------+     +------------------+       +------------------+     
    |  crypto-service  |---->|  cryptoUtilImpl  |---+-->|  cryptoProvider  |	
    +------------------+     +------------------+   |   +------------------+
@@ -66,5 +58,6 @@ Return codes:
                                                    +-->|  cryptoProperties |
                                                        +-------------------+
    
+</pre>
    
         
