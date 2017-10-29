@@ -28,7 +28,7 @@ Make it work
 Project Components
 ==================
 JAR: Authentication-Flows   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/authentication-flows)
---------------------
+-
 The Authentication-Flows JAR implements all authentication flows: 
 * create account, 
 * forgot password, 
@@ -42,7 +42,7 @@ upon user's registration and "forget password" flows. Read more about the encryp
 [Authentication-Flows APIs](authentication-flows#api)
 
 JAR: common-crypto   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/common-crypto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/common-crypto)
--------------
+-
 Both oAuth identity-provider and the authentication-flows JAR use cryptography in order to encrypt the data:
 - oAuth encrypts the access-token 
 - authentication-flows encrypts the user's password,

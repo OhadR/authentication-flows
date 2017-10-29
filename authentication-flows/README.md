@@ -327,6 +327,8 @@ time and the username. Hacker that intercepts this link cannot decrypt it so he 
 9. The user receives the email and clicks the link. If a configurable expiration time has not elapsed, and if the link is valid,
 this takes them to a "account activated successfully" page, with link to login page.
 
+See a demo on YouTube: https://www.youtube.com/watch?v=VdbS7EIbBCc
+
 Forgot Password Flow
 -------------
 1. On the login form, there is a link for "forgot password"
