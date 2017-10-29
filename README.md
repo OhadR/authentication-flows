@@ -2,7 +2,7 @@ oAuth2-sample   [![Build Status](https://travis-ci.org/OhadR/oAuth2-sample.svg?b
 =============
 
 Mainly, this project is a oAuth2 POC, consists of all 3 oAuth parties: the authentication server, a resource server, and a client app.
-Each party is represented by its own WAR. In addition, the [Authentication-Flows](https://github.com/OhadR/oAuth2-sample#jar-authentication-flows) 
+Each party is represented by its own WAR. In addition, the [Authentication-Flows](https://github.com/OhadR/oAuth2-sample#jar-authentication-flows---) 
 is a sub-module here.
 
 23-02-2016: Spring Versions Updated
@@ -37,7 +37,7 @@ The Authentication-Flows JAR implements all authentication flows:
 * locks the accont after pre-configured login failures.
 
 The authentication-flows JAR *uses cryptography* in order to encrypt the data in the links that are sent to the user's email, 
-upon user's registration and "forget password" flows. Read more about the encryption module [here](#jar-common-crypto).
+upon user's registration and "forget password" flows. Read more about the encryption module [here](#jar-common-crypto---).
 
 [Authentication-Flows APIs](authentication-flows#api)
 
