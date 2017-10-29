@@ -2,7 +2,7 @@ oAuth2-sample   [![Build Status](https://travis-ci.org/OhadR/oAuth2-sample.svg?b
 =============
 
 Mainly, this project is a oAuth2 POC, consists of all 3 oAuth parties: the authentication server, a resource server, and a client app.
-Each party is represented by its own WAR. In addition, the [Authentication-Flows](https://github.com/OhadR/oAuth2-sample#jar-authentication-flows---) 
+Each party is represented by its own WAR. In addition, the [Authentication-Flows](#jar-authentication-flows---) 
 is a sub-module here.
 
 23-02-2016: Spring Versions Updated
@@ -36,10 +36,11 @@ The Authentication-Flows JAR implements all authentication flows:
 * force change password if password is expired,
 * locks the accont after pre-configured login failures.
 
+[It's own README](https://github.com/OhadR/oAuth2-sample/tree/master/authentication-flows) explains in detail all required configurations, API and more.
+
 The authentication-flows JAR *uses cryptography* in order to encrypt the data in the links that are sent to the user's email, 
 upon user's registration and "forget password" flows. Read more about the encryption module [here](#jar-common-crypto---).
 
-[Authentication-Flows APIs](authentication-flows#api)
 
 JAR: common-crypto   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr/common-crypto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr/common-crypto)
 -
@@ -50,17 +51,9 @@ Both oAuth identity-provider and the authentication-flows JAR use cryptography i
 
 The utility JAR, called "common-crypto", makes life easier. You can find it in this project,
 and it is available in [Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Ccommon-crypto) as well.
-Add this dependency to your POM.xml::
 
-```xml
-<dependency>
-  <groupId>com.ohadr</groupId>
-  <artifactId>common-crypto</artifactId>
-  <version>1.1.3</version>
-</dependency>
-```
+See [its own README](https://github.com/OhadR/oAuth2-sample/tree/master/common-crypto).
 
-Note the version - make sure you use the latest.
 
 JAR: auth-common   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ohadr.oauth2/auth-common/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ohadr.oauth2/auth-common)
 ------------
@@ -71,7 +64,7 @@ and also it is available in Maven repository:
 <dependency>
   <groupId>com.ohadr</groupId>
   <artifactId>auth-common</artifactId>
-  <version>1.1.3</version>
+  <version>2.1-RELEASE</version>
 </dependency>
 ```
 

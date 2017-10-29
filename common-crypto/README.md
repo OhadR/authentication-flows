@@ -4,6 +4,24 @@ common-crypto   [![Maven Central](https://maven-badges.herokuapp.com/maven-centr
 
 It uses a keystore, and it can even create a new one on the fly if such does not exist.
 
+Both oAuth identity-provider and the authentication-flows JAR use cryptography in order to encrypt the data:
+- oAuth encrypts the access-token 
+- authentication-flows encrypts the user's password,
+- authentication-flows encrypts the links that are sent to the user's email, upon user's registration and "forget password" flows.
+
+It is available in [Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Ccommon-crypto) as well.
+Add this dependency to your POM.xml::
+
+```xml
+<dependency>
+  <groupId>com.ohadr</groupId>
+  <artifactId>common-crypto</artifactId>
+  <version>2.1-RELEASE</version>
+</dependency>
+```
+
+Note the version - make sure you use the latest.
+
 
 Configuration: 
 =======

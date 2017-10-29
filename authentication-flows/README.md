@@ -14,8 +14,8 @@ to the user upon registration, account-locking, etc. This KS is customizable by 
 
 
 The Authentication-Flows JAR implements all authentication flows: 
-* [create account](https://github.com/OhadR/oAuth2-sample/tree/master/authentication-flows#create-account-flow), 
-* [forgot password](https://github.com/OhadR/oAuth2-sample/tree/master/authentication-flows#forgot-password-flow), 
+* [create account](#create-account-flow), 
+* [forgot password](#forgot-password-flow), 
 * change password by user request, 
 * force change password if password is expired,
 * locks the accont after pre-configured login failures.
@@ -31,6 +31,20 @@ On 23-02-2016, we have updated Spring versions to the newest!
 
 In addition, we have changed the build tool from Maven to **Gradle**. If you wish to use the older version, i.e. Maven and older Spring versions (3.1.X, oAuth 1.0.5), you can find
 it on a separated branch. The version in that branch is 1.6.2-SNAPSHOT (you can find in Maven Central the latest release, 1.6.2). The version on Master is 2.0.0-SNAPSHOT.
+
+How to Use
+=
+The recommended way to use this module in your project is with a dependency management system (such as Maven). As it is available in [Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Cauthentication-flows), the snippet below can be copied and pasted into your pom.xml:
+
+
+```xml
+<dependency>
+    <groupId>com.ohadr</groupId>
+    <artifactId>authentication-flows</artifactId>
+    <version>2.1-RELEASE</version>
+</dependency>
+```
+
 
 
 Configuration
@@ -292,7 +306,7 @@ POST /setNewPassword HTTP/1.1
 
 JAR: common-crypto
 -------------
-authentication-flows JAR uses cryptography in order to encrypt the data. Read about it in the [main README](/).
+authentication-flows JAR uses cryptography in order to encrypt the data. Read about it in [its main README](https://github.com/OhadR/oAuth2-sample/tree/master/common-crypto).
 
 
 Create Account Flow
@@ -327,7 +341,7 @@ time and the username. Hacker that intercepts this link cannot decrypt it so he 
 9. The user receives the email and clicks the link. If a configurable expiration time has not elapsed, and if the link is valid,
 this takes them to a "account activated successfully" page, with link to login page.
 
-See a demo on YouTube: https://www.youtube.com/watch?v=VdbS7EIbBCc
+See a demo with explanations on YouTube: https://www.youtube.com/watch?v=VdbS7EIbBCc
 
 Forgot Password Flow
 -------------
@@ -356,3 +370,5 @@ this takes them to a reset password screen (with a new password/confirm new pass
 "this reset link is no longer valid" if the key is expired or does not exist.
 
 6. After reset, user is redirected to login screen to login to the application.
+
+See a demo with explanations on YouTube: https://www.youtube.com/watch?v=4yDXHDjFcr0
