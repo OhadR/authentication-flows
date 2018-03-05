@@ -339,3 +339,9 @@ this takes them to a reset password screen (with a new password/confirm new pass
 "this reset link is no longer valid" if the key is expired or does not exist.
 
 6. After reset, user is redirected to login screen to login to the application.
+
+# Questions?
+
+Feel free to open issues here if you have any unclear matter or any other question.
+
+You can also open a question in [StackOverflow](https://stackoverflow.com/questions/tagged/authentication-flows), and tag it with ["authentication-flows"](https://stackoverflow.com/questions/tagged/authentication-flows) tag.
