@@ -64,11 +64,11 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 
 	}
 
+	@Override
 	public Key getCryptoKey(String seed)
 	{
 		return activeProvider.getKey(new ImmutablePair<KeyHive, String>(KeyHive.SYSTEM, seed));
 	}
-
 
 
 
@@ -98,13 +98,13 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 		}
 	}
 
-	//@Override
+	@Override
 	public String encryptAndBase64(byte[] data, Key key)
 	{
 		return Base64.encodeBase64String( encryptBytes(data, key) );
 	}
 
-	//@Override
+	@Override
 	public byte[] decryptBase64(String base64andEncrypted, Key key) throws IllegalBlockSizeException,
 	                                                               BadPaddingException
 	{
