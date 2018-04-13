@@ -1,6 +1,6 @@
 include 'auth-common'
 include 'authentication-flows'
 include 'common-crypto'  
-//include 'oauth2-auth-server'  
-//include 'oauth2-client'  
+include 'oauth2-auth-server'  
+include 'oauth2-client'  
 //include 'oauth2-resource-server'  
