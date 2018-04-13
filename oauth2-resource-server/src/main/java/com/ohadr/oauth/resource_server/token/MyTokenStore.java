@@ -10,8 +10,9 @@ import java.util.Map;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
-import org.springframework.security.oauth2.provider.DefaultAuthorizationRequest;
+import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 public class MyTokenStore implements TokenStore 
@@ -26,10 +27,13 @@ public class MyTokenStore implements TokenStore
 	public OAuth2Authentication readAuthentication(OAuth2AccessToken token)
 	{
         //dummy
-		DefaultAuthorizationRequest authorizationRequest = new DefaultAuthorizationRequest(new HashMap<String, String>());
+		//A request for authorization by an OAuth 2 Client:
+		AuthorizationRequest authorizationRequest = new AuthorizationRequest();
 		authorizationRequest.setApproved(true);
 
-        OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(authorizationRequest, null);
+		//stored authorization or token request:
+		OAuth2Request oAuth2Request = authorizationRequest.createOAuth2Request();
+        OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(oAuth2Request, null);
         return oAuth2Authentication;
 	}
 
@@ -139,13 +143,13 @@ public class MyTokenStore implements TokenStore
 	}
 
 	@Override
-	public Collection<OAuth2AccessToken> findTokensByUserName(String userName) {
+	public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
+	public Collection<OAuth2AccessToken> findTokensByClientIdAndUserName(String clientId, String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
