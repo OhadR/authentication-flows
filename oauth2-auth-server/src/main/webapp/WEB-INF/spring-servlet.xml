@@ -130,8 +130,8 @@
 	</oauth:client-details-service>
 	
 
-	<!-- data-source (for the remember me feature) -->
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+    <!-- data-source (for the remember me feature) -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="com.jamonapi.proxy.JAMonDriver"/>
         <property name="jdbcUrl"
                   value="jdbc:jamon:mysql://${com.ohadr.oauth2.db.host}:${com.ohadr.oauth2.db.port}/${com.ohadr.oauth2.db.schema}?jamonrealdriver=org.gjt.mm.mysql.Driver;useUnicode=true&amp;characterEncoding=utf-8"/>
@@ -144,8 +144,6 @@
         <property name="minPoolSize" value="5"/>
     </bean>
     
-    <bean class="com.ohadr.auth_flows.mocks.AuthenticationAccountRepositoryMock" />
-
 	<bean id="passwordEncoder" 	class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
 		<constructor-arg value="256"/>
 	</bean>
