@@ -38,6 +38,8 @@ GOTO start
  
 :copy_to_tomcat
 del C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps\* /q
+rmdir C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps\oauth2-client /s /q
+rmdir C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps\oauth2-resource-server /s /q
 rmdir C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps\oauth2-auth-server /s /q
 ECHO copy artifacts and omit the version (use * /F /Y)
 echo https://stackoverflow.com/questions/3018289/xcopy-file-rename-suppress-does-xxx-specify-a-file-name-message
