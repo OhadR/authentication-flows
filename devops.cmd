@@ -37,11 +37,13 @@ call gradle clean build
 GOTO start
  
 :copy_to_tomcat
-del Tomcat\webapps\* /q
-rmdir Tomcat\webapps\dos-server /s /q
-xcopy oauth2-client\build\libs\oauth2-client-2.2-SNAPSHOT.war C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps
-xcopy oauth2-resource-server\build\libs\oauth2-resource-server-2.2-SNAPSHOT.war C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps
-xcopy oauth2-auth-server\build\libs\oauth2-auth-server-2.2-SNAPSHOT.war C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps
+del C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps\* /q
+rmdir C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps\oauth2-auth-server /s /q
+ECHO copy artifacts and omit the version (use * /F /Y)
+echo https://stackoverflow.com/questions/3018289/xcopy-file-rename-suppress-does-xxx-specify-a-file-name-message
+xcopy oauth2-client\build\libs\oauth2-client-2.2-SNAPSHOT.war C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps\oauth2-client.war*
+xcopy oauth2-resource-server\build\libs\oauth2-resource-server-2.2-SNAPSHOT.war C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps\oauth2-resource-server.war*
+xcopy oauth2-auth-server\build\libs\oauth2-auth-server-2.2-SNAPSHOT.war C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\webapps\oauth2-auth-server.war*
 
 GOTO start
 
@@ -50,7 +52,7 @@ GOTO start
 ECHO ============== run Tomcat ==============
 ECHO ============================================
 pushd C:\Ohad\Dev\Tools\apache-tomcat-win64-7.0.47\bin
-call start.bat
+call startup.bat
 popd
 GOTO start
 
