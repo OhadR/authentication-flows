@@ -5,7 +5,6 @@ description = 'Sample oAuth 2.0 Authorization Server'
 dependencies {
 	compile project(':auth-common')
 	compile project(':common-crypto')
-	compile project(':authentication-flows')
 
 	compile	"org.springframework.security:spring-security-core:$ohadr_spring_security_version"
 	compile	"org.springframework.security:spring-security-config:$ohadr_spring_security_version"
