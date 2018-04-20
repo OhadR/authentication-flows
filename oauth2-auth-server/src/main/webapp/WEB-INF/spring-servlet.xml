@@ -36,7 +36,7 @@
     <security:http pattern="/oauth/token"  
         use-expressions="false"
         authentication-manager-ref="clientAuthenticationManager">
-        <security:intercept-url pattern="/oauth/token" access="ROLE_CLIENT" requires-channel="https"/>
+        <security:intercept-url pattern="/oauth/token" access="ROLE_CLIENT"/>
         <security:anonymous enabled="false" />
         <security:http-basic />
 
@@ -47,13 +47,12 @@
     </security:http>
 
 
-
     <security:http auto-config="true" 
         use-expressions="false"
         authentication-manager-ref="usersAuthManager">
 		<security:intercept-url pattern="/publicKey" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/oauth/**"	access="ROLE_USER"  requires-channel="https" />
-		<security:intercept-url pattern="/**" access="ROLE_ADMIN"   requires-channel="https" />
+        <security:intercept-url pattern="/oauth/**"	access="ROLE_USER" />
+		<security:intercept-url pattern="/**" access="ROLE_ADMIN" />
 
 		<security:form-login 
 			login-page="/login/login.htm" 
