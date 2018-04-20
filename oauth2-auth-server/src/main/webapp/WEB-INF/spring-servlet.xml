@@ -33,9 +33,10 @@
     
     <!-- Protect the /oauth/token url to allow only registered clients -->
     <!-- this statement enables the access to /oauth/token. without it we get "cannot access" -->
-    <security:http pattern="/oauth/token"  authentication-manager-ref="clientAuthenticationManager">
-        <security:intercept-url pattern="/oauth/token" access="ROLE_CLIENT" requires-channel="https"/>
+    <security:http pattern="/oauth/token"  
         use-expressions="false"
+        authentication-manager-ref="clientAuthenticationManager">
+        <security:intercept-url pattern="/oauth/token" access="ROLE_CLIENT" requires-channel="https"/>
         <security:anonymous enabled="false" />
         <security:http-basic />
 
