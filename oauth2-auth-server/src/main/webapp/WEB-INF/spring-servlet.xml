@@ -29,10 +29,6 @@
 		location="classpath*:com.ohadr.authentication.properties,classpath*:oauth_provider.properties,classpath*:system.properties" />
 
     <security:http pattern="/login/**" security="none" />
-    <security:http pattern="/forgotPasswordPage" security="none" />
-    <security:http pattern="/forgotPassword" security="none" />
-    <security:http pattern="/createAccountPage" security="none" />
-    <security:http pattern="/createAccount" security="none" />
 
     
     <!-- Protect the /oauth/token url to allow only registered clients -->
@@ -42,24 +38,30 @@
         <security:anonymous enabled="false" />
         <security:http-basic />
 
+        <security:csrf disabled="true"/>
+
         <!-- security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" /-->
         <!-- security:access-denied-handler ref="oauthAccessDeniedHandler" /-->
     </security:http>
 
 
 
-    <security:http auto-config="true" authentication-manager-ref="usersAuthManager">
+    <security:http auto-config="true" 
+        use-expressions="false"
+        authentication-manager-ref="usersAuthManager">
 		<security:intercept-url pattern="/publicKey" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <security:intercept-url pattern="/oauth/**"	access="ROLE_USER"  requires-channel="https" />
 		<security:intercept-url pattern="/**" access="ROLE_ADMIN"   requires-channel="https" />
 
 		<security:form-login 
 			login-page="/login/login.htm" 
+			login-processing-url="/j_spring_security_check"
 			authentication-success-handler-ref="authenticationSuccessHandler"
 			authentication-failure-url="/login/login.htm?login_error=1" />
 
 
         <security:anonymous enabled="false"/>
+        <security:csrf disabled="true"/>
 
         <!-- >security:custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" /-->
         <!-- security:access-denied-handler ref="oauthAccessDeniedHandler" /-->
