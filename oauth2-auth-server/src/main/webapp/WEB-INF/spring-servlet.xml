@@ -35,6 +35,7 @@
     <!-- this statement enables the access to /oauth/token. without it we get "cannot access" -->
     <security:http pattern="/oauth/token"  authentication-manager-ref="clientAuthenticationManager">
         <security:intercept-url pattern="/oauth/token" access="ROLE_CLIENT" requires-channel="https"/>
+        use-expressions="false"
         <security:anonymous enabled="false" />
         <security:http-basic />
 
