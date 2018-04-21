@@ -10,9 +10,7 @@ import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +18,6 @@ import java.util.Map;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.log4j.Logger;
 
 import com.ohadr.crypto.exception.CryptoException;
@@ -46,20 +43,10 @@ public class DefaultCryptoProvider implements CryptoProvider
 	private static final String SYMMETRIC_ALGORITHM = "AES/ECB/PKCS5Padding";
 	private static final int SYMMETRIC_KEY_LENGTH = 128;		//128 bit (16 bytes)
 
-	private static final String ASYMMETRIC_ALGORITHM = "DSA";
-	private static final String ASSYMETRIC_SIGNATURE_ALGORITHM = "SHA256withDSA";
-	private static final int ASYMMETRIC_KEY_SIZE = 1024;
-
 	public static final String KEYSTORE_TYPE = "JCEKS";
-
-	private static final String ASYMMETRIC_KEY_NAME = "WatchDox_DSA";
-
-	private static final byte[] ZERO_IV = new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 	private final KeyStore keyStore;
 	private final Map<KeyHive, Key> keys;
-	private PrivateKey privateKey;
-	private Certificate certificate;
 
 	public DefaultCryptoProvider(String keystoreFile, 
 			String keystorePassword, 
@@ -142,44 +129,18 @@ public class DefaultCryptoProvider implements CryptoProvider
 			keys.put(hive, key);
 		}
 
-		// Load asymmetric keys
-		char[] keyPassword = (password + "__" + ASYMMETRIC_KEY_NAME).toCharArray();
-		try
-		{
-			privateKey = (PrivateKey) keyStore.getKey(ASYMMETRIC_KEY_NAME, keyPassword);
-			certificate = keyStore.getCertificate(ASYMMETRIC_KEY_NAME);
-		}
-		catch (UnrecoverableKeyException e)
-		{
-			privateKey = null;
-		}
-
-		if ((privateKey == null) || (certificate == null))
-		{
-			logger.error("no keys were found... ERROR " + ASYMMETRIC_KEY_NAME);
-			logger.error("Creating NEW asymmetric keypair: " + ASYMMETRIC_KEY_NAME);
-//			KeyWithCertificate keys = generateAndSaveAssymetricKeys(ASYMMETRIC_KEY_NAME, keyPassword);
-//			privateKey = keys.getPrivateKey();
-//			certificate = keys.getCertificate();
-//			keystoreModified = true;
-		}
-		else
-		{
-			logger.info("Loaded asymmetric key-pair: " + ASYMMETRIC_KEY_NAME);
-		}
-
 		if (keystoreModified && createFileIfNotExist)
 		{
 			// We loaded some keys, we need to update the keystore
 			keyStore.store(new FileOutputStream(fileName), password.toCharArray());
 		}
-
 	}
 
 
-	public Key getKey(ImmutablePair<KeyHive, String> keyParams)
+	@Override
+	public Key getKey(KeyHive keyParam)
 	{
-		Key masterKey = keys.get(keyParams.getLeft());
+		Key masterKey = keys.get(keyParam);
 
 		return masterKey;
 	}
