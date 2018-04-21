@@ -1,10 +1,5 @@
 package com.ohadr.authentication.token;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class TestTokenGenerator 
@@ -39,17 +34,8 @@ public class TestTokenGenerator
 			
 			System.out.println("the token: " + token);
 		} 
-		catch (InvalidKeyException e) 
+		catch (Exception e) 
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SignatureException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

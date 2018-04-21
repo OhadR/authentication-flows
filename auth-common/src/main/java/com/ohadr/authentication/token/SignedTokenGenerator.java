@@ -2,19 +2,14 @@ package com.ohadr.authentication.token;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Signature;
-import java.security.SignatureException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ohadr.crypto.interfaces.KeystoreService;
+import com.ohadr.crypto.service.CryptoService;
 
 
 
@@ -22,7 +17,7 @@ import com.ohadr.crypto.interfaces.KeystoreService;
 public class SignedTokenGenerator
 {
 	@Autowired
-	private KeystoreService keystoreService;
+	private CryptoService cryptoService;
 
 	private String encodeQueryParams(Map<String, String> parameters) throws UnsupportedEncodingException
 	{
@@ -35,22 +30,14 @@ public class SignedTokenGenerator
 		return result;
 	}
 
-	private String createSignature(String data) throws NoSuchAlgorithmException,
-	                                           InvalidKeyException,
-	                                           SignatureException
+	private String createSignature(String data)
 	{
-		Signature signature = Signature.getInstance("SHA1withDSA");
-		signature.initSign(keystoreService.getPrivateKey());
-		signature.update(data.getBytes());
-		byte[] raw = signature.sign();
-		return Base64.encodeBase64String(raw);
+		String encoded = cryptoService.generateEncodedString(data);
+		return encoded;
 	}
 
 	public String generateToken(String userEmail, String issuer, String deviceName, String clientPublicKey,
-	                            int secondsToExpire) throws InvalidKeyException,
-	                                                NoSuchAlgorithmException,
-	                                                SignatureException,
-	                                                UnsupportedEncodingException
+	                            int secondsToExpire) throws UnsupportedEncodingException
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("user", userEmail);
