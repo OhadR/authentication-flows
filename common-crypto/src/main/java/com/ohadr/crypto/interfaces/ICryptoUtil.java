@@ -9,10 +9,10 @@ import javax.crypto.IllegalBlockSizeException;
 
 public interface ICryptoUtil
 {
-	String encryptAndBase64(byte[] data, Key key);
+	String encryptAndBase64(byte[] data);
 
-	byte[] decryptBase64(String base64andEncrypted, Key key) 
+	byte[] decryptBase64(String base64andEncrypted) 
 			throws IllegalBlockSizeException, BadPaddingException;
 
-	Key getCryptoKey(String seed);
+	Key getCryptoKey();
 }

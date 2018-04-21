@@ -5,19 +5,17 @@ import java.security.Key;
 
 import javax.crypto.Cipher;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 public interface CryptoProvider
 {
 	/**
 	 * Returns a seeded key based on the given key parameters. Given the same key parameters, the method will always
 	 * return the same key.
 	 * 
-	 * @param keyParams
+	 * @param keyParam
 	 *            Specifies the hive and the seed for generating the seeded key.
 	 * @return A key that can be used with the getCipher() method.
 	 */
-	Key getKey(ImmutablePair<KeyHive, String> keyParams);
+	Key getKey(KeyHive keyParam);
 
 	/**
 	 * Returns a cipher object for symmetric data encrpytion.

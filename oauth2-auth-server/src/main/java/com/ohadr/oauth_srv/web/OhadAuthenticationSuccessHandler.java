@@ -8,22 +8,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
-import com.ohadr.crypto.service.CryptoService;
 
 @Service("authenticationSuccessHandler")
 public class OhadAuthenticationSuccessHandler extends
 		SavedRequestAwareAuthenticationSuccessHandler
 {
-	private static final String OAUTH_WEB_APP_NAME = "oauth-srv";
-
-	@Autowired
-	private CryptoService cryptoService;
-	
 	private static Logger log = Logger.getLogger(AuthenticationSuccessEventListener.class);
 
 	public OhadAuthenticationSuccessHandler()

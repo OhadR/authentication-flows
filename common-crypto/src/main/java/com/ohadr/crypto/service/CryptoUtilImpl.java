@@ -10,7 +10,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -65,9 +64,9 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 	}
 
 	@Override
-	public Key getCryptoKey(String seed)
+	public Key getCryptoKey()
 	{
-		return activeProvider.getKey(new ImmutablePair<KeyHive, String>(KeyHive.SYSTEM, seed));
+		return activeProvider.getKey(KeyHive.SYSTEM);
 	}
 
 
@@ -99,16 +98,16 @@ public class CryptoUtilImpl implements ICryptoUtil, InitializingBean
 	}
 
 	@Override
-	public String encryptAndBase64(byte[] data, Key key)
+	public String encryptAndBase64(byte[] data)
 	{
-		return Base64.encodeBase64String( encryptBytes(data, key) );
+		return Base64.encodeBase64String( encryptBytes(data, getCryptoKey()) );
 	}
 
 	@Override
-	public byte[] decryptBase64(String base64andEncrypted, Key key) throws IllegalBlockSizeException,
+	public byte[] decryptBase64(String base64andEncrypted) throws IllegalBlockSizeException,
 	                                                               BadPaddingException
 	{
-		return decryptBytes( Base64.decodeBase64(base64andEncrypted), key );
+		return decryptBytes( Base64.decodeBase64(base64andEncrypted), getCryptoKey() );
 	}
 
 }

@@ -14,7 +14,6 @@ import com.ohadr.crypto.interfaces.ICryptoUtil;
 @Component
 public class CryptoService
 {
-	private static final String URL_CONTENT = "UrlContent";
 	private static final String ENCRYPTION_VERSION = "a";
 	
 	@Autowired
@@ -23,16 +22,11 @@ public class CryptoService
 	
 	private String createEncodedBased64String(byte[] content)
 	{
-		String based64EncryptedContent = cryptoUtil.encryptAndBase64(content, getKey());
+		String based64EncryptedContent = cryptoUtil.encryptAndBase64(content);
 		return ENCRYPTION_VERSION + based64EncryptedContent.replaceAll("=", "").replaceAll("\\+", ".");
 	}
 
 	
-	private Key getKey()
-	{
-		return cryptoUtil.getCryptoKey(URL_CONTENT);
-	}
-
 	
 	/**************************************************************************/
 	public String generateEncodedString(String redirectUri)
@@ -262,7 +256,7 @@ public class CryptoService
 		byte[] content;
 		try
 		{
-			content = cryptoUtil.decryptBase64(contentWithSuffix.replaceAll("\\.", "+"), getKey());
+			content = cryptoUtil.decryptBase64(contentWithSuffix.replaceAll("\\.", "+"));
 		}
 		catch (GeneralSecurityException e)
 		{
