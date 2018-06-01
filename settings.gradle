@@ -1,5 +1,6 @@
 include 'auth-common'
 include 'authentication-flows'
+include 'authentication-flows-gae'
 include 'common-crypto'  
 include 'oauth2-auth-server'  
 include 'oauth2-client'  
