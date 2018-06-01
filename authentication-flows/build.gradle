@@ -4,7 +4,6 @@ description = 'Manages the auth flows (register, forgot password, change passwor
 
 dependencies {
 	compile project(':common-crypto')
-    compile "com.google.appengine:appengine-api-1.0-sdk:1.9.3"			//to support Google AppEngine capabilities
     compile "org.springframework.security:spring-security-core:$ohadr_spring_security_version"
     compile "org.springframework.security:spring-security-config:$ohadr_spring_security_version"
     compile "org.springframework.security:spring-security-web:$ohadr_spring_security_version"
