@@ -14,8 +14,8 @@ to the user upon registration, account-locking, etc. This KS is customizable by 
 
 
 The Authentication-Flows JAR implements all authentication flows: 
-* [create account](https://github.com/OhadR/oAuth2-sample/tree/master/authentication-flows#create-account-flow), 
-* [forgot password](https://github.com/OhadR/oAuth2-sample/tree/master/authentication-flows#forgot-password-flow), 
+* [create account](#create-account-flow), 
+* [forgot password](#forgot-password-flow), 
 * change password by user request, 
 * force change password if password is expired,
 * locks the accont after pre-configured login failures.
@@ -99,7 +99,7 @@ and this bean:
 
 **1.5. velocity - for better emails...**
 
-issue https://github.com/OhadR/oAuth2-sample/issues/31 : read content of emails from a file. For this, we use [velocity](http://velocity.apache.org/).
+issue https://github.com/OhadR/authentication-flows/issues/31 : read content of emails from a file. For this, we use [velocity](http://velocity.apache.org/).
 
 ```xml
     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
